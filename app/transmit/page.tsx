@@ -1,10 +1,11 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import TerminalPanel from '@/components/TerminalPanel';
 import TerminalButton from '@/components/TerminalButton';
 import PageLayout from '@/components/PageLayout';
+import DecodeText from '@/components/DecodeText';
 
 interface LogEntry {
   id: string;
@@ -23,21 +24,15 @@ const SEED_LOGS: LogEntry[] = [
 ];
 
 const containerVariants = {
-  hidden: { opacity: 0 },
+  hidden: {},
   visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.08 },
+    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20, filter: 'blur(8px)' },
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: 'blur(0px)',
-    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
-  },
+  hidden: {},
+  visible: {},
 };
 
 export default function TransmitPage() {
@@ -79,7 +74,7 @@ export default function TransmitPage() {
 
   return (
     <PageLayout>
-      <motion.div 
+      <motion.div
         className="w-full max-w-2xl"
         variants={containerVariants}
         initial="hidden"
@@ -88,15 +83,22 @@ export default function TransmitPage() {
         <motion.div variants={itemVariants} className="mb-6">
           <Link href="/home" className="text-xs tracking-widest cursor-pointer inline-block px-3 py-1.5 border transition-colors whitespace-nowrap"
             style={{ borderColor: 'rgba(212,146,10,0.25)', color: '#6a5030', fontFamily: 'var(--font-mono)' }}>
-            ◀ RETURN /home
+            <DecodeText text="◀ RETURN /home" speed={0.8} scramble={4} />
           </Link>
         </motion.div>
 
         <motion.div variants={itemVariants} className="mb-8">
-          <div className="text-xs tracking-widest mb-1" style={{ color: '#3a2a10' }}>/terminal/transmit</div>
-          <h1 className="text-3xl font-bold tracking-[0.2em]" style={{ color: '#8868a8', textShadow: '0 0 16px rgba(136,104,168,0.4)', fontFamily: 'var(--font-mono)' }}>
-            TRANSMIT.LOG
-          </h1>
+          <div className="text-xs tracking-widest mb-1" style={{ color: '#3a2a10' }}>
+            <DecodeText text="/terminal/transmit" speed={0.6} scramble={5} />
+          </div>
+          <DecodeText
+            text="TRANSMIT.LOG"
+            as="h1"
+            speed={0.65}
+            scramble={10}
+            className="text-3xl font-bold"
+            style={{ color: '#8868a8', textShadow: '0 0 16px rgba(136,104,168,0.4)', letterSpacing: '0.2em' }}
+          />
         </motion.div>
 
         {/* Input Form */}
@@ -105,7 +107,7 @@ export default function TransmitPage() {
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
                 <label className="block text-xs mb-1.5 tracking-widest" style={{ color: '#3a5a3a', fontFamily: 'var(--font-mono)' }}>
-                  HANDLE_ID:
+                  <DecodeText text="HANDLE_ID:" speed={0.6} scramble={4} />
                 </label>
                 <input
                   value={handle}
@@ -123,7 +125,10 @@ export default function TransmitPage() {
               </div>
               <div>
                 <label className="block text-xs mb-1.5 tracking-widest" style={{ color: '#3a5a3a', fontFamily: 'var(--font-mono)' }}>
-                  MESSAGE: <span style={{ color: '#2a4a2a' }}>({message.length}/280)</span>
+                  <span className="flex justify-between w-full">
+                    <DecodeText text="MESSAGE:" speed={0.6} scramble={4} />
+                    <DecodeText text={`(${message.length}/280)`} speed={0.4} scramble={4} style={{ color: '#2a4a2a', display: 'inline' }} />
+                  </span>
                 </label>
                 <textarea
                   value={message}
@@ -140,14 +145,22 @@ export default function TransmitPage() {
                   onBlur={e => (e.currentTarget.style.borderColor = 'rgba(136,104,168,0.3)')}
                 />
               </div>
-              {error && <div className="text-xs" style={{ color: '#ff2079', fontFamily: 'var(--font-mono)' }}>⚠ {error}</div>}
-              {sent && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs" style={{ color: '#d4920a', fontFamily: 'var(--font-mono)' }}>
-                  ✓ SIGNAL TRANSMITTED SUCCESSFULLY
-                </motion.div>
-              )}
+              <AnimatePresence mode="wait">
+                {error && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs" style={{ color: '#ff2079', fontFamily: 'var(--font-mono)' }}>
+                    <DecodeText text={`⚠ ${error}`} speed={0.6} scramble={5} />
+                  </motion.div>
+                )}
+                {sent && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs" style={{ color: '#d4920a', fontFamily: 'var(--font-mono)' }}>
+                    <DecodeText text="✓ SIGNAL TRANSMITTED SUCCESSFULLY" speed={0.6} scramble={6} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <div className="flex justify-end">
-                <TerminalButton type="submit" variant="danger">▶ TRANSMIT SIGNAL</TerminalButton>
+                <TerminalButton type="submit" variant="danger">
+                  <DecodeText text="▶ TRANSMIT SIGNAL" speed={0.6} scramble={5} />
+                </TerminalButton>
               </div>
             </form>
           </TerminalPanel>
@@ -158,24 +171,28 @@ export default function TransmitPage() {
           <TerminalPanel title={`SIGNAL_LOG — ${logs.length} ENTRIES`} accent="green">
             <div ref={logRef} className="space-y-3 max-h-96 overflow-y-auto pr-2">
               {logs.map((entry, i) => (
-                <motion.div
+                <div
                   key={entry.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 + i * 0.04 }}
                   className="border-b pb-3"
                   style={{ borderColor: 'rgba(57,255,20,0.08)' }}
                 >
                   <div className="flex items-center gap-3 mb-1">
                     <span className="text-xs font-bold tracking-wider" style={{ color: '#8868a8', fontFamily: 'var(--font-mono)' }}>
-                      {entry.handle}
+                      <DecodeText text={entry.handle} speed={0.5} scramble={5} delay={i < 5 ? i * 40 : 0} />
                     </span>
-                    <span className="text-xs" style={{ color: '#2a4a2a', fontFamily: 'var(--font-mono)' }}>{entry.ts}</span>
+                    <span className="text-xs" style={{ color: '#2a4a2a', fontFamily: 'var(--font-mono)' }}>
+                      <DecodeText text={entry.ts} speed={0.4} scramble={4} delay={i < 5 ? i * 40 : 0} />
+                    </span>
                   </div>
-                  <p className="text-xs leading-5" style={{ color: '#8a6840', fontFamily: 'var(--font-mono)' }}>
-                    &gt; {entry.message}
-                  </p>
-                </motion.div>
+                  <div className="text-xs leading-5" style={{ color: '#8a6840', fontFamily: 'var(--font-mono)' }}>
+                    <DecodeText
+                      text={`> ${entry.message}`}
+                      speed={0.5}
+                      scramble={8}
+                      delay={i < 5 ? i * 40 : 0}
+                    />
+                  </div>
+                </div>
               ))}
             </div>
           </TerminalPanel>

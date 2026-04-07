@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import DecodeText from '@/components/DecodeText';
 
 interface Props { targetDate: Date; }
 
@@ -34,9 +35,21 @@ export default function CountdownBlock({ targetDate }: Props) {
     <div className="grid grid-cols-4 gap-3" suppressHydrationWarning={true}>
       {blocks.map((b) => (
         <div key={b.label} className="text-center border py-4" style={{ borderColor: 'rgba(58,152,128,0.2)', background: 'rgba(0,0,0,0.4)' }}>
-          <div className="text-3xl sm:text-4xl md:text-5xl font-bold" style={{ color: '#3a9880', textShadow: '0 0 16px rgba(58,152,128,0.5)', fontFamily: 'var(--font-mono)' }} suppressHydrationWarning={true}>
-            {b.val}
-          </div>
+          <DecodeText
+            text={b.val}
+            speed={0.8}
+            scramble={2}
+            scrambleOnUpdate={false}
+            className="text-3xl sm:text-4xl md:text-5xl font-bold"
+            style={{
+              color: '#3a9880',
+              textShadow: '0 0 16px rgba(58,152,128,0.5)',
+              fontFamily: 'var(--font-mono)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          />
           <div className="text-xs mt-1 tracking-widest" style={{ color: '#2a5040', fontFamily: 'var(--font-mono)' }}>{b.label}</div>
         </div>
       ))}

@@ -12,7 +12,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^3.0.2",
-    "three": "0.179.1"
+    "three": "0.179.1",
+    "use-scramble": "^2.2.15"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260405.1",

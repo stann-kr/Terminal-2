@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import DirectoryLink from '@/components/DirectoryLink';
-import GlitchText from '@/components/GlitchText';
+import DecodeText from '@/components/DecodeText';
 import PageLayout from '@/components/PageLayout';
 import CountdownBlock from '@/app/home/CountdownBlock';
 
@@ -16,24 +16,18 @@ const DIRS = [
 const EVENT_DATE = new Date('2026-05-08T23:00:00');
 
 const containerVariants = {
-  hidden: { opacity: 0 },
+  hidden: {},
   visible: {
-    opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.15,
+      staggerChildren: 0.1,
+      delayChildren: 0.05,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20, filter: 'blur(4px)' },
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: 'blur(0px)',
-    transition: { duration: 0.5, ease: 'easeOut' },
-  },
+  hidden: {},
+  visible: {},
 };
 
 export default function HomePage() {
@@ -52,31 +46,38 @@ export default function HomePage() {
             className="text-xs tracking-widest mb-3 overflow-hidden truncate"
             style={{ color: '#3a2a10' }}
           >
-            ╔══════════════════════════════════════════╗
+            <DecodeText text="╔══════════════════════════════════════════╗" speed={0.8} scramble={3} />
           </motion.div>
 
           <motion.h1
             variants={itemVariants}
             className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.3em] mb-2"
-            style={{ color: '#d4920a', textShadow: '0 0 30px rgba(212,146,10,0.5), 0 0 60px rgba(212,146,10,0.18)', fontFamily: 'var(--font-mono)' }}
           >
-            <GlitchText text="TERMINAL" intensity="low" />
+            <DecodeText
+              text="TERMINAL"
+              as="span"
+              speed={0.7}
+              scramble={10}
+              style={{ color: '#d4920a', textShadow: '0 0 30px rgba(212,146,10,0.5), 0 0 60px rgba(212,146,10,0.18)' }}
+            />
           </motion.h1>
 
-          <motion.p
-            variants={itemVariants}
-            className="text-xs tracking-widest"
-            style={{ color: '#6a5030' }}
-          >
-            UNDERGROUND TECHNO PLATFORM · SESSION ACTIVE
-          </motion.p>
+          <motion.div variants={itemVariants} className="text-[10px] sm:text-xs">
+            <DecodeText
+              text="UNDERGROUND TECHNO PLATFORM · SESSION ACTIVE"
+              speed={0.5}
+              scramble={8}
+              delay={100}
+              style={{ color: '#6a5030', textAlign: 'center', letterSpacing: '0.1em' }}
+            />
+          </motion.div>
 
           <motion.div
             variants={itemVariants}
             className="text-xs tracking-widest mt-3 overflow-hidden truncate"
             style={{ color: '#3a2a10' }}
           >
-            ╚══════════════════════════════════════════╝
+            <DecodeText text="╚══════════════════════════════════════════╝" speed={0.8} scramble={3} />
           </motion.div>
         </div>
 
@@ -87,14 +88,29 @@ export default function HomePage() {
           style={{ borderColor: 'rgba(212,146,10,0.2)', background: 'rgba(18,14,8,0.95)' }}
         >
           <div className="text-center mb-4">
-            <div className="text-xs tracking-widest mb-1" style={{ color: '#3a2a10' }}>
-              NEXT EVENT — MAY 08 2026
+            <div className="mb-1 text-[10px] sm:text-xs">
+              <DecodeText
+                text="NEXT EVENT — MAY 08 2026"
+                speed={0.45}
+                scramble={6}
+                style={{ color: '#3a2a10', textAlign: 'center', letterSpacing: '0.1em' }}
+              />
             </div>
-            <div className="text-xl sm:text-2xl font-bold tracking-[0.2em]" style={{ color: '#d4920a', textShadow: '0 0 16px rgba(212,146,10,0.4)', fontFamily: 'var(--font-mono)' }}>
-              TERMINAL [02]
+            <div className="text-xl sm:text-2xl font-bold">
+              <DecodeText
+                text="TERMINAL [02]"
+                speed={0.6}
+                scramble={10}
+                style={{ color: '#d4920a', textShadow: '0 0 16px rgba(212,146,10,0.4)', textAlign: 'center', letterSpacing: '0.2em' }}
+              />
             </div>
-            <div className="text-xs tracking-widest mt-1" style={{ color: '#6a5030', fontFamily: 'var(--font-mono)' }}>
-              Heliopause Outskirts
+            <div className="mt-1 text-[10px] sm:text-xs">
+              <DecodeText
+                text="Heliopause Outskirts"
+                speed={0.4}
+                scramble={6}
+                style={{ color: '#6a5030', textAlign: 'center', letterSpacing: '0.1em' }}
+              />
             </div>
           </div>
           <CountdownBlock targetDate={EVENT_DATE} />
@@ -108,32 +124,31 @@ export default function HomePage() {
         >
           <div className="px-4 py-2 border-b flex items-center justify-between"
             style={{ borderColor: 'rgba(212,146,10,0.15)', background: 'rgba(0,0,0,0.4)' }}>
-            <span className="text-xs tracking-widest" style={{ color: '#d4920a' }}>
-              ▶ ROOT DIRECTORY — /terminal/
+            <span className="text-[10px] sm:text-xs tracking-widest" style={{ color: '#d4920a' }}>
+              <DecodeText text="▶ ROOT DIRECTORY — /terminal/" speed={0.6} scramble={6} />
             </span>
-            <span className="text-xs" style={{ color: '#3a2a10' }}>5 MODULE(S)</span>
+            <span className="text-[10px] sm:text-xs" style={{ color: '#3a2a10' }}>
+              <DecodeText text="5 MODULE(S)" speed={0.6} scramble={4} />
+            </span>
           </div>
 
           {DIRS.map((dir, i) => (
-            <motion.div
+            <div
               key={dir.href}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8 + i * 0.1, duration: 0.4 }}
             >
               <DirectoryLink {...dir} index={i + 1} />
-            </motion.div>
+            </div>
           ))}
         </motion.div>
 
         {/* Footer */}
         <motion.div
           variants={itemVariants}
-          className="mt-6 flex items-center justify-between text-xs"
+          className="mt-6 flex items-center justify-between text-[10px] sm:text-xs"
           style={{ color: '#3a2a10', fontFamily: 'var(--font-mono)' }}
         >
-          <span>KERNEL 4.2.0-underground</span>
-          <span suppressHydrationWarning={true}>{new Date().toISOString().slice(0, 10)}</span>
+          <span><DecodeText text="KERNEL 4.2.0-underground" speed={0.4} scramble={4} /></span>
+          <span suppressHydrationWarning={true}><DecodeText text={new Date().toISOString().slice(0, 10)} speed={0.4} scramble={4} /></span>
         </motion.div>
       </motion.div>
     </PageLayout>

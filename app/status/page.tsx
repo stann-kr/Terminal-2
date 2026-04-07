@@ -5,6 +5,7 @@ import TerminalPanel from '@/components/TerminalPanel';
 import StatusMetric from './StatusMetric';
 import GlobeMapDynamic from './GlobeMapDynamic';
 import PageLayout from '@/components/PageLayout';
+import DecodeText from '@/components/DecodeText';
 
 const RELAYS = [
   { name: 'NEXUS-Ω',   sector: 'GALACTIC_CORE',        lag: 0,    load: 94, status: 'ONLINE' },
@@ -20,27 +21,21 @@ const RELAYS = [
 ];
 
 const containerVariants = {
-  hidden: { opacity: 0 },
+  hidden: {},
   visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.08 },
+    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, scale: 0.95, filter: 'blur(6px) brightness(1.5)' },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    filter: 'blur(0px) brightness(1)',
-    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
-  },
+  hidden: {},
+  visible: {},
 };
 
 export default function StatusPage() {
   return (
     <PageLayout>
-      <motion.div 
+      <motion.div
         className="w-full max-w-2xl"
         variants={containerVariants}
         initial="hidden"
@@ -49,22 +44,29 @@ export default function StatusPage() {
         <motion.div variants={itemVariants} className="mb-6">
           <Link href="/home" className="text-xs tracking-widest cursor-pointer inline-block px-3 py-1.5 border transition-colors whitespace-nowrap"
             style={{ borderColor: 'rgba(212,146,10,0.25)', color: '#6a5030', fontFamily: 'var(--font-mono)' }}>
-            ◀ RETURN /home
+            <DecodeText text="◀ RETURN /home" speed={0.8} scramble={4} />
           </Link>
         </motion.div>
 
         <motion.div variants={itemVariants} className="mb-8">
-          <div className="text-xs tracking-widest mb-1" style={{ color: '#3a2a10' }}>/terminal/status</div>
-          <h1 className="text-3xl font-bold tracking-[0.2em]" style={{ color: '#c85020', textShadow: '0 0 16px rgba(200,80,32,0.4)', fontFamily: 'var(--font-mono)' }}>
-            STATUS.SYS
-          </h1>
+          <div className="text-xs tracking-widest mb-1" style={{ color: '#3a2a10' }}>
+            <DecodeText text="/terminal/status" speed={0.6} scramble={5} />
+          </div>
+          <DecodeText
+            text="STATUS.SYS"
+            as="h1"
+            speed={0.65}
+            scramble={10}
+            className="text-3xl font-bold"
+            style={{ color: '#c85020', textShadow: '0 0 16px rgba(200,80,32,0.4)', letterSpacing: '0.2em' }}
+          />
         </motion.div>
 
-        {/* Metrics — 1 col mobile, 3 col sm+ */}
+        {/* Metrics */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-          <StatusMetric label="ACTIVE_RELAYS" value="6 / 12" unit="NODES" accent="#d4920a" delay={0.4} />
-          <StatusMetric label="SIGNAL_UPTIME" value="99.97" unit="%" accent="#3a9880" delay={0.5} />
-          <StatusMetric label="CORE_FREQ" value="148.3" unit="THz" accent="#c85020" delay={0.6} />
+          <StatusMetric label="ACTIVE_RELAYS" value="6 / 12" unit="NODES" accent="#d4920a" delay={0.2} />
+          <StatusMetric label="SIGNAL_UPTIME" value="99.97" unit="%" accent="#3a9880" delay={0.3} />
+          <StatusMetric label="CORE_FREQ" value="148.3" unit="THz" accent="#c85020" delay={0.4} />
         </motion.div>
 
         {/* Node Map */}
@@ -83,24 +85,30 @@ export default function StatusPage() {
                   s.status === 'ONLINE'  ? '#d4920a' :
                   s.status === 'STANDBY' ? '#c8a030' : '#3a2a10';
                 return (
-                  <motion.div
+                  <div
                     key={s.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.7 + i * 0.06 }}
                   >
                     {/* Mobile */}
                     <div className="md:hidden space-y-1.5" style={{ fontFamily: 'var(--font-mono)' }}>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold" style={{ color: '#e8d890' }}>{s.name}</span>
+                        <span className="text-xs font-bold" style={{ color: '#e8d890' }}>
+                          <DecodeText text={s.name} speed={0.6} scramble={4} delay={i * 20} />
+                        </span>
                         <span className="text-xs font-bold tracking-wider" style={{ color: statusColor }}>
-                          <span className="status-pulse mr-1">●</span>{s.status}
+                          <span className="status-pulse mr-1">●</span>
+                          <DecodeText text={s.status} speed={0.6} scramble={4} style={{ display: 'inline' }} delay={i * 20} />
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                        <span style={{ color: '#6a5030' }}>{s.sector}</span>
-                        <span style={{ color: '#3a9880' }}>{s.lag === 0 ? '—' : `${s.lag} ly`}</span>
-                        <span style={{ color: '#6a5030' }}>LOAD: {s.load}%</span>
+                        <span style={{ color: '#6a5030' }}>
+                          <DecodeText text={s.sector} speed={0.5} scramble={5} delay={i * 20} />
+                        </span>
+                        <span style={{ color: '#3a9880' }}>
+                          <DecodeText text={s.lag === 0 ? '—' : `${s.lag} ly`} speed={0.5} scramble={5} delay={i * 20} />
+                        </span>
+                        <span style={{ color: '#6a5030' }}>
+                          <DecodeText text={`LOAD: ${s.load}%`} speed={0.5} scramble={5} delay={i * 20} />
+                        </span>
                       </div>
                       {s.load > 0 && (
                         <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(212,146,10,0.1)' }}>
@@ -111,26 +119,35 @@ export default function StatusPage() {
 
                     {/* Desktop */}
                     <div className="hidden md:grid grid-cols-12 gap-2 items-center text-xs" style={{ fontFamily: 'var(--font-mono)' }}>
-                      <span className="col-span-3 font-bold" style={{ color: '#e8d890' }}>{s.name}</span>
-                      <span className="col-span-4 truncate" style={{ color: '#6a5030' }}>{s.sector}</span>
-                      <span className="col-span-2" style={{ color: '#3a9880' }}>{s.lag === 0 ? 'LOCAL' : `${s.lag} ly`}</span>
+                      <span className="col-span-3 font-bold" style={{ color: '#e8d890' }}>
+                        <DecodeText text={s.name} speed={0.6} scramble={4} delay={i * 20} />
+                      </span>
+                      <span className="col-span-4 truncate" style={{ color: '#6a5030' }}>
+                        <DecodeText text={s.sector} speed={0.5} scramble={5} delay={i * 20} />
+                      </span>
+                      <span className="col-span-2" style={{ color: '#3a9880' }}>
+                        <DecodeText text={s.lag === 0 ? 'LOCAL' : `${s.lag} ly`} speed={0.5} scramble={5} delay={i * 20} />
+                      </span>
                       <div className="col-span-2">
                         {s.load > 0 ? (
                           <>
-                            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(212,146,10,0.1)' }}>
+                            <div className="h-1.5 rounded-full overflow-hidden mb-1" style={{ background: 'rgba(212,146,10,0.1)' }}>
                               <div className="h-full rounded-full transition-all" style={{ width: `${s.load}%`, background: s.load > 70 ? '#c8a030' : '#d4920a' }} />
                             </div>
-                            <span style={{ color: '#6a5030' }}>{s.load}%</span>
+                            <span style={{ color: '#6a5030' }}>
+                              <DecodeText text={`${s.load}%`} speed={0.5} scramble={4} delay={i * 20} />
+                            </span>
                           </>
                         ) : (
                           <span style={{ color: '#2a1a08' }}>—</span>
                         )}
                       </div>
                       <span className="col-span-1 font-bold tracking-wider" style={{ color: statusColor }}>
-                        <span className="status-pulse mr-1">●</span>{s.status}
+                        <span className="status-pulse mr-1">●</span>
+                        <DecodeText text={s.status} speed={0.6} scramble={4} style={{ display: 'inline' }} delay={i * 20} />
                       </span>
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>

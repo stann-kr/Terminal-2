@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import DecodeText from '@/components/DecodeText';
 
 interface Props { targetDate: Date; }
 
@@ -34,20 +35,26 @@ export default function CountdownBlock({ targetDate }: Props) {
     <div className="grid grid-cols-4 gap-2 sm:gap-4" suppressHydrationWarning={true}>
       {blocks.map((b) => (
         <div key={b.label} className="text-center">
-          <div 
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold py-3 sm:py-4 border" 
-            style={{ 
-              color: '#d4920a', 
-              textShadow: '0 0 24px rgba(212,146,10,0.6), 0 0 48px rgba(212,146,10,0.3)',
-              fontFamily: 'var(--font-mono)',
-              borderColor: 'rgba(212,146,10,0.25)',
-              background: 'rgba(0,0,0,0.5)'
-            }} 
-            suppressHydrationWarning={true}
-          >
-            {b.val}
+            <DecodeText
+              text={b.val}
+              speed={0.8}
+              scramble={2}
+              scrambleOnUpdate={false}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold py-3 sm:py-4 border"
+              style={{
+                color: '#d4920a',
+                textShadow: '0 0 24px rgba(212,146,10,0.6), 0 0 48px rgba(212,146,10,0.3)',
+                fontFamily: 'var(--font-mono)',
+                borderColor: 'rgba(212,146,10,0.25)',
+                background: 'rgba(0,0,0,0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            />
+          <div className="text-xs mt-2 tracking-widest" style={{ color: '#5a4820', fontFamily: 'var(--font-mono)' }}>
+            <DecodeText text={b.label} speed={0.4} scramble={6} />
           </div>
-          <div className="text-xs mt-2 tracking-widest" style={{ color: '#5a4820', fontFamily: 'var(--font-mono)' }}>{b.label}</div>
         </div>
       ))}
     </div>

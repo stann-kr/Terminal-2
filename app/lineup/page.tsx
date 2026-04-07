@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import PageLayout from '@/components/PageLayout';
+import DecodeText from '@/components/DecodeText';
 import ArtistRow from './ArtistRow';
 import { EVENTS, UPCOMING_EVENT } from '@/lib/eventData';
 
@@ -12,8 +13,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, x: -40, filter: 'blur(8px)' },
-  visible: { opacity: 1, x: 0, filter: 'blur(0px)', transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
+  hidden: {},
+  visible: {},
 };
 
 export default function LineupPage() {
@@ -31,15 +32,22 @@ export default function LineupPage() {
         <motion.div variants={itemVariants} className="mb-6">
           <Link href="/home" className="text-xs tracking-widest cursor-pointer inline-block px-3 py-1.5 border transition-colors whitespace-nowrap"
             style={{ borderColor: 'rgba(212,146,10,0.25)', color: '#6a5030', fontFamily: 'var(--font-mono)' }}>
-            ◀ RETURN /home
+            <DecodeText text="◀ RETURN /home" speed={0.8} scramble={4} />
           </Link>
         </motion.div>
 
         <motion.div variants={itemVariants} className="mb-6">
-          <div className="text-xs tracking-widest mb-1" style={{ color: '#3a2a10' }}>/terminal/lineup</div>
-          <h1 className="text-3xl font-bold tracking-[0.2em]" style={{ color: '#c8a030', textShadow: '0 0 16px rgba(200,160,48,0.4)', fontFamily: 'var(--font-mono)' }}>
-            LINEUP.DAT
-          </h1>
+          <div className="text-xs tracking-widest mb-1" style={{ color: '#3a2a10' }}>
+            <DecodeText text="/terminal/lineup" speed={0.6} scramble={5} />
+          </div>
+          <DecodeText
+            text="LINEUP.DAT"
+            as="h1"
+            speed={0.65}
+            scramble={10}
+            className="text-3xl font-bold tracking-[0.2em]"
+            style={{ color: '#c8a030', textShadow: '0 0 16px rgba(200,160,48,0.4)', fontFamily: 'var(--font-mono)' }}
+          />
         </motion.div>
 
         {/* Session selector */}
@@ -67,20 +75,20 @@ export default function LineupPage() {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-bold tracking-wider" style={{ color: isSelected ? (isUpcoming ? '#3a9880' : '#c85020') : '#e8d890' }}>
-                        {ev.session}
+                        <DecodeText text={ev.session} speed={0.6} scramble={4} />
                       </span>
                       {isUpcoming && (
                         <span className="text-xs px-1.5 py-0.5 tracking-widest" style={{ color: '#3a9880', border: '1px solid rgba(58,152,128,0.4)', background: 'rgba(58,152,128,0.08)' }}>
-                          UPCOMING
+                          <DecodeText text="UPCOMING" speed={0.5} scramble={4} />
                         </span>
                       )}
                     </div>
                     <div className="text-xs mt-0.5" style={{ color: '#6a5030' }}>
-                      {ev.subtitle} · {ev.date.replace(/-/g, '.')}
+                      <DecodeText text={`${ev.subtitle} · ${ev.date.replace(/-/g, '.')}`} speed={0.5} scramble={4} />
                     </div>
                   </div>
                   <div className="text-xs shrink-0" style={{ color: '#3a2a10' }}>
-                    {ev.artists.length} ACTS
+                    <DecodeText text={`${ev.artists.length} ACTS`} speed={0.5} scramble={3} />
                   </div>
                 </div>
               </button>
@@ -102,32 +110,34 @@ export default function LineupPage() {
               style={{ borderColor: 'rgba(200,160,48,0.2)' }}>
               <div className="grid grid-cols-12 gap-2 text-xs tracking-widest"
                 style={{ color: '#5a4820', fontFamily: 'var(--font-mono)' }}>
-                <span className="col-span-1">ID</span>
-                <span className="col-span-3">ARTIST</span>
-                <span className="col-span-1">ORG</span>
-                <span className="col-span-3">GENRE</span>
-                <span className="col-span-2">TIMESLOT</span>
-                <span className="col-span-2">STATUS</span>
+                <span className="col-span-1"><DecodeText text="ID" speed={0.4} scramble={2} /></span>
+                <span className="col-span-3"><DecodeText text="ARTIST" speed={0.4} scramble={2} /></span>
+                <span className="col-span-1"><DecodeText text="ORG" speed={0.4} scramble={2} /></span>
+                <span className="col-span-3"><DecodeText text="GENRE" speed={0.4} scramble={2} /></span>
+                <span className="col-span-2"><DecodeText text="TIMESLOT" speed={0.4} scramble={2} /></span>
+                <span className="col-span-2"><DecodeText text="STATUS" speed={0.4} scramble={2} /></span>
               </div>
             </div>
 
             <div className="space-y-2">
               {selectedEvent.artists.map((a, i) => (
-                <motion.div
+                <div
                   key={a.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.06 }}
+                  className="w-full"
                 >
                   <ArtistRow artist={a} />
-                </motion.div>
+                </div>
               ))}
             </div>
 
             <div className="mt-6 text-xs text-center" style={{ color: '#3a2a10', fontFamily: 'var(--font-mono)' }}>
-              {selectedEvent.status === 'UPCOMING'
-                ? '— MORE ACTS TBA — STAY TUNED TO TERMINAL —'
-                : `— SESSION COMPLETE — ${selectedEvent.artists.length} ACTS TRANSMITTED —`}
+              <DecodeText
+                text={selectedEvent.status === 'UPCOMING'
+                  ? '— MORE ACTS TBA — STAY TUNED TO TERMINAL —'
+                  : `— SESSION COMPLETE — ${selectedEvent.artists.length} ACTS TRANSMITTED —`}
+                speed={0.5}
+                scramble={6}
+              />
             </div>
           </motion.div>
         </AnimatePresence>

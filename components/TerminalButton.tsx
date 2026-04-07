@@ -1,5 +1,6 @@
 'use client';
 import { ReactNode, MouseEvent } from 'react';
+import DecodeText from './DecodeText';
 
 interface TerminalButtonProps {
   children: ReactNode;
@@ -43,7 +44,7 @@ export default function TerminalButton({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`whitespace-nowrap cursor-pointer font-mono text-xs tracking-widest uppercase px-5 py-2.5 transition-all duration-200 ${className}`}
+      className={`whitespace-nowrap cursor-pointer font-mono text-xs tracking-widest uppercase px-5 py-2.5 transition-all duration-200 flex items-center justify-center ${className}`}
       style={{
         color: v.color,
         border: `1px solid ${v.border}`,
@@ -54,7 +55,11 @@ export default function TerminalButton({
       onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = v.hover; }}
       onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = v.bg; }}
     >
-      {children}
+      {typeof children === 'string' ? (
+        <DecodeText text={children} speed={0.7} scramble={5} />
+      ) : (
+        children
+      )}
     </button>
   );
 }

@@ -140,10 +140,9 @@ function NodeLayer() {
     <group ref={groupRef}>
       {arcLines.map((pts, i) => {
         const geo = new THREE.BufferGeometry().setFromPoints(pts);
+        const mat = new THREE.LineBasicMaterial({ color: '#c85020', transparent: true, opacity: 0.22, linewidth: 1 });
         return (
-          <line key={i} geometry={geo}>
-            <lineBasicMaterial color="#c85020" transparent opacity={0.22} linewidth={1} />
-          </line>
+          <primitive key={i} object={new THREE.Line(geo, mat)} />
         );
       })}
 

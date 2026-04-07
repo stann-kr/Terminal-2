@@ -1,5 +1,6 @@
 'use client';
 import type { Artist } from '@/lib/eventData';
+import DecodeText from '@/components/DecodeText';
 
 const STATUS_COLOR: Record<string, string> = {
   CONFIRMED: '#d4920a',
@@ -35,17 +36,17 @@ export default function ArtistRow({ artist: a }: Props) {
             color: a.name === '[REDACTED]' ? '#c85020' : '#e8d890',
             fontFamily: 'var(--font-mono)',
             textShadow: a.name === '[REDACTED]' ? '0 0 8px rgba(200,80,32,0.4)' : 'none',
-          }}>{a.name}</span>
+          }}><DecodeText text={a.name} speed={0.6} scramble={4} /></span>
           <span className="text-xs font-bold tracking-wider whitespace-nowrap shrink-0" style={{ color, fontFamily: 'var(--font-mono)' }}>
-            <span className="status-pulse mr-1">●</span>{a.status}
+            <span className="status-pulse mr-1">●</span><DecodeText text={a.status} speed={0.6} scramble={4} style={{ display: 'inline' }} />
           </span>
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ fontFamily: 'var(--font-mono)' }}>
-          <span style={{ color: '#4a3818' }}>{a.id}</span>
-          <span style={{ color: '#6a5030' }}>{a.origin}</span>
-          <span style={{ color: '#c8a030' }}>{a.time}</span>
+          <span style={{ color: '#4a3818' }}><DecodeText text={a.id} speed={0.4} scramble={2} /></span>
+          <span style={{ color: '#6a5030' }}><DecodeText text={a.origin} speed={0.5} scramble={3} /></span>
+          <span style={{ color: '#c8a030' }}><DecodeText text={a.time} speed={0.5} scramble={3} /></span>
         </div>
-        <div className="text-xs" style={{ color: '#6a5030', fontFamily: 'var(--font-mono)' }}>{a.genre}</div>
+        <div className="text-xs" style={{ color: '#6a5030', fontFamily: 'var(--font-mono)' }}><DecodeText text={a.genre} speed={0.5} scramble={3} /></div>
       </div>
 
       {/* Desktop */}
@@ -55,17 +56,17 @@ export default function ArtistRow({ artist: a }: Props) {
         onMouseEnter={hoverEnter}
         onMouseLeave={hoverLeave}
       >
-        <span className="col-span-1 text-xs" style={{ color: '#4a3818', fontFamily: 'var(--font-mono)' }}>{a.id}</span>
+        <span className="col-span-1 text-xs" style={{ color: '#4a3818', fontFamily: 'var(--font-mono)' }}><DecodeText text={a.id} speed={0.4} scramble={2} /></span>
         <span className="col-span-3 text-sm font-bold tracking-wider" style={{
           color: a.name === '[REDACTED]' ? '#c85020' : '#e8d890',
           fontFamily: 'var(--font-mono)',
           textShadow: a.name === '[REDACTED]' ? '0 0 8px rgba(200,80,32,0.4)' : 'none',
-        }}>{a.name}</span>
-        <span className="col-span-1 text-xs" style={{ color: '#6a5030', fontFamily: 'var(--font-mono)' }}>{a.origin}</span>
-        <span className="col-span-3 text-xs" style={{ color: '#6a5030', fontFamily: 'var(--font-mono)' }}>{a.genre}</span>
-        <span className="col-span-2 text-xs" style={{ color: '#c8a030', fontFamily: 'var(--font-mono)' }}>{a.time}</span>
+        }}><DecodeText text={a.name} speed={0.6} scramble={4} /></span>
+        <span className="col-span-1 text-xs" style={{ color: '#6a5030', fontFamily: 'var(--font-mono)' }}><DecodeText text={a.origin} speed={0.5} scramble={3} /></span>
+        <span className="col-span-3 text-xs" style={{ color: '#6a5030', fontFamily: 'var(--font-mono)' }}><DecodeText text={a.genre} speed={0.5} scramble={3} /></span>
+        <span className="col-span-2 text-xs" style={{ color: '#c8a030', fontFamily: 'var(--font-mono)' }}><DecodeText text={a.time} speed={0.5} scramble={3} /></span>
         <span className="col-span-2 text-xs font-bold tracking-wider" style={{ color, fontFamily: 'var(--font-mono)' }}>
-          <span className="status-pulse mr-1">●</span>{a.status}
+          <span className="status-pulse mr-1">●</span><DecodeText text={a.status} speed={0.6} scramble={4} style={{ display: 'inline' }} />
         </span>
       </div>
     </>

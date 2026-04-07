@@ -3,52 +3,23 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { ReactNode, Suspense } from 'react';
 
-const variants = {
-  initial: {
-    opacity: 0,
-    filter: 'brightness(2) blur(6px) saturate(2)',
-    clipPath: 'inset(0 0 100% 0)',
-  },
-  animate: {
-    opacity: 1,
-    filter: 'brightness(1) blur(0px) saturate(1)',
-    clipPath: 'inset(0 0 0% 0)',
-    transition: {
-      duration: 0.55,
-      ease: [0.16, 1, 0.3, 1],
-      opacity: { duration: 0.3 },
-      filter: { duration: 0.45 },
-      clipPath: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
-    },
-  },
-  exit: {
-    opacity: 0,
-    filter: 'brightness(3) blur(10px) saturate(0)',
-    clipPath: 'inset(100% 0 0% 0)',
-    transition: {
-      duration: 0.35,
-      ease: [0.7, 0, 0.84, 0],
-      opacity: { duration: 0.2 },
-      filter: { duration: 0.25 },
-      clipPath: { duration: 0.3, ease: [0.7, 0, 0.84, 0] },
-    },
-  },
-};
-
+/**
+ * 페이지 전환 래퍼.
+ * 진입 효과 없음 — 각 페이지의 DecodeText 컴포넌트가 decode 애니메이션으로 자체 등장.
+ * 퇴장만 150ms 즉각 사라짐 (페이드가 아닌 빠른 차단).
+ */
 function Inner({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   return (
     <div className="relative w-full min-h-screen">
-      <AnimatePresence mode="popLayout" initial={false}>
+      <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={pathname}
-          variants={variants}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          style={{ transformOrigin: 'top center', willChange: 'opacity, filter, clip-path' }}
           className="w-full"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.15, ease: 'linear' } }}
         >
           {children}
         </motion.div>

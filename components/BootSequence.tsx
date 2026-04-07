@@ -1,6 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useScramble } from 'use-scramble';
 
 const BOOT_LINES = [
   { text: 'TERMINAL BIOS v4.2.0  [2026-03-31]', delay: 0 },
@@ -22,6 +23,39 @@ const BOOT_LINES = [
   { text: 'SYSTEM READY. WELCOME TO THE UNDERGROUND.', delay: 2600, accent: true },
 ];
 
+interface BootLineProps {
+  text: string;
+  accent?: boolean;
+  warn?: boolean;
+}
+
+/** 개별 부트 라인 — use-scramble로 decode 효과 */
+function BootLine({ text, accent, warn }: BootLineProps) {
+  const { ref } = useScramble({
+    text,
+    speed: 0.6,
+    scramble: 6,
+    step: 2,
+    range: [48, 90], // 0-9, A-Z
+    overdrive: false,
+    playOnMount: true,
+  });
+
+  return (
+    <div
+      ref={ref}
+      className="text-xs md:text-sm leading-6"
+      style={{
+        color: accent ? '#d4920a' : warn ? '#c8a030' : '#6a5030',
+        textShadow: accent ? '0 0 8px rgba(212,146,10,0.8)' : 'none',
+        fontWeight: accent ? 700 : 400,
+        fontFamily: 'var(--font-mono)',
+        whiteSpace: 'pre-wrap',
+      }}
+    />
+  );
+}
+
 interface BootSequenceProps {
   onComplete: () => void;
 }
@@ -30,6 +64,8 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
   const [visibleLines, setVisibleLines] = useState<number[]>([]);
   const [powering, setPowering] = useState(true);
   const [done, setDone] = useState(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
     const t0 = setTimeout(() => setPowering(false), 700);
@@ -43,10 +79,10 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
     );
     const completeTimer = setTimeout(() => {
       setDone(true);
-      setTimeout(onComplete, 600);
+      setTimeout(() => onCompleteRef.current(), 600);
     }, 3200);
     return () => { timers.forEach(clearTimeout); clearTimeout(completeTimer); };
-  }, [powering, onComplete]);
+  }, [powering]);
 
   return (
     <motion.div
@@ -61,18 +97,16 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
           visibleLines.includes(i) ? (
             <motion.div
               key={i}
-              initial={{ opacity: 0, x: -6 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.12 }}
-              className="text-xs md:text-sm leading-6"
-              style={{
-                color: line.accent ? '#d4920a' : line.warn ? '#c8a030' : '#6a5030',
-                textShadow: line.accent ? '0 0 8px rgba(212,146,10,0.8)' : 'none',
-                fontWeight: line.accent ? 700 : 400,
-              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.05 }}
             >
-              {line.warn && <span style={{ color: '#ff8c00' }}>⚠ </span>}
-              {line.accent ? `> ${line.text}` : line.text}
+              {line.warn && <span style={{ color: '#ff8c00', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>⚠ </span>}
+              <BootLine
+                text={line.accent ? `> ${line.text}` : line.text}
+                accent={line.accent}
+                warn={line.warn}
+              />
             </motion.div>
           ) : null
         )}
@@ -84,7 +118,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mt-4 text-xs tracking-widest"
-            style={{ color: '#d4920a', textShadow: '0 0 8px rgba(212,146,10,0.6)' }}
+            style={{ color: '#d4920a', textShadow: '0 0 8px rgba(212,146,10,0.6)', fontFamily: 'var(--font-mono)' }}
           >
             [PRESS ANY KEY OR WAIT...] LOADING TERMINAL...
           </motion.div>

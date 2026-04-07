@@ -1,5 +1,6 @@
 'use client';
 import { ReactNode } from 'react';
+import DecodeText from './DecodeText';
 
 interface TerminalPanelProps {
   children: ReactNode;
@@ -28,10 +29,17 @@ export default function TerminalPanel({ children, className = '', title, accent 
     >
       {title && (
         <div
-          className="px-4 py-2 text-xs font-bold tracking-widest uppercase border-b"
-          style={{ borderColor: colors.border, color: colors.title, background: 'rgba(0,0,0,0.35)' }}
+          className="px-4 py-2 border-b flex items-center gap-2"
+          style={{ borderColor: colors.border, background: 'rgba(0,0,0,0.35)' }}
         >
-          <span className="mr-2">▶</span>{title}
+          <span className="text-xs" style={{ color: colors.title }}>▶</span>
+          <DecodeText
+            text={title}
+            className="text-xs font-bold tracking-widest uppercase"
+            style={{ color: colors.title }}
+            speed={0.6}
+            scramble={6}
+          />
         </div>
       )}
       <div className="p-4">{children}</div>

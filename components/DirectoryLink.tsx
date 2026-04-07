@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import DecodeText from './DecodeText';
 
 interface DirectoryLinkProps {
   href: string;
@@ -28,7 +29,7 @@ export default function DirectoryLink({ href, label, description, index, accent 
         }}
       >
         <span className="text-xs pt-0.5 w-6 shrink-0" style={{ color: hovered ? accent : '#4a3818' }}>
-          {String(index).padStart(2, '0')}
+          <DecodeText text={String(index).padStart(2, '0')} speed={0.8} scramble={5} />
         </span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-0.5">
@@ -39,7 +40,7 @@ export default function DirectoryLink({ href, label, description, index, accent 
                 textShadow: hovered ? `0 0 8px ${accent}99` : 'none',
               }}
             >
-              [{label}]
+              [<DecodeText text={label} speed={0.65} scramble={8} style={{ display: 'inline', color: 'inherit', textShadow: 'inherit' }} />]
             </span>
             {hovered && (
               <motion.span initial={{ opacity: 0, x: -4 }} animate={{ opacity: 1, x: 0 }} className="text-xs" style={{ color: accent }}>
@@ -47,7 +48,9 @@ export default function DirectoryLink({ href, label, description, index, accent 
               </motion.span>
             )}
           </div>
-          <span style={{ color: '#8a7040' }}>{description}</span>
+          <span style={{ color: '#8a7040' }}>
+            <DecodeText text={description} speed={0.5} scramble={6} delay={50} style={{ color: 'inherit' }} />
+          </span>
         </div>
         <span className="text-xs shrink-0 pt-0.5" style={{ color: hovered ? accent : '#4a3818' }}>
           {hovered ? '▶ ENTER' : '○'}
