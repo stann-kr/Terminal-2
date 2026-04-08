@@ -4,6 +4,41 @@
 
 ---
 
+### [2026-04-08] 페이지 레이아웃 grow 방향 역전 — 미해결 (트러블슈팅 진행 중)
+
+* **발생 상황:**
+  * 모든 페이지에서 진입 시 레이아웃이 큰 상태(뷰포트 전체 또는 그 이상)로 시작했다가, 콘텐츠가 그려지면서 실제 콘텐츠 크기에 맞게 줄어드는 방향으로 렌더링됨.
+  * 이상적인 동작: 작은 상태에서 시작 → `DecodeText`의 `minHeight` 트랜지션으로 점점 커지는 grow 효과.
+  * 스크롤바가 일시적으로 나타났다가 사라지는 현상 동반.
+
+* **시도한 원인 분석 및 조치 (효과 없음):**
+
+  1. **`min-h-screen` 중첩 제거** (적용됨, 효과 없음)
+     * `PageTransition.Inner`와 `PageLayout` 두 계층에 `min-h-screen`이 중첩 → 초기 100vh 강제 점유가 원인이라 판단.
+     * 두 파일에서 `min-h-screen` 제거. `CRTWrapper`의 `min-h-screen`만 유지.
+     * 결과: 증상 동일.
+
+  2. **`ParticleField` canvas 레이아웃 분리** (적용됨, 효과 없음)
+     * `@react-three/fiber` `Canvas`가 `display: block; width: 1398px; height: 1060px`(뷰포트 크기)로 렌더링되는 것을 inspector에서 확인.
+     * R3F Canvas가 마운트 시 컨테이너를 뷰포트 크기로 측정하여 canvas 크기를 고정, 이것이 `absolute inset-0` 컨테이너 밖으로 영향을 미치는 것이 원인이라 판단.
+     * `ParticleField.tsx`의 컨테이너 div를 `absolute inset-0` → `fixed inset-0`으로 변경.
+     * 결과: 증상 동일.
+
+* **현재 상태 및 미결 사항:**
+  * 레이아웃 구조:
+    ```
+    CRTWrapper (min-h-screen, overflow-hidden)
+    └── PageTransition.Inner (w-full, no min-h-screen)
+        └── motion.div (w-full)
+            └── PageLayout (w-full, no min-h-screen, pt-20 pb-16)
+                ├── ParticleFieldDynamic → ParticleField (fixed inset-0)
+                └── children → DecodeText (minHeight: 0→계산값, transition)
+    ```
+  * 실제 큰 높이를 만드는 요소를 아직 특정하지 못함. 다음 세션에서 브라우저 inspector로 렌더링 중 레이아웃 트리를 추적하여 정확한 원인 요소 확인 필요.
+  * 유력한 추가 후보: `BootSequence` 컴포넌트, `DirectoryLink` 네비게이션 바, `PageTransition`의 `AnimatePresence` 내부 동작 중 이전 페이지 높이 유지 여부.
+
+---
+
 ### [2026-04-08] DecodeText 버그 다발 및 레이아웃 grow 방향 역전 이슈
 
 * **발생 상황:**

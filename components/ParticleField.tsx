@@ -122,7 +122,7 @@ function DimParticles() {
 
 export default function ParticleField() {
   return (
-    <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0 }}>
+    <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
       <Canvas
         camera={{ position: [0, 0, 6], fov: 60 }}
         gl={{ antialias: false, alpha: true }}
