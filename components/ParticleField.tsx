@@ -1,12 +1,35 @@
 'use client';
 import { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, RootState } from '@react-three/fiber';
 import * as THREE from 'three';
+import { EffectComposer, Bloom, Noise, ChromaticAberration, Vignette, Scanline } from '@react-three/postprocessing';
+import { BlendFunction } from 'postprocessing';
 
 const W = 0.30;
 const H = 0.72;
 
 const cx = (n: number) => -2.87 + n * 0.82;
+
+// 원형 파티클 텍스처 생성 함수
+function createCircleTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+  gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
+  gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.3)');
+  gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 64, 64);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  return texture;
+}
 
 function seg(x1: number, y1: number, x2: number, y2: number): THREE.LineCurve3 {
   return new THREE.LineCurve3(
@@ -93,6 +116,7 @@ function LogoLayer({
   density?: number;
 }) {
   const pointsRef = useRef<THREE.Points>(null);
+  const circleMap = useMemo(() => createCircleTexture(), []);
 
   const { curves, particleCounts, positions, progress, speeds } = useMemo(() => {
     const allCurves = buildCurves();
@@ -110,7 +134,8 @@ function LogoLayer({
       for (let p = 0; p < n; p++) {
         const t = zOffset === 0 ? p / n : Math.random(); // 레이어간 변화 위해 뒤/앞은 랜덤 시작
         progress[idx] = t;
-        speeds[idx] = (0.003 + Math.random() * 0.005) * speedMult;
+        // 기존 속도에서 40% 감속 (0.003 -> 0.0018)
+        speeds[idx] = (0.0018 + Math.random() * 0.003) * speedMult;
         const pt = allCurves[ci].getPoint(Math.min(t, 0.9999));
         positions[idx * 3] = pt.x;
         positions[idx * 3 + 1] = pt.y;
@@ -122,7 +147,7 @@ function LogoLayer({
     return { curves: allCurves, particleCounts, positions, progress, speeds };
   }, [zOffset, speedMult, density]);
 
-  useFrame((_, delta) => {
+  useFrame((state: RootState, delta: number) => {
     if (!pointsRef.current) return;
     const dt = Math.min(delta, 0.05);
 
@@ -150,9 +175,10 @@ function LogoLayer({
       </bufferGeometry>
       <pointsMaterial
         color="#d4920a"
-        size={0.028}
+        size={0.05}
+        map={circleMap}
         transparent
-        opacity={opacity}
+        opacity={opacity * 0.8}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
         sizeAttenuation
@@ -164,7 +190,8 @@ function LogoLayer({
 // B안: 위아래 빈 공간을 채우는 희미한 산발 파티클
 function AmbientParticles() {
   const pointsRef = useRef<THREE.Points>(null);
-  const count = 260;
+  const circleMap = useMemo(() => createCircleTexture(), []);
+  const count = 400; // 입자 수 최적화 (900 -> 400)
 
   const { positions, velocities } = useMemo(() => {
     const positions = new Float32Array(count * 3);
@@ -185,8 +212,9 @@ function AmbientParticles() {
       positions[i * 3 + 1] = y;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 3.0 - 1.0;
 
-      velocities[i * 3] = (Math.random() - 0.5) * 0.002;
-      velocities[i * 3 + 1] = Math.random() * 0.0008 + 0.0002; // 완만한 상승
+      velocities[i * 3] = (Math.random() - 0.5) * 0.001;
+      // 상승 속도 약 50% 감속 (기존: 0.0008 + 0.0002)
+      velocities[i * 3 + 1] = Math.random() * 0.0004 + 0.0001;
       velocities[i * 3 + 2] = 0;
     }
 
@@ -221,7 +249,8 @@ function AmbientParticles() {
       </bufferGeometry>
       <pointsMaterial
         color="#c8a030"
-        size={0.018}
+        size={0.035}
+        map={circleMap}
         transparent
         opacity={0.08}
         blending={THREE.AdditiveBlending}
@@ -237,15 +266,42 @@ export default function ParticleField() {
     <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
       <Canvas
         camera={{ position: [0, 0, 6], fov: 60 }}
-        gl={{ antialias: false, alpha: true }}
+        gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+        dpr={[1, 1.5]} // 픽셀 밀도 제한으로 성능 최적화
         style={{ background: 'transparent' }}
       >
-        {/* D안: 멀티 깊이 로고 레이어 — 뒤(작게/느리게) → 메인 → 앞(크게/빠르게) */}
-        <LogoLayer zOffset={-2.0} opacity={0.06} speedMult={0.65} density={5} />
-        <LogoLayer zOffset={0}    opacity={0.18} speedMult={1.0}  density={8} />
-        <LogoLayer zOffset={1.5}  opacity={0.04} speedMult={1.4}  density={4} />
+        {/* D안: 멀티 깊이 로고 레이어 — 밀도 최적화 대신 크기를 키움 */}
+        <LogoLayer zOffset={-2.0} opacity={0.08} speedMult={0.65} density={4} />
+        <LogoLayer zOffset={0}    opacity={0.25} speedMult={1.0}  density={7} />
+        <LogoLayer zOffset={1.5}  opacity={0.06} speedMult={1.4}  density={3} />
+        
         {/* B안: 엠비언트 파티클 — 위아래 빈 공간 채움 */}
         <AmbientParticles />
+
+        {/* 후처리 효과 (Post-processing) */}
+        <EffectComposer disableNormalPass multisampling={0}>
+          <Bloom
+            intensity={2.5} // 성능을 위해 약간 감소
+            luminanceThreshold={0.2}
+            luminanceSmoothing={0.9}
+            mipmapBlur={false} // mipmapBlur 비활성화로 성능 대폭 향상
+          />
+          <ChromaticAberration
+            offset={new THREE.Vector2(0.002, 0.002)}
+            blendFunction={BlendFunction.NORMAL}
+          />
+          <Scanline
+            density={1.5}
+            opacity={0.05}
+            blendFunction={BlendFunction.OVERLAY}
+          />
+          <Vignette
+            eskil={false}
+            offset={0.1}
+            darkness={1.1}
+            blendFunction={BlendFunction.NORMAL}
+          />
+        </EffectComposer>
       </Canvas>
     </div>
   );

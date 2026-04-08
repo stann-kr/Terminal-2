@@ -23,7 +23,8 @@
 - **레이아웃 보존 기술 (Layout Shift 방지):**
   - 텍스트 길이가 시시각각 변동하면 줄바꿈이 빈번히 발생하여 브라우저의 전역 레이아웃 점프가 야기됨. 이를 원천 차단하기 위해 `@chenglou/pretext` 라이브러리의 DOM-less 텍스트 사이즈 측정을 `ResizeObserver` 및 `requestAnimationFrame`과 연계해 구동함.
   - 마운트 직후 `window.getComputedStyle`로 실제 적용되는 폰트 메트릭스를 자동 추론해 컨테이너 높이(`minHeight`)를 사전에 확보함.
-  - 컨테이너에 `min-width: 1ch` 및 `transition: height 0.5s ease-out`을 적용하여 텍스트가 나타날 때 부드럽게 확장되도록 개선.
+  - `animateTextLength`: 타자기 효과 애니메이션 활성화 여부. 빈 문자열부터 길이가 늘어나는 연출로 레이아웃 점프 방지 기능을 보강함.
+  - 레이아웃 안정화: 컨테이너에 `overflow: hidden` 및 `height`, `min-height` 트랜지션을 동시 적용하여 텍스트의 동적 줄바꿈이 박스 크기를 급격하게 확장시키는 현상을 마스킹 처리함.
 
 ### 2.2 페이지 구조 (PageLayout & Transition)
 

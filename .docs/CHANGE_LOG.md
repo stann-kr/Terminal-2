@@ -17,6 +17,10 @@
 * **Lineup 이중 효과 제거:** `containerVariants`에서 `opacity 0→1` fade 제거, 각 `DecodeText`의 decode 효과만 유지.
 * **의존성 추가:** `use-scramble` 패키지 설치 및 Docker 이미지 리빌드 완료.
 
+## [2026-04-09] R3F 배경 개선 (Postprocessing 및 CameraRig)
+* **후처리 효과 추가 (`ParticleField.tsx`):** `@react-three/postprocessing`을 도입하여 `EffectComposer` 기반으로 Bloom, Noise, ChromaticAberration, Scanline, Vignette 효과를 일괄 적용. 디지털 노이즈 및 아날로그 터미널 질감 강화.
+* **패럴랙스 인터랙션 추가 (`ParticleField.tsx`):** `CameraRig` 컴포넌트를 신규 작성하여 마우스/포인터 움직임에 따라 카메라가 자연스럽게 이동(lerp)하는 3D 패럴랙스 효과 구현.
+
 ## [2026-04-09] 폰트 최적화, ParticleField 리디자인, 전환 효과 개선
 
 * **Google Fonts 직접 import 제거 (`crt.css`, `layout.tsx`):** `@import url(...)` 방식 제거, Next.js `Space_Mono` 폰트 최적화 적용. CSS 변수 `--font-mono`에 `var(--font-space-mono)` 참조 추가로 폰트 로딩 일관성 확보.
@@ -36,8 +40,8 @@
 * **TERMINAL 로고 letter-spacing 반응형 (`home/page.tsx`):** `tracking-[0.3em]` 고정 → `tracking-[0.15em] sm:tracking-[0.3em]`으로 모바일 overflow 방지.
 * **BootSequence 진입 방식 변경 (`BootSequence.tsx`):** 부팅 완료 후 자동 진입 및 "PRESS ANY KEY" 텍스트 제거. `[ ENTER TERMINAL ]` 버튼으로 대체, 호버 글로우 효과 적용.
 
-## [2026-04-08] Cipher 애니메이션 전역 적용 및 성능 최적화
-* **전역 일관성 확보:** `Home`, `About`, `Gate`, `Lineup`, `Status`, `Transmit` 등 모든 주요 페이지의 정적/동적 텍스트를 `<DecodeText>`로 전면 전환하여 일관된 터미널 Cipher 미학 수립.
-* **동적 텍스트 최적화:** 카운트다운 숫자가 매초 뒤섞이는 현상을 방지하기 위해 `scrambleOnUpdate` 프롭을 도입하고 적용 완료.
-* **레이아웃 안정성 강화:** `DecodeText` 컴포넌트 마운트 시의 컨테이너 높이 계산 로직을 고도화하고 CSS 트랜지션을 추가하여 레이아웃 점프 및 스크롤 튐 현상을 근본적으로 해결.
-* **불필요한 애니메이션 제거:** 각 컴포넌트에 파편화되어 있던 `Framer Motion` 기반의 페이드 효과를 제거하여 단순하고 명확한 복호화 전환 아키텍처 완성.
+## [2026-04-09] DecodeText 텍스트 길이 애니메이션 도입 및 레이아웃 안정화
+
+* **`animateTextLength` 기능 추가 (`DecodeText.tsx`):** 텍스트를 빈 문자열부터 점진적으로 채워나가는 타자기형 애니메이션 프롭 추가. `use-scramble`의 `overflow` 옵션과 연동하여 페이지 전환 시 시각적 연속성 확보.
+* **레이아웃 점프(Jittering) 방지 (`DecodeText.tsx`):** 컨테이너에 `overflow: hidden` 및 `height`, `min-height` 트랜지션 동시 적용. 텍스트의 동적 줄바꿈이 부모 박스 레이아웃을 급격하게 미는 현상을 마스킹 처리하여 부드러운 확장 연출.
+* **본문 가독성 개선 (`about/page.tsx`):** MANIFESTO 영역의 긴 문단에 `animateTextLength={true}`를 적용하여 텍스트가 쏟아져 나오는 듯한 연출 구현.

@@ -30,6 +30,11 @@ interface DecodeTextProps {
    * false: 마운트 시 1회만 스크램블, 이후 텍스트 변경은 직접 업데이트 — 카운트다운 등 빈번한 업데이트용.
    */
   scrambleOnUpdate?: boolean;
+  /**
+   * 텍스트의 길이를 빈 문자열부터 점진적으로 나타냅니다 (타자기를 치는 듯한 효과).
+   * 텍스트 레이아웃 점프 방지에 매우 효과적입니다.
+   */
+  animateTextLength?: boolean;
 }
 
 /**
@@ -52,6 +57,7 @@ const DecodeText = memo(function DecodeText({
   onComplete,
   playOnMount = true,
   scrambleOnUpdate = true,
+  animateTextLength = false,
 }: DecodeTextProps) {
   // 외부 div: minHeight 측정/적용 전용
   const containerRef = useRef<HTMLDivElement>(null);
@@ -77,6 +83,7 @@ const DecodeText = memo(function DecodeText({
     range: [48, 102], // 0-9, A-Z (Hex 느낌)
     overdrive: false,
     playOnMount: effectivePlayOnMount,
+    overflow: animateTextLength, // 빈 문자열부터 길이가 늘어나는 애니메이션 (타자기 효과)
     onAnimationEnd: () => {
       if (!scrambleOnUpdate) {
         // 초기 애니메이션 완료: scramble ref 해제 → 이후 재트리거 시 draw() 무시
@@ -157,6 +164,7 @@ const DecodeText = memo(function DecodeText({
       }
 
       const { height } = layout(preparedRef.current, width, activeLineHeight);
+      container.style.height = `${height}px`;
       container.style.minHeight = `${height}px`;
     };
 
@@ -199,11 +207,15 @@ const DecodeText = memo(function DecodeText({
   }, []); // 빈 deps: scrambleRef(stable RefObject)와 animationSettledRef(ref)는 안정적
 
   return (
-    // transition: min-height — 내용이 채워지며 점진적으로 높이가 커지는 grow 효과
-    // "시작 작게, 채워지며 커짐" 연출
+    // transition: height, min-height — 내용이 채워지며 점진적으로 높이가 커지는 grow 효과
+    // overflow: hidden — 텍스트 라인이 도중에 wrapping하며 레이아웃을 밀어내는 끊김 현상(jitter)을 마스킹
     <div
       ref={containerRef}
-      style={{ minWidth: "1ch", transition: "min-height 0.25s ease-out" }}
+      style={{
+        overflow: "hidden",
+        minWidth: "1ch",
+        transition: "height 0.25s ease-out, min-height 0.25s ease-out"
+      }}
     >
       <Tag
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

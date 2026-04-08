@@ -93,6 +93,7 @@ export default function AboutPage() {
                       speed={0.45}
                       scramble={6}
                       delay={i * 50}
+                      animateTextLength={true}
                       style={{
                         color: line.startsWith('TERMINAL') ? '#e8d890' : '#8a6840',
                         display: 'block',
