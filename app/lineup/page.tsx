@@ -11,6 +11,7 @@ import type { TerminalEvent } from '@/lib/eventData';
 export default function LineupPage() {
   const [events, setEvents] = useState<TerminalEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [selectedId, setSelectedId] = useState('');
 
   useEffect(() => {
@@ -21,7 +22,7 @@ export default function LineupPage() {
         const upcoming = data.find((e) => e.status === 'UPCOMING');
         setSelectedId(upcoming?.id ?? data[0]?.id ?? '');
       })
-      .catch(console.error)
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -35,6 +36,15 @@ export default function LineupPage() {
       {loading ? (
         <motion.div variants={itemVariants} className="text-xs font-mono text-terminal-muted text-center py-8">
           <LabelText text="▸ LOADING LINEUP DATA..." />
+        </motion.div>
+      ) : error ? (
+        <motion.div variants={itemVariants} className="border border-terminal-accent-hot/25 bg-terminal-bg-panel px-4 py-8 text-center space-y-2">
+          <div className="text-xs font-bold tracking-widest text-terminal-accent-hot font-mono">
+            <LabelText text="⚠ SIGNAL LINK UNSTABLE" />
+          </div>
+          <div className="text-xs text-terminal-muted font-mono">
+            <MetaText text="DATABASE UNREACHABLE — RETRY LATER" />
+          </div>
         </motion.div>
       ) : (
         <>

@@ -17,6 +17,7 @@ const DIRS = [
 
 export default function HomePage() {
   const [upcomingEvent, setUpcomingEvent] = useState<TerminalEvent | null>(null);
+  const [eventError, setEventError] = useState(false);
 
   useEffect(() => {
     fetch('/api/events?status=UPCOMING')
@@ -24,7 +25,7 @@ export default function HomePage() {
       .then((data) => {
         if (data.length > 0) setUpcomingEvent(data[0]);
       })
-      .catch(console.error);
+      .catch(() => setEventError(true));
   }, []);
 
   const eventDate = upcomingEvent
@@ -89,7 +90,18 @@ export default function HomePage() {
               <MetaText text={upcomingEvent ? `${upcomingEvent.subtitle} // ${upcomingEvent.venue}` : '—'} />
             </div>
           </div>
-          {eventDate && <CountdownBlock targetDate={eventDate} />}
+          {eventError ? (
+            <div className="text-center py-4 space-y-1">
+              <div className="text-xs font-bold tracking-widest text-terminal-accent-hot font-mono">
+                <LabelText text="⚠ SIGNAL LINK UNSTABLE" />
+              </div>
+              <div className="text-xs text-terminal-muted font-mono">
+                <MetaText text="DATABASE UNREACHABLE — RETRY LATER" />
+              </div>
+            </div>
+          ) : eventDate ? (
+            <CountdownBlock targetDate={eventDate} />
+          ) : null}
         </motion.div>
 
         {/* Directory */}
