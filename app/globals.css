@@ -2,3 +2,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg-base: 12 9 4;
+    --color-bg-panel: 18 14 8;
+    --color-bg-panel-border: 212 146 10;
+    
+    --color-text-primary: 232 216 144;
+    --color-text-subdued: 106 80 48;
+    --color-text-muted: 58 42 16;
+
+    --color-accent-amber: 212 146 10;
+    --color-accent-cyan: 58 152 128;
+    --color-accent-hot: 200 80 32;
+    --color-accent-gold: 200 160 48;
+    --color-accent-purple: 136 104 168;
+    --color-accent-warn: 255 140 0;
+  }
+}
+
+@layer utilities {
+  .text-shadow-glow-amber {
+    text-shadow: 0 0 16px rgb(var(--color-accent-amber) / 0.4);
+  }
+  .text-shadow-glow-cyan {
+    text-shadow: 0 0 16px rgb(var(--color-accent-cyan) / 0.4);
+  }
+  .text-shadow-glow-hot {
+    text-shadow: 0 0 16px rgb(var(--color-accent-hot) / 0.4);
+  }
+  .text-shadow-glow-gold {
+    text-shadow: 0 0 16px rgb(var(--color-accent-gold) / 0.4);
+  }
+}

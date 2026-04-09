@@ -1,5 +1,5 @@
 'use client';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import DecodeText from './DecodeText';
 
 interface TerminalPanelProps {
@@ -9,34 +9,27 @@ interface TerminalPanelProps {
   accent?: 'green' | 'cyan' | 'hot' | 'amber';
 }
 
-const accentMap = {
-  green: { border: 'rgba(212,146,10,0.28)', title: '#d4920a', glow: 'rgba(212,146,10,0.1)' },
-  cyan:  { border: 'rgba(58,152,128,0.28)', title: '#3a9880', glow: 'rgba(58,152,128,0.1)' },
-  hot:   { border: 'rgba(200,80,32,0.28)',  title: '#c85020', glow: 'rgba(200,80,32,0.1)' },
-  amber: { border: 'rgba(200,160,48,0.28)', title: '#c8a030', glow: 'rgba(200,160,48,0.1)' },
+const accentClassMap = {
+  green: { border: 'border-terminal-accent-amber/40', title: 'text-terminal-accent-amber', glow: 'shadow-[0_0_24px_rgba(212,146,10,0.1),inset_0_0_16px_rgba(0,0,0,0.5)]' },
+  cyan:  { border: 'border-terminal-accent-cyan/40', title: 'text-terminal-accent-cyan', glow: 'shadow-[0_0_24px_rgba(58,152,128,0.1),inset_0_0_16px_rgba(0,0,0,0.5)]' },
+  hot:   { border: 'border-terminal-accent-hot/40',  title: 'text-terminal-accent-hot', glow: 'shadow-[0_0_24px_rgba(200,80,32,0.1),inset_0_0_16px_rgba(0,0,0,0.5)]' },
+  amber: { border: 'border-terminal-accent-gold/40', title: 'text-terminal-accent-gold', glow: 'shadow-[0_0_24px_rgba(200,160,48,0.1),inset_0_0_16px_rgba(0,0,0,0.5)]' },
 };
 
 export default function TerminalPanel({ children, className = '', title, accent = 'green' }: TerminalPanelProps) {
-  const colors = accentMap[accent];
+  const classes = accentClassMap[accent];
   return (
     <div
-      className={`relative ${className}`}
-      style={{
-        border: `1px solid ${colors.border}`,
-        background: 'rgba(18,14,8,0.95)',
-        boxShadow: `0 0 24px ${colors.glow}, inset 0 0 16px rgba(0,0,0,0.5)`,
-      }}
+      className={`relative bg-terminal-bg-panel border ${classes.border} ${classes.glow} ${className}`}
     >
       {title && (
         <div
-          className="px-4 py-2 border-b flex items-center gap-2"
-          style={{ borderColor: colors.border, background: 'rgba(0,0,0,0.35)' }}
+          className={`px-4 py-2 border-b flex items-center gap-2 bg-black/35 ${classes.border}`}
         >
-          <span className="text-xs" style={{ color: colors.title }}>▶</span>
+          <span className={`text-xs ${classes.title}`}>▶</span>
           <DecodeText
             text={title}
-            className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: colors.title }}
+            className={`text-xs font-bold tracking-widest uppercase ${classes.title}`}
             speed={0.6}
             scramble={6}
           />

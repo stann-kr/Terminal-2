@@ -35,7 +35,7 @@ export const viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" suppressHydrationWarning={true}>
-      <body className={`${pacifico.variable} ${spaceMono.variable} bg-[#0c0904] overflow-x-hidden`}>
+      <body className={`${pacifico.variable} ${spaceMono.variable} bg-terminal-bg-base overflow-x-hidden`}>
         <CRTWrapper>
           <ParticleFieldDynamic />
           <PageTransition>

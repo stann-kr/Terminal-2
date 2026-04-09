@@ -44,6 +44,28 @@
 3. **환경 관리 가이드 (Docker):**
    - 로컬 시스템 명령어 제안을 일절 배제함. 모듈 패키지는 `docker compose exec web npm install <패키지>`로 호스트-컨테이너 간 `node_modules` 변이를 제어할 것.
 
-## 4. 알려진 미해결 과제
+## 4. 통합 디자인 시스템 및 테마 관리
 
-- `next.config.ts`의 `output: "export"` 설정에 의한 Next.js 15 App router의 404 정적 생성 빌드 경로 충돌 오류(`Error: <Html> should not be imported outside of pages/_document.`)가 존재. 로컬 개발 서버 및 배포 시 실제 런타임과 관련이 없으나, 프로덕션 CI/CD 및 Cloudflare Pages 연동 환경에서는 주시 요망.
+프로젝트의 시각적 일관성과 유지보수성 확보를 위해 하드코딩된 색상 및 수치를 배제하고 전역 디자인 토큰 시스템으로 전환됨.
+
+### 4.1 Tailwind 테마 확장 (Design Tokens)
+
+- **위치:** `tailwind.config.js`, `app/globals.css`
+- **핵심 테마 변수:**
+  - `terminal-primary`: 시스템 기본 텍스트 색상 (밝은 미색/화이트 계열)
+  - `terminal-accent-*`: 강조색 토큰 (`amber`, `cyan`, `hot`, `gold`)
+  - `terminal-bg-*`: 배경색 토큰 (`panel`, `panel-border`)
+  - `terminal-muted`, `terminal-subdued`: 보조 및 비활성 텍스트 테마
+- **커스텀 유틸리티:**
+  - `.text-shadow-glow-*`: 각 테마 강조색에 대응하는 텍스트 글로우 효과 유틸리티 제공.
+
+### 4.2 컴포넌트 표준화 원칙
+
+- 모든 페이지는 `<PageLayout>`을 최상위 랩퍼로 사용하며, 내부 요소는 `<motion.div variants={itemVariants}>`를 사용하여 스태거 애니메이션을 일관되게 적용함.
+- 공통 UI 요소(`ReturnLink`, `PageHeader`, `TerminalPanel`, `TerminalButton`)를 적극 활용하여 인라인 스타일 및 중복 마크업을 최소화함.
+
+## 5. 알려진 미해결 과제
+
+- **Next.js 15 빌드 경고:** `NODE_ENV` 관련 비표준 값 경고 및 `output: "export"` 환경에서의 정적 생성 경로 이슈.
+- **TypeScript 타입 무결성:** `framer-motion` 및 `@react-three/fiber` 환경에서의 전역 타입 선언 미흡으로 인한 `JSX.IntrinsicElements` 에러. (런타임 영향은 없으나 빌드 시 CI 환경 검증 필요)
+- **모듈 해석 이슈:** Docker 환경의 anonymous volume 특성에 따른 `node_modules` 동기화 지연. 신규 패키지 추가 시 `docker compose exec web npm install` 실행 필수.

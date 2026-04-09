@@ -45,3 +45,12 @@
 * **`animateTextLength` 기능 추가 (`DecodeText.tsx`):** 텍스트를 빈 문자열부터 점진적으로 채워나가는 타자기형 애니메이션 프롭 추가. `use-scramble`의 `overflow` 옵션과 연동하여 페이지 전환 시 시각적 연속성 확보.
 * **레이아웃 점프(Jittering) 방지 (`DecodeText.tsx`):** 컨테이너에 `overflow: hidden` 및 `height`, `min-height` 트랜지션 동시 적용. 텍스트의 동적 줄바꿈이 부모 박스 레이아웃을 급격하게 미는 현상을 마스킹 처리하여 부드러운 확장 연출.
 * **본문 가독성 개선 (`about/page.tsx`):** MANIFESTO 영역의 긴 문단에 `animateTextLength={true}`를 적용하여 텍스트가 쏟아져 나오는 듯한 연출 구현.
+## [2026-04-09] 대규모 리팩토링: 전역 디자인 시스템 통합 및 하드코딩 제거 (최종 완료)
+
+* **Tailwind RGB 디자인 토큰 도입:** 투명도 제어를 위해 `globals.css`를 RGB 공백 포맷(`R G B`)으로 전환하고 `tailwind.config.js` 연동 완료.
+* **디자인 시스템 브릿지 구축:** `crt.css`가 전역 변수를 참조하도록 통일하여 보더 및 글로우 색상 이슈 원천 해결.
+* **GlobeMap Three.js 최적화:** 3D 매테리얼의 하드코딩 헥사코드를 `THEME_COLORS` 상수로 통합 관리.
+* **UI 전역 안정화:** `layout.tsx`, `CRTWrapper.tsx`, `PageTransition.tsx` 등 핵심 레이아웃 기저의 하드코딩된 배경 및 보더 색상을 토큰화.
+* **빌드/린트 시스템 복구:** ESLint v9 다운그레이드로 Next.js 15 호환성 확보 및 `output: "export"` 제거로 빌드 안정화.
+* **UI 버그 수정:** `StatusMetric.tsx` 색상 토큰 오류 수정 및 `globals.css` 내 `text-shadow-glow` 유틸리티 디자인 토큰화.
+

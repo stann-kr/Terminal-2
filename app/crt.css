@@ -1,15 +1,22 @@
+/* ====================================================================
+   crt.css — CRT 효과 전용 애니메이션 & 유틸리티
+   색상 변수는 globals.css의 --color-* 를 브릿지로 참조함.
+   직접 색상 값을 정의하지 말 것 — 모든 색상은 globals.css 에서 관리.
+   ==================================================================== */
+
 :root {
-  --crt-green: #d4920a;
-  --crt-green-dim: #6a4808;
-  --crt-green-glow: rgba(212,146,10,0.14);
-  --crt-cyan: #3a9880;
-  --crt-hot: #c85020;
-  --crt-amber: #c8a030;
-  --crt-bg: #0c0904;
-  --crt-surface: #120e08;
-  --crt-border: rgba(212,146,10,0.22);
-  --crt-text: #e8d890;
-  --crt-dim: #8a7040;
+  /* ── globals.css의 RGB 변수를 브릿지로 래핑 ── */
+  --crt-green:      rgb(var(--color-accent-amber));       /* #d4920a */
+  --crt-green-dim:  rgb(var(--color-text-subdued));       /* #6a5030 */
+  --crt-green-glow: rgb(var(--color-accent-amber) / 0.14);
+  --crt-cyan:       rgb(var(--color-accent-cyan));        /* #3a9880 */
+  --crt-hot:        rgb(var(--color-accent-hot));         /* #c85020 */
+  --crt-amber:      rgb(var(--color-accent-gold));        /* #c8a030 */
+  --crt-bg:         rgb(var(--color-bg-base));            /* #0c0904 */
+  --crt-surface:    rgb(var(--color-bg-panel));           /* #120e08 */
+  --crt-border:     rgb(var(--color-bg-panel-border) / 0.22);
+  --crt-text:       rgb(var(--color-text-primary));       /* #e8d890 */
+  --crt-dim:        rgb(var(--color-text-subdued));       /* #8a7040 */
   --font-mono: var(--font-space-mono), 'Space Mono', monospace;
 }
 
@@ -97,15 +104,15 @@ body {
 .status-pulse { animation: status-pulse 2s ease-in-out infinite; }
 
 .phosphor-text {
-  text-shadow: 0 0 8px rgba(212,146,10,0.7), 0 0 16px rgba(212,146,10,0.2);
+  text-shadow: 0 0 8px rgb(var(--color-accent-amber) / 0.7), 0 0 16px rgb(var(--color-accent-amber) / 0.2);
 }
 
 .phosphor-cyan {
-  text-shadow: 0 0 8px rgba(58,152,128,0.7), 0 0 16px rgba(58,152,128,0.2);
+  text-shadow: 0 0 8px rgb(var(--color-accent-cyan) / 0.7), 0 0 16px rgb(var(--color-accent-cyan) / 0.2);
 }
 
 .phosphor-hot {
-  text-shadow: 0 0 8px rgba(200,80,32,0.7), 0 0 16px rgba(200,80,32,0.2);
+  text-shadow: 0 0 8px rgb(var(--color-accent-hot) / 0.7), 0 0 16px rgb(var(--color-accent-hot) / 0.2);
 }
 
 .terminal-border {
@@ -115,7 +122,7 @@ body {
 
 .hover-glow:hover {
   border-color: var(--crt-green) !important;
-  box-shadow: 0 0 20px var(--crt-green-glow), inset 0 0 8px rgba(212,146,10,0.05) !important;
+  box-shadow: 0 0 20px var(--crt-green-glow), inset 0 0 8px rgb(var(--color-accent-amber) / 0.05) !important;
   color: var(--crt-green) !important;
 }
 

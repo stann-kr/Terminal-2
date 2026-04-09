@@ -279,7 +279,7 @@ export default function ParticleField() {
         <AmbientParticles />
 
         {/* 후처리 효과 (Post-processing) */}
-        <EffectComposer disableNormalPass multisampling={0}>
+        <EffectComposer multisampling={0}>
           <Bloom
             intensity={2.5} // 성능을 위해 약간 감소
             luminanceThreshold={0.2}

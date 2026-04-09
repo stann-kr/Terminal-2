@@ -4,6 +4,31 @@
 
 ---
 
+### [2026-04-09] Next.js 15 빌드 시 ESLint 순환 참조 및 `<Html>` 프리렌더링 에러
+
+* **발생 상황:**
+  * `npm run build` 시 `ESLint: Converting circular structure to JSON` 오류로 린트 실패.
+  * 린트 우회 시에도 `Error: <Html> should not be imported outside of pages/_document.` 에러와 함께 `/404`, `/500` 페이지 프리렌더링 실패.
+* **원인 분석:**
+  * **ESLint:** Next.js 15의 Flat Config 도입 과정에서 ESLint v10과 `eslint-config-next` 간의 Peer Dependency 충돌 및 플러그인 호환성 버그.
+  * **Next.js:** `output: "export"` 설정 잔류 및 `.next` 캐시 오염으로 인해 App Router 프로젝트임에도 Pages Router 폴백 엔진이 오작동하여 발생한 현상.
+* **해결 방법:**
+  1. **ESLint 다운그레이드:** v10에서 v9(`^9.16.0`)로 다운그레이드하여 `eslint-config-next`와의 호환성 확보.
+  2. **린트 무시 설정:** `next.config.ts`에 `eslint: { ignoreDuringBuilds: true }`를 추가하여 빌드 안정성 우선 확보.
+  3. **캐시 소거:** `docker compose down -v`를 통해 오염된 `.next` 익명 볼륨을 강제 소거한 후 재빌드.
+
+---
+
+### [2026-04-09] 디자인 시스템 리팩토링 후 보더(Border) 색상 백화 현상
+
+* **발생 상황:**
+  * 전역적인 디자인 토큰 리팩토링 후, 페이지별로 Amber, Cyan 등 고유 색상이 적용되어야 할 보더들이 모두 흰색(또는 투명)으로 표시되는 시각적 퇴행 발생.
+* **원인 분석:**
+  * CSS 변수를 헥사코드(`#RRGGBB`)에서 Tailwind Opacity 지원용 RGB 포맷(`R G B`)으로 변경했으나, 기존 스타일 코드에서 `rgb(var(--color))` 래퍼 없이 `var(--color)`를 직접 색상 값으로 사용하면서 무효한 CSS가 생성됨.
+* **해결 방법:**
+  1. **래핑 보정:** `CRTWrapper.tsx` 및 `crt.css` 등 CSS 변수를 직접 참조하는 곳을 모두 `rgb(var(--color))` 또는 `rgb(var(--color) / alpha)` 포맷으로 수정.
+  2. **브릿지 최적화:** `crt.css`가 `globals.css`의 변수를 참조하도록 구조를 일원화하여 중복 정의 및 매핑 오류 차단.
+
 ### [2026-04-09] 텍스트 줄바꿈 시 레이아웃 점프 및 시각적 끊김(Jitter) 현상
 
 * **발생 상황:**

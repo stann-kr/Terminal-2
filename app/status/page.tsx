@@ -1,11 +1,12 @@
 'use client';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import TerminalPanel from '@/components/TerminalPanel';
 import StatusMetric from './StatusMetric';
 import GlobeMapDynamic from './GlobeMapDynamic';
-import PageLayout from '@/components/PageLayout';
+import PageLayout, { itemVariants } from '@/components/PageLayout';
 import DecodeText from '@/components/DecodeText';
+import ReturnLink from '@/components/ui/ReturnLink';
+import PageHeader from '@/components/ui/PageHeader';
 
 const RELAYS = [
   { name: 'NEXUS-Ω',   sector: 'GALACTIC_CORE',        lag: 0,    load: 94, status: 'ONLINE' },
@@ -20,53 +21,17 @@ const RELAYS = [
   { name: 'HALO-I',    sector: 'HALO_CLUSTER',           lag: 8800, load: 0,  status: 'DORMANT' },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
-  },
-};
-
-const itemVariants = {
-  hidden: {},
-  visible: {},
-};
-
 export default function StatusPage() {
   return (
     <PageLayout>
-      <motion.div
-        className="w-full max-w-2xl"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.div variants={itemVariants} className="mb-6">
-          <Link href="/home" className="text-xs tracking-widest cursor-pointer inline-block px-3 py-1.5 border transition-colors whitespace-nowrap"
-            style={{ borderColor: 'rgba(212,146,10,0.25)', color: '#6a5030', fontFamily: 'var(--font-mono)' }}>
-            <DecodeText text="◀ RETURN /home" speed={0.8} scramble={4} />
-          </Link>
-        </motion.div>
-
-        <motion.div variants={itemVariants} className="mb-8">
-          <div className="text-xs tracking-widest mb-1" style={{ color: '#3a2a10' }}>
-            <DecodeText text="/terminal/status" speed={0.6} scramble={5} />
-          </div>
-          <DecodeText
-            text="STATUS.SYS"
-            as="h1"
-            speed={0.65}
-            scramble={10}
-            className="text-3xl font-bold"
-            style={{ color: '#c85020', textShadow: '0 0 16px rgba(200,80,32,0.4)', letterSpacing: '0.2em' }}
-          />
-        </motion.div>
+      <ReturnLink variants={itemVariants} />
+      <PageHeader path="/terminal/status" title="STATUS.SYS" accent="hot" variants={itemVariants} />
 
         {/* Metrics */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-          <StatusMetric label="ACTIVE_RELAYS" value="6 / 12" unit="NODES" accent="#d4920a" delay={0.2} />
-          <StatusMetric label="SIGNAL_UPTIME" value="99.97" unit="%" accent="#3a9880" delay={0.3} />
-          <StatusMetric label="CORE_FREQ" value="148.3" unit="THz" accent="#c85020" delay={0.4} />
+          <StatusMetric label="ACTIVE_RELAYS" value="6 / 12" unit="NODES" accent="amber" delay={0.2} />
+          <StatusMetric label="SIGNAL_UPTIME" value="99.97" unit="%" accent="cyan" delay={0.3} />
+          <StatusMetric label="CORE_FREQ" value="148.3" unit="THz" accent="hot" delay={0.4} />
         </motion.div>
 
         {/* Node Map */}
@@ -79,70 +44,71 @@ export default function StatusPage() {
         {/* Relay Telemetry */}
         <motion.div variants={itemVariants}>
           <TerminalPanel title="RELAY_TELEMETRY.log" accent="amber">
-            <div className="space-y-3">
+            <div className="space-y-4">
               {RELAYS.map((s, i) => {
-                const statusColor =
-                  s.status === 'ONLINE'  ? '#d4920a' :
-                  s.status === 'STANDBY' ? '#c8a030' : '#3a2a10';
+                const statusColorClass =
+                  s.status === 'ONLINE'  ? 'text-terminal-accent-amber' :
+                  s.status === 'STANDBY' ? 'text-terminal-accent-gold' : 'text-terminal-muted';
+                
+                const loadBarColor = s.load > 70 ? 'bg-terminal-accent-gold' : 'bg-terminal-accent-amber';
+
                 return (
-                  <div
-                    key={s.name}
-                  >
+                  <div key={s.name} className="group">
                     {/* Mobile */}
-                    <div className="md:hidden space-y-1.5" style={{ fontFamily: 'var(--font-mono)' }}>
+                    <div className="md:hidden space-y-1.5 font-mono">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold" style={{ color: '#e8d890' }}>
+                        <span className="text-xs font-bold text-terminal-primary">
                           <DecodeText text={s.name} speed={0.6} scramble={4} delay={i * 20} />
                         </span>
-                        <span className="text-xs font-bold tracking-wider" style={{ color: statusColor }}>
+                        <span className={`text-xs font-bold tracking-wider ${statusColorClass}`}>
                           <span className="status-pulse mr-1">●</span>
-                          <DecodeText text={s.status} speed={0.6} scramble={4} style={{ display: 'inline' }} delay={i * 20} />
+                          <DecodeText text={s.status} speed={0.6} scramble={4} className="inline" delay={i * 20} />
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                        <span style={{ color: '#6a5030' }}>
+                        <span className="text-terminal-subdued">
                           <DecodeText text={s.sector} speed={0.5} scramble={5} delay={i * 20} />
                         </span>
-                        <span style={{ color: '#3a9880' }}>
+                        <span className="text-terminal-accent-cyan">
                           <DecodeText text={s.lag === 0 ? '—' : `${s.lag} ly`} speed={0.5} scramble={5} delay={i * 20} />
                         </span>
-                        <span style={{ color: '#6a5030' }}>
+                        <span className="text-terminal-subdued">
                           <DecodeText text={`LOAD: ${s.load}%`} speed={0.5} scramble={5} delay={i * 20} />
                         </span>
                       </div>
                       {s.load > 0 && (
-                        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(212,146,10,0.1)' }}>
-                          <div className="h-full rounded-full transition-all" style={{ width: `${s.load}%`, background: s.load > 70 ? '#c8a030' : '#d4920a' }} />
+                        <div className="h-1.5 rounded-full overflow-hidden bg-terminal-accent-amber/10">
+                          <div className={`h-full rounded-full transition-all ${loadBarColor}`} style={{ width: `${s.load}%` }} />
                         </div>
                       )}
                     </div>
 
                     {/* Desktop */}
-                    <div className="hidden md:grid grid-cols-12 gap-2 items-center text-xs" style={{ fontFamily: 'var(--font-mono)' }}>
-                      <span className="col-span-2 font-bold" style={{ color: '#e8d890' }}>
+                    <div className="hidden md:grid grid-cols-12 gap-2 items-center text-xs font-mono">
+                      <span className="col-span-2 font-bold text-terminal-primary">
                         <DecodeText text={s.name} speed={0.6} scramble={4} delay={i * 20} />
                       </span>
-                      <span className="col-span-3 truncate" style={{ color: '#6a5030' }}>
+                      <span className="col-span-3 truncate text-terminal-subdued">
                         <DecodeText text={s.sector} speed={0.5} scramble={5} delay={i * 20} />
                       </span>
-                      <span className="col-span-2" style={{ color: '#3a9880' }}>
+                      <span className="col-span-2 text-terminal-accent-cyan">
                         <DecodeText text={s.lag === 0 ? 'LOCAL' : `${s.lag} ly`} speed={0.5} scramble={5} delay={i * 20} />
                       </span>
                       <div className="col-span-2">
                         {s.load > 0 ? (
                           <>
-                            <div className="h-1.5 rounded-full overflow-hidden mb-1" style={{ background: 'rgba(212,146,10,0.1)' }}>
-                              <div className="h-full rounded-full transition-all" style={{ width: `${s.load}%`, background: s.load > 70 ? '#c8a030' : '#d4920a' }} />
+                            <div className="h-1.5 rounded-full overflow-hidden mb-1 bg-terminal-accent-amber/10">
+                              <div className={`h-full rounded-full transition-all ${loadBarColor}`} style={{ width: `${s.load}%` }} />
                             </div>
-                            <span style={{ color: '#6a5030' }}>
+                            <span className="text-terminal-subdued">
                               <DecodeText text={`${s.load}%`} speed={0.5} scramble={4} delay={i * 20} />
                             </span>
                           </>
                         ) : (
-                          <span style={{ color: '#2a1a08' }}>—</span>
+                          <span className="text-terminal-bg-panel">—</span>
                         )}
                       </div>
-                      <span className="col-span-3 font-bold tracking-wider flex items-center gap-1" style={{ color: statusColor }}>
+                      <span className={`col-span-3 font-bold tracking-wider flex items-center gap-1 ${statusColorClass}`}>
                         <span className="status-pulse flex-shrink-0">●</span>
                         <DecodeText text={s.status} speed={0.6} scramble={4} delay={i * 20} />
                       </span>
@@ -153,7 +119,6 @@ export default function StatusPage() {
             </div>
           </TerminalPanel>
         </motion.div>
-      </motion.div>
     </PageLayout>
   );
 }

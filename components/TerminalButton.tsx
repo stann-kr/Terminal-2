@@ -11,49 +11,31 @@ interface TerminalButtonProps {
   type?: 'button' | 'submit';
 }
 
-const variants = {
+const variantClassMap = {
   primary: {
-    color: '#d4920a',
-    border: 'rgba(212,146,10,0.5)',
-    bg: 'rgba(212,146,10,0.05)',
-    hover: 'rgba(212,146,10,0.12)',
-    glow: 'rgba(212,146,10,0.18)',
+    base: 'text-terminal-accent-amber border-terminal-accent-amber/50 bg-terminal-accent-amber/5 shadow-[0_0_12px_rgba(212,146,10,0.18)]',
+    hover: 'hover:bg-terminal-accent-amber/10',
   },
   ghost: {
-    color: '#6a5030',
-    border: 'rgba(212,146,10,0.15)',
-    bg: 'transparent',
-    hover: 'rgba(212,146,10,0.05)',
-    glow: 'transparent',
+    base: 'text-terminal-subdued border-terminal-accent-amber/15 bg-transparent',
+    hover: 'hover:bg-terminal-accent-amber/5',
   },
   danger: {
-    color: '#c85020',
-    border: 'rgba(200,80,32,0.5)',
-    bg: 'rgba(200,80,32,0.05)',
-    hover: 'rgba(200,80,32,0.12)',
-    glow: 'rgba(200,80,32,0.18)',
+    base: 'text-terminal-accent-hot border-terminal-accent-hot/50 bg-terminal-accent-hot/5 shadow-[0_0_12px_rgba(200,80,32,0.18)]',
+    hover: 'hover:bg-terminal-accent-hot/10',
   },
 };
 
 export default function TerminalButton({
   children, onClick, variant = 'primary', className = '', disabled, type = 'button',
 }: TerminalButtonProps) {
-  const v = variants[variant];
+  const v = variantClassMap[variant];
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`whitespace-nowrap cursor-pointer font-mono text-xs tracking-widest uppercase px-5 py-2.5 transition-all duration-200 flex items-center justify-center ${className}`}
-      style={{
-        color: v.color,
-        border: `1px solid ${v.border}`,
-        background: v.bg,
-        boxShadow: `0 0 12px ${v.glow}`,
-        opacity: disabled ? 0.4 : 1,
-      }}
-      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = v.hover; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = v.bg; }}
+      className={`whitespace-nowrap cursor-pointer font-mono text-xs tracking-widest uppercase px-5 py-2.5 transition-all duration-200 flex items-center justify-center border ${v.base} ${v.hover} disabled:opacity-40 ${className}`}
     >
       {typeof children === 'string' ? (
         <DecodeText text={children} speed={0.7} scramble={5} />

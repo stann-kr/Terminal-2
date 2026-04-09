@@ -1,9 +1,10 @@
 'use client';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import TerminalPanel from '@/components/TerminalPanel';
-import PageLayout from '@/components/PageLayout';
+import PageLayout, { itemVariants } from '@/components/PageLayout';
 import DecodeText from '@/components/DecodeText';
+import ReturnLink from '@/components/ui/ReturnLink';
+import PageHeader from '@/components/ui/PageHeader';
 
 const MANIFESTO = [
   'TERMINAL is not a club.',
@@ -32,49 +33,11 @@ const SYSTEM_INFO = [
   { key: 'STATUS',         val: 'OPERATIONAL' },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
-  },
-};
-
-const itemVariants = {
-  hidden: {},
-  visible: {},
-};
-
 export default function AboutPage() {
   return (
     <PageLayout>
-      <motion.div
-        className="w-full max-w-2xl"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* Back */}
-        <motion.div variants={itemVariants} className="mb-6">
-          <Link href="/home" className="text-xs tracking-widest cursor-pointer hover-glow inline-block px-3 py-1.5 border transition-colors whitespace-nowrap"
-            style={{ borderColor: 'rgba(212,146,10,0.25)', color: '#6a5030', fontFamily: 'var(--font-mono)' }}>
-            <DecodeText text="◀ RETURN /home" speed={0.8} scramble={4} />
-          </Link>
-        </motion.div>
-
-        {/* Title */}
-        <motion.div variants={itemVariants} className="mb-8">
-          <div className="text-xs tracking-widest mb-1" style={{ color: '#3a2a10' }}>
-            <DecodeText text="/terminal/about" speed={0.6} scramble={5} />
-          </div>
-          <DecodeText
-            text="ABOUT.SYS"
-            as="h1"
-            speed={0.65}
-            scramble={10}
-            className="text-3xl font-bold"
-            style={{ color: '#d4920a', textShadow: '0 0 16px rgba(212,146,10,0.4)', letterSpacing: '0.2em' }}
-          />
-        </motion.div>
+      <ReturnLink variants={itemVariants} />
+      <PageHeader path="/terminal/about" title="ABOUT.SYS" accent="amber" variants={itemVariants} />
 
         {/* Manifesto */}
         <motion.div variants={itemVariants} className="mb-6">
@@ -94,10 +57,7 @@ export default function AboutPage() {
                       scramble={6}
                       delay={i * 50}
                       animateTextLength={true}
-                      style={{
-                        color: line.startsWith('TERMINAL') ? '#e8d890' : '#8a6840',
-                        display: 'block',
-                      }}
+                      className={`block ${line.startsWith('TERMINAL') ? 'text-terminal-primary' : 'text-terminal-subdued'}`}
                     />
                   )}
                 </div>
@@ -113,26 +73,24 @@ export default function AboutPage() {
               {SYSTEM_INFO.map((item, i) => (
                 <div
                   key={item.key}
-                  className="flex items-start gap-2 sm:gap-3 text-xs"
-                  style={{ fontFamily: 'var(--font-mono)' }}
+                  className="flex items-start gap-2 sm:gap-3 text-xs font-mono"
                 >
-                  <span className="w-24 sm:w-36 shrink-0" style={{ color: '#6a5030' }}>
+                  <span className="w-24 sm:w-36 shrink-0 text-terminal-subdued">
                     <DecodeText text={item.key} speed={0.6} scramble={4} delay={i * 30} />
                   </span>
-                  <span style={{ color: '#3a2a10' }}>:</span>
+                  <span className="text-terminal-muted">:</span>
                   <DecodeText
                     text={item.val}
                     speed={0.5}
                     scramble={6}
                     delay={i * 30}
-                    style={{ color: item.key === 'STATUS' ? '#d4920a' : '#3a9880' }}
+                    className={item.key === 'STATUS' ? 'text-terminal-accent-amber' : 'text-terminal-accent-cyan'}
                   />
                 </div>
               ))}
             </div>
           </TerminalPanel>
         </motion.div>
-      </motion.div>
     </PageLayout>
   );
 }

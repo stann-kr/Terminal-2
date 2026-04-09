@@ -35,7 +35,7 @@ function Inner({ children }: { children: ReactNode }) {
 
 export default function PageTransition({ children }: { children: ReactNode }) {
   return (
-    <Suspense fallback={<div className="bg-[#0c0904]" />}>
+    <Suspense fallback={<div className="bg-terminal-bg-base" />}>
       <Inner>{children}</Inner>
     </Suspense>
   );

@@ -4,8 +4,8 @@ import dynamic from 'next/dynamic';
 const GlobeMap = dynamic(() => import('./GlobeMap'), {
   ssr: false,
   loading: () => (
-    <div style={{ width: '100%', height: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <span style={{ color: '#4a2818', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>
+    <div className="w-full h-[320px] flex items-center justify-center font-mono">
+      <span className="text-xs text-terminal-muted animate-pulse">
         LOADING NODE MAP...
       </span>
     </div>

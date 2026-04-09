@@ -6,10 +6,7 @@ export default function CRTWrapper({ children }: { children: React.ReactNode }) 
   const ENABLE_VIGNETTE = true; // 비네팅 효과 전역 활성화
 
   return (
-    <div
-      className="relative w-full min-h-screen overflow-hidden"
-      style={{ background: '#0c0904' }}
-    >
+    <div className="relative w-full min-h-screen overflow-hidden bg-terminal-bg-base">
       {/* 전역 노이즈 (Global Noise Overlay) */}
       <div
         className="pointer-events-none fixed inset-0 z-50 mix-blend-overlay opacity-30"
@@ -38,11 +35,7 @@ export default function CRTWrapper({ children }: { children: React.ReactNode }) 
 
       {/* Moving scanline beam */}
       <motion.div
-        className="pointer-events-none fixed left-0 right-0 z-40"
-        style={{
-          height: '15vh',
-          background: 'linear-gradient(to bottom, transparent, rgba(212,146,10,0.06), transparent)',
-        }}
+        className="pointer-events-none fixed left-0 right-0 z-40 h-[15vh] bg-gradient-to-b from-transparent via-terminal-accent-amber/[0.06] to-transparent"
         animate={{
           top: ['-20%', '120%'],
         }}
@@ -65,10 +58,8 @@ export default function CRTWrapper({ children }: { children: React.ReactNode }) 
 
       {/* Phosphor glow */}
       <div
-        className="pointer-events-none fixed inset-0 z-20"
-        style={{
-          background: 'radial-gradient(ellipse at center, rgba(212,146,10,0.03) 0%, transparent 70%)',
-        }}
+        className="pointer-events-none fixed inset-0 z-20 opacity-[0.03]"
+        style={{ background: 'radial-gradient(ellipse at center, rgb(var(--color-accent-amber)) 0%, transparent 70%)' }}
       />
 
       <div className="relative z-10">{children}</div>

@@ -4,6 +4,18 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
+// 디자인 토큰 기반 테마 색상 정의 (Three.js 렌더링용)
+const THEME_COLORS = {
+  AMBER: '#d4920a',     // terminal-accent-amber
+  AMBER_BRIGHT: '#ffcc44',
+  CYAN: '#3a9880',      // terminal-accent-cyan
+  HOT: '#c85020',       // terminal-accent-hot
+  GOLD: '#c8a030',      // terminal-accent-gold
+  MUTED: '#4a3820',     // terminal-muted
+  NEBULA: '#3a1860',    // Nebula deep purple
+  DUST: '#c87820',      // Space dust
+};
+
 const NODES = [
   { x: 0,     y: 0,     z: 0,     label: 'NEXUS-Ω',  active: true,  desc: 'GALACTIC_CORE' },
   { x: 1.6,   y: 0.05,  z: 0.4,   label: 'ORION-I',  active: true,  desc: 'ORION_ARM·INNER' },
@@ -110,7 +122,7 @@ function GalaxyDisk() {
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[dustPositions, 3]} />
         </bufferGeometry>
-        <pointsMaterial size={0.04} color="#c87820" transparent opacity={0.06} sizeAttenuation />
+        <pointsMaterial size={0.04} color={THEME_COLORS.DUST} transparent opacity={0.06} sizeAttenuation />
       </points>
     </group>
   );
@@ -140,7 +152,7 @@ function NodeLayer() {
     <group ref={groupRef}>
       {arcLines.map((pts, i) => {
         const geo = new THREE.BufferGeometry().setFromPoints(pts);
-        const mat = new THREE.LineBasicMaterial({ color: '#c85020', transparent: true, opacity: 0.22, linewidth: 1 });
+        const mat = new THREE.LineBasicMaterial({ color: THEME_COLORS.HOT, transparent: true, opacity: 0.22, linewidth: 1 });
         return (
           <primitive key={i} object={new THREE.Line(geo, mat)} />
         );
@@ -151,7 +163,7 @@ function NodeLayer() {
           <mesh>
             <sphereGeometry args={[i === 0 ? 0.055 : 0.032, 10, 10]} />
             <meshBasicMaterial
-              color={i === 0 ? '#ffcc44' : node.active ? '#d4920a' : '#4a3820'}
+              color={i === 0 ? THEME_COLORS.AMBER_BRIGHT : node.active ? THEME_COLORS.AMBER : THEME_COLORS.MUTED}
               transparent
               opacity={node.active ? 1 : 0.45}
             />
@@ -180,7 +192,7 @@ function PulseRing({ index }: { index: number }) {
     <mesh ref={ringRef}>
       <ringGeometry args={[0.04, 0.065, 16]} />
       <meshBasicMaterial
-        color={index === 0 ? '#ffcc44' : '#d4920a'}
+        color={index === 0 ? THEME_COLORS.AMBER_BRIGHT : THEME_COLORS.AMBER}
         transparent
         opacity={0.5}
         side={THREE.DoubleSide}
@@ -246,7 +258,7 @@ function NebulaCloud() {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial size={0.12} color="#3a1860" transparent opacity={0.08} sizeAttenuation />
+      <pointsMaterial size={0.12} color={THEME_COLORS.NEBULA} transparent opacity={0.08} sizeAttenuation />
     </points>
   );
 }
@@ -275,15 +287,7 @@ export default function GlobeMap() {
         />
       </Canvas>
       <div
-        className="text-center text-xs"
-        style={{
-          color: '#4a2818',
-          fontFamily: 'var(--font-mono)',
-          marginTop: '-26px',
-          position: 'relative',
-          zIndex: 1,
-          letterSpacing: '0.15em',
-        }}
+        className="text-center text-xs text-terminal-muted relative z-[1] mt-[-26px] tracking-[0.15em] font-mono"
       >
         {activeCount} ACTIVE · {NODES.length} TOTAL NODES · DRAG TO ROTATE
       </div>

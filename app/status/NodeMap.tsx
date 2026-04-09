@@ -21,37 +21,37 @@ export default function NodeMap() {
   }, []);
 
   return (
-    <div className="relative w-full" style={{ height: '180px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,32,121,0.15)' }}>
+    <div className="relative w-full h-[180px] bg-terminal-bg-base/30 border border-terminal-accent-hot/15 overflow-hidden font-mono">
       <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 70" preserveAspectRatio="xMidYMid meet">
         {/* Grid lines */}
         {Array.from({ length: 7 }).map((_, i) => (
-          <line key={`h${i}`} x1="0" y1={i * 10 + 5} x2="100" y2={i * 10 + 5} stroke="rgba(200,80,32,0.06)" strokeWidth="0.3" />
+          <line key={`h${i}`} x1="0" y1={i * 10 + 5} x2="100" y2={i * 10 + 5} className="stroke-terminal-accent-hot/10" strokeWidth="0.3" />
         ))}
         {Array.from({ length: 11 }).map((_, i) => (
-          <line key={`v${i}`} x1={i * 10} y1="0" x2={i * 10} y2="70" stroke="rgba(200,80,32,0.06)" strokeWidth="0.3" />
+          <line key={`v${i}`} x1={i * 10} y1="0" x2={i * 10} y2="70" className="stroke-terminal-accent-hot/10" strokeWidth="0.3" />
         ))}
         {/* Connection lines */}
         {NODES.map((n, i) =>
           i < NODES.length - 1 ? (
             <line key={`l${i}`} x1={n.x} y1={n.y} x2={NODES[i + 1].x} y2={NODES[i + 1].y}
-              stroke="rgba(200,80,32,0.2)" strokeWidth="0.3" strokeDasharray="1 2" />
+              className="stroke-terminal-accent-hot/30" strokeWidth="0.3" strokeDasharray="1 2" />
           ) : null
         )}
         {/* Nodes */}
         {NODES.map((n, i) => (
           <g key={n.label}>
             {i === pulseIdx && (
-              <circle cx={n.x} cy={n.y} r="3" fill="none" stroke="#c85020" strokeWidth="0.4" opacity="0.6">
+              <circle cx={n.x} cy={n.y} r="3" fill="none" className="stroke-terminal-accent-hot/60" strokeWidth="0.4">
                 <animate attributeName="r" values="1;6" dur="0.8s" repeatCount="indefinite" />
                 <animate attributeName="opacity" values="0.8;0" dur="0.8s" repeatCount="indefinite" />
               </circle>
             )}
-            <circle cx={n.x} cy={n.y} r="1.5" fill={i === pulseIdx ? '#c85020' : '#c8502066'} />
-            <text x={n.x + 2} y={n.y - 2} fontSize="2.5" fill="#c8502099" fontFamily="monospace">{n.label}</text>
+            <circle cx={n.x} cy={n.y} r="1.5" className={i === pulseIdx ? 'fill-terminal-accent-hot' : 'fill-terminal-accent-hot/40'} />
+            <text x={n.x + 2} y={n.y - 2} fontSize="2.5" className="fill-terminal-accent-hot/60 font-mono">{n.label}</text>
           </g>
         ))}
       </svg>
-      <div className="absolute bottom-2 right-3 text-xs" style={{ color: '#4a2818', fontFamily: 'var(--font-mono)' }}>
+      <div className="absolute bottom-2 right-3 text-xs text-terminal-muted">
         LIVE · {NODES.length} ACTIVE NODES
       </div>
     </div>

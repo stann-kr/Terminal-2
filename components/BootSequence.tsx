@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useScramble } from 'use-scramble';
+import TerminalButton from './TerminalButton';
 
 const BOOT_LINES = [
   { text: 'TERMINAL BIOS v4.2.0  [2026-03-31]', delay: 0 },
@@ -41,17 +42,14 @@ function BootLine({ text, accent, warn }: BootLineProps) {
     playOnMount: true,
   });
 
+  let colorClass = 'text-terminal-subdued font-normal';
+  if (accent) colorClass = 'text-terminal-accent-amber drop-shadow-[0_0_8px_rgba(212,146,10,0.8)] font-bold';
+  else if (warn) colorClass = 'text-terminal-accent-gold font-normal';
+
   return (
     <div
       ref={ref}
-      className="text-xs md:text-sm leading-6"
-      style={{
-        color: accent ? '#d4920a' : warn ? '#c8a030' : '#6a5030',
-        textShadow: accent ? '0 0 8px rgba(212,146,10,0.8)' : 'none',
-        fontWeight: accent ? 700 : 400,
-        fontFamily: 'var(--font-mono)',
-        whiteSpace: 'pre-wrap',
-      }}
+      className={`text-xs md:text-sm leading-6 font-mono whitespace-pre-wrap ${colorClass}`}
     />
   );
 }
@@ -85,8 +83,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col justify-center items-start px-8 md:px-16 overflow-hidden"
-      style={{ background: '#000', fontFamily: 'var(--font-mono)' }}
+      className="fixed inset-0 z-50 flex flex-col justify-center items-start px-8 md:px-16 overflow-hidden bg-black font-mono"
       animate={powering ? { scaleY: 0.001, filter: 'brightness(0)' } : { scaleY: 1, filter: 'brightness(1)' }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
       exit={{ opacity: 0, filter: 'brightness(3) blur(8px)', transition: { duration: 0.5 } }}
@@ -100,7 +97,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.05 }}
             >
-              {line.warn && <span style={{ color: '#ff8c00', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>⚠ </span>}
+              {line.warn && <span className="text-terminal-accent-warn text-xs font-mono">⚠ </span>}
               <BootLine
                 text={line.accent ? `> ${line.text}` : line.text}
                 accent={line.accent}
@@ -110,7 +107,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
           ) : null
         )}
         {!powering && visibleLines.length > 0 && !done && (
-          <span className="cursor-blink text-xs" style={{ color: '#d4920a' }}>█</span>
+          <span className="cursor-blink text-xs text-terminal-accent-amber">█</span>
         )}
         {done && (
           <motion.div
@@ -118,30 +115,13 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
             animate={{ opacity: 1 }}
             className="mt-6"
           >
-            <button
+            <TerminalButton
               onClick={() => onCompleteRef.current()}
-              className="px-6 py-2.5 text-xs tracking-widest border transition-all duration-200 cursor-pointer"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                color: '#d4920a',
-                borderColor: 'rgba(212,146,10,0.5)',
-                background: 'transparent',
-                textShadow: '0 0 8px rgba(212,146,10,0.6)',
-                boxShadow: '0 0 12px rgba(212,146,10,0.1)',
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(212,146,10,0.08)';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(212,146,10,0.9)';
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(212,146,10,0.25)';
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(212,146,10,0.5)';
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 12px rgba(212,146,10,0.1)';
-              }}
+              variant="primary"
+              className="px-6"
             >
               [ ENTER TERMINAL ]
-            </button>
+            </TerminalButton>
           </motion.div>
         )}
       </div>

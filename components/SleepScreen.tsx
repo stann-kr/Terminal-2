@@ -46,8 +46,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center cursor-pointer select-none"
-      style={{ background: '#000', fontFamily: 'var(--font-mono)' }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center cursor-pointer select-none bg-black font-mono"
       onClick={wake}
       animate={waking ? { opacity: 0, filter: 'brightness(3) blur(4px)' } : { opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -60,8 +59,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
 
       <div className="relative z-10 text-center px-8 max-w-xl">
         {/* Clock */}
-        <div className="text-5xl md:text-7xl font-bold mb-8 phosphor-text" suppressHydrationWarning={true}
-          style={{ color: '#d4920a', letterSpacing: '0.1em', textShadow: '0 0 20px rgba(212,146,10,0.5)' }}>
+        <div className="text-5xl md:text-7xl font-bold mb-8 phosphor-text tracking-[0.1em] text-terminal-accent-amber drop-shadow-[0_0_20px_rgba(212,146,10,0.5)]" suppressHydrationWarning={true}>
           {time}
         </div>
 
@@ -69,8 +67,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
           {SCREENSAVER_LINES.map((line, i) => (
             <motion.div
               key={i}
-              className="text-xs tracking-wider"
-              style={{ color: '#2a4a2a' }}
+              className="text-xs tracking-wider text-terminal-muted/30"
               animate={{ opacity: [0.4, 0.9, 0.4] }}
               transition={{ duration: 3, delay: i * 0.4, repeat: Infinity }}
             >
@@ -81,15 +78,14 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
 
         {!waking ? (
           <motion.div
-            className="text-xs tracking-widest"
+            className="text-xs tracking-widest text-terminal-accent-amber"
             animate={{ opacity: [0, 1, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            style={{ color: '#d4920a' }}
           >
             ── TOUCH TO WAKE ──
           </motion.div>
         ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs tracking-widest" style={{ color: '#d4920a', textShadow: '0 0 8px rgba(212,146,10,0.6)' }}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs tracking-widest text-terminal-accent-amber drop-shadow-[0_0_8px_rgba(212,146,10,0.6)]">
             RESUMING SESSION...
           </motion.div>
         )}

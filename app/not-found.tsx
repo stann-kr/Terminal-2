@@ -1,9 +1,26 @@
+'use client';
+import PageLayout from '@/components/PageLayout';
+import PageHeader from '@/components/ui/PageHeader';
+import ReturnLink from '@/components/ui/ReturnLink';
+import DecodeText from '@/components/DecodeText';
+
 export default function NotFound() {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen text-center px-4">
-        <h1 className="text-5xl md:text-5xl font-semibold text-gray-100">404</h1>
-        <h1 className="text-2xl md:text-3xl font-semibold mt-6">This page has not been generated</h1>
-        <p className="mt-4 text-xl md:text-2xl text-gray-500">Tell me what you would like on this page</p>
+  return (
+    <PageLayout>
+      <ReturnLink />
+      <PageHeader path="/404" title="ERROR: 404" accent="hot" />
+      <div className="mt-8 text-center space-y-4">
+        <DecodeText 
+          text="REQUESTED SIGNAL NOT FOUND IN LOCAL NODE"
+          className="text-terminal-accent-hot text-shadow-glow-hot text-sm font-mono block"
+          speed={0.6}
+        />
+        <DecodeText 
+          text="The coordinate or resource you are looking for has been moved or purged from the terminal registry."
+          className="text-terminal-muted text-xs block max-w-md mx-auto"
+          speed={0.4}
+        />
       </div>
-    );
-  }
+    </PageLayout>
+  );
+}

@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260405.1",
+    "@eslint/eslintrc": "^3.3.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -26,6 +27,8 @@
     "autoprefixer": "^10.4.21",
     "cross-env": "^7.0.3",
     "drizzle-kit": "^0.31.10",
+    "eslint": "^9.16.0",
+    "eslint-config-next": "^16.2.3",
     "postcss": "^8.5.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"

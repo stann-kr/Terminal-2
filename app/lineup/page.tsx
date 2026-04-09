@@ -1,21 +1,12 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import PageLayout from '@/components/PageLayout';
+import PageLayout, { itemVariants } from '@/components/PageLayout';
 import DecodeText from '@/components/DecodeText';
+import ReturnLink from '@/components/ui/ReturnLink';
+import PageHeader from '@/components/ui/PageHeader';
 import ArtistRow from './ArtistRow';
 import { EVENTS, UPCOMING_EVENT } from '@/lib/eventData';
-
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
-};
-
-const itemVariants = {
-  hidden: {},
-  visible: {},
-};
 
 export default function LineupPage() {
   const [selectedId, setSelectedId] = useState(UPCOMING_EVENT.id);
@@ -23,71 +14,52 @@ export default function LineupPage() {
 
   return (
     <PageLayout>
-      <motion.div
-        className="w-full max-w-2xl"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.div variants={itemVariants} className="mb-6">
-          <Link href="/home" className="text-xs tracking-widest cursor-pointer inline-block px-3 py-1.5 border transition-colors whitespace-nowrap"
-            style={{ borderColor: 'rgba(212,146,10,0.25)', color: '#6a5030', fontFamily: 'var(--font-mono)' }}>
-            <DecodeText text="◀ RETURN /home" speed={0.8} scramble={4} />
-          </Link>
-        </motion.div>
-
-        <motion.div variants={itemVariants} className="mb-6">
-          <div className="text-xs tracking-widest mb-1" style={{ color: '#3a2a10' }}>
-            <DecodeText text="/terminal/lineup" speed={0.6} scramble={5} />
-          </div>
-          <DecodeText
-            text="LINEUP.DAT"
-            as="h1"
-            speed={0.65}
-            scramble={10}
-            className="text-3xl font-bold tracking-[0.2em]"
-            style={{ color: '#c8a030', textShadow: '0 0 16px rgba(200,160,48,0.4)', fontFamily: 'var(--font-mono)' }}
-          />
-        </motion.div>
+      <ReturnLink variants={itemVariants} />
+      <PageHeader path="/terminal/lineup" title="LINEUP.DAT" accent="gold" variants={itemVariants} />
 
         {/* Session selector */}
         <motion.div variants={itemVariants} className="mb-6 space-y-2">
           {EVENTS.map((ev) => {
             const isSelected = ev.id === selectedId;
             const isUpcoming = ev.status === 'UPCOMING';
-            const accentColor = isUpcoming ? '#3a9880' : '#c85020';
+            
+            let baseColorClasses = '';
+            let textClasses = 'text-terminal-primary';
+            if (isSelected) {
+              if (isUpcoming) {
+                baseColorClasses = 'border-terminal-accent-cyan/80 bg-terminal-accent-cyan/10';
+                textClasses = 'text-terminal-accent-cyan';
+              } else {
+                baseColorClasses = 'border-terminal-accent-hot/80 bg-terminal-accent-hot/10';
+                textClasses = 'text-terminal-accent-hot';
+              }
+            } else {
+              baseColorClasses = 'border-terminal-accent-amber/12 bg-terminal-bg-panel hover:bg-terminal-accent-amber/5 text-terminal-primary';
+            }
+
             return (
               <button
                 key={ev.id}
                 onClick={() => setSelectedId(ev.id)}
-                className="w-full text-left px-4 py-3 border cursor-pointer transition-all duration-200"
-                style={{
-                  borderColor: isSelected
-                    ? `${accentColor}80`
-                    : 'rgba(212,146,10,0.12)',
-                  background: isSelected
-                    ? `${accentColor}10`
-                    : 'rgba(18,14,8,0.95)',
-                  fontFamily: 'var(--font-mono)',
-                }}
+                className={`w-full text-left px-4 py-3 border cursor-pointer transition-all duration-200 font-mono ${baseColorClasses}`}
               >
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold tracking-wider" style={{ color: isSelected ? (isUpcoming ? '#3a9880' : '#c85020') : '#e8d890' }}>
+                      <span className={`text-sm font-bold tracking-wider ${textClasses}`}>
                         <DecodeText text={ev.session} speed={0.6} scramble={4} />
                       </span>
                       {isUpcoming && (
-                        <span className="text-xs px-1.5 py-0.5 tracking-widest" style={{ color: '#3a9880', border: '1px solid rgba(58,152,128,0.4)', background: 'rgba(58,152,128,0.08)' }}>
+                        <span className="text-xs px-1.5 py-0.5 tracking-widest text-terminal-accent-cyan border border-terminal-accent-cyan/40 bg-terminal-accent-cyan/10">
                           <DecodeText text="UPCOMING" speed={0.5} scramble={4} />
                         </span>
                       )}
                     </div>
-                    <div className="text-xs mt-0.5" style={{ color: '#6a5030' }}>
+                    <div className="text-xs mt-0.5 text-terminal-subdued">
                       <DecodeText text={`${ev.subtitle} · ${ev.date.replace(/-/g, '.')}`} speed={0.5} scramble={4} />
                     </div>
                   </div>
-                  <div className="text-xs shrink-0" style={{ color: '#3a2a10' }}>
+                  <div className="text-xs shrink-0 text-terminal-muted">
                     <DecodeText text={`${ev.artists.length} ACTS`} speed={0.5} scramble={3} />
                   </div>
                 </div>
@@ -106,10 +78,8 @@ export default function LineupPage() {
             transition={{ duration: 0.3 }}
           >
             {/* Header */}
-            <div className="mb-3 px-4 py-2 border-b hidden md:block"
-              style={{ borderColor: 'rgba(200,160,48,0.2)' }}>
-              <div className="grid grid-cols-12 gap-2 text-xs tracking-widest"
-                style={{ color: '#5a4820', fontFamily: 'var(--font-mono)' }}>
+            <div className="mb-3 px-4 py-2 border-b hidden md:block border-terminal-accent-gold/20">
+              <div className="grid grid-cols-12 gap-2 text-xs tracking-widest text-terminal-muted font-mono">
                 <span className="col-span-1"><DecodeText text="ID" speed={0.4} scramble={2} /></span>
                 <span className="col-span-3"><DecodeText text="ARTIST" speed={0.4} scramble={2} /></span>
                 <span className="col-span-1"><DecodeText text="ORG" speed={0.4} scramble={2} /></span>
@@ -130,7 +100,7 @@ export default function LineupPage() {
               ))}
             </div>
 
-            <div className="mt-6 text-xs text-center" style={{ color: '#3a2a10', fontFamily: 'var(--font-mono)' }}>
+            <div className="mt-6 text-xs text-center text-terminal-muted font-mono">
               <DecodeText
                 text={selectedEvent.status === 'UPCOMING'
                   ? '— MORE ACTS TBA — STAY TUNED TO TERMINAL —'
@@ -141,7 +111,6 @@ export default function LineupPage() {
             </div>
           </motion.div>
         </AnimatePresence>
-      </motion.div>
     </PageLayout>
   );
 }

@@ -32,25 +32,17 @@ export default function CountdownBlock({ targetDate }: Props) {
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-3" suppressHydrationWarning={true}>
+    <div className="grid grid-cols-4 gap-3 font-mono" suppressHydrationWarning={true}>
       {blocks.map((b) => (
-        <div key={b.label} className="text-center border py-4" style={{ borderColor: 'rgba(58,152,128,0.2)', background: 'rgba(0,0,0,0.4)' }}>
+        <div key={b.label} className="text-center border border-terminal-accent-cyan/20 bg-black/40 py-4">
           <DecodeText
             text={b.val}
             speed={0.8}
             scramble={2}
             scrambleOnUpdate={false}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold"
-            style={{
-              color: '#3a9880',
-              textShadow: '0 0 16px rgba(58,152,128,0.5)',
-              fontFamily: 'var(--font-mono)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-terminal-accent-cyan text-shadow-glow-cyan flex items-center justify-center"
           />
-          <div className="text-xs mt-1 tracking-widest" style={{ color: '#2a5040', fontFamily: 'var(--font-mono)' }}>{b.label}</div>
+          <div className="text-xs mt-1 tracking-widest text-terminal-accent-cyan/50">{b.label}</div>
         </div>
       ))}
     </div>

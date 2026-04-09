@@ -36,25 +36,16 @@ export default function CountdownBlock({ targetDate }: Props) {
       {blocks.map((b) => (
         <div
           key={b.label}
-          className="text-center border py-3 sm:py-4"
-          style={{ borderColor: 'rgba(212,146,10,0.25)', background: 'rgba(0,0,0,0.5)' }}
+          className="text-center border py-3 sm:py-4 border-terminal-accent-amber/25 bg-black/50"
         >
             <DecodeText
               text={b.val}
               speed={0.8}
               scramble={2}
               scrambleOnUpdate={false}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold"
-              style={{
-                color: '#d4920a',
-                textShadow: '0 0 24px rgba(212,146,10,0.6), 0 0 48px rgba(212,146,10,0.3)',
-                fontFamily: 'var(--font-mono)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-terminal-accent-amber font-mono flex items-center justify-center drop-shadow-[0_0_24px_rgba(212,146,10,0.6)]"
             />
-          <div className="text-xs mt-2 tracking-widest" style={{ color: '#5a4820', fontFamily: 'var(--font-mono)' }}>
+          <div className="text-xs mt-2 tracking-widest text-terminal-muted font-mono">
             <DecodeText text={b.label} speed={0.4} scramble={6} />
           </div>
         </div>
