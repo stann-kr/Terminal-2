@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import DirectoryLink from '@/components/DirectoryLink';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
 import { TitleText, SubtitleText, HeadingText, LabelText, MetaText, BodyText } from '@/components/ui/TerminalText';
-import CountdownBlock from '@/app/home/CountdownBlock';
+import CountdownBlock from '@/components/ui/CountdownBlock';
 import type { TerminalEvent } from '@/lib/eventData';
 
 const DIRS = [

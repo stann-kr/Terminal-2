@@ -13,6 +13,7 @@ interface LogEntry {
   handle: string;
   message: string;
   ts: string;
+  createdAt?: string;
 }
 
 export default function TransmitPage() {
