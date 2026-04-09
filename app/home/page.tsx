@@ -13,6 +13,7 @@ const DIRS = [
   { href: '/lineup',   label: 'Lineup',   description: 'ARTIST ROSTER / DOCK',                     accent: 'gold' as const },
   { href: '/status',   label: 'Status',   description: 'SYSTEM DIAGNOSTICS / NETWORK TELEMETRY',   accent: 'hot' as const },
   { href: '/transmit', label: 'Transmit', description: 'VISITOR LOG / NODE SYNC',                 accent: 'purple' as const },
+  { href: '/link',     label: 'Link',     description: 'EXTERNAL CHANNELS / OFFICIAL LINKS',       accent: 'amber' as const },
 ];
 
 export default function HomePage() {
@@ -116,7 +117,7 @@ export default function HomePage() {
               <LabelText text="▶ ROOT DIRECTORY — /terminal/" />
             </span>
             <span className="text-[10px] sm:text-xs text-terminal-muted">
-              <LabelText text="5 MODULE(S)" />
+              <LabelText text="6 MODULE(S)" />
             </span>
           </div>
 
