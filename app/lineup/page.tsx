@@ -41,7 +41,7 @@ export default function LineupPage() {
               <button
                 key={ev.id}
                 onClick={() => setSelectedId(ev.id)}
-                className={`w-full text-left px-4 py-3 border cursor-pointer transition-all duration-200 font-mono ${baseColorClasses}`}
+                className={`w-full text-left px-4 py-3 border border-terminal-accent-amber/20 cursor-pointer transition-all duration-200 font-mono ${baseColorClasses}`}
               >
                 <div className="flex items-center justify-between gap-4">
                   <div>
@@ -78,7 +78,7 @@ export default function LineupPage() {
             transition={{ duration: 0.3 }}
           >
             {/* Header */}
-            <div className="mb-3 px-4 py-2 border-b hidden md:block border-terminal-accent-gold/20">
+            <div className="mb-3 px-4 py-2 border-b hidden md:block border-terminal-accent-gold/30">
               <div className="grid grid-cols-12 gap-2 text-xs tracking-widest text-terminal-muted font-mono">
                 <span className="col-span-1"><DecodeText text="ID" speed={0.4} scramble={2} /></span>
                 <span className="col-span-3"><DecodeText text="ARTIST" speed={0.4} scramble={2} /></span>

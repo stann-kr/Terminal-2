@@ -22,7 +22,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
   return (
     <div className="relative w-full min-h-screen flex flex-col items-center overflow-x-hidden text-terminal-primary px-4 sm:px-6 pt-14 md:pt-20 pb-14 md:pb-20">
       <motion.div
-        className="relative z-10 w-full max-w-[800px] flex flex-col items-start"
+        className="relative z-10 w-full sm:w-[700px] md:w-[800px] flex flex-col items-start mx-auto shrink-0"
         variants={containerVariants}
         initial="hidden"
         animate="visible"

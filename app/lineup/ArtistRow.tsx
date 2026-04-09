@@ -23,7 +23,7 @@ export default function ArtistRow({ artist: a }: Props) {
     <div className="group">
       {/* Mobile */}
       <div
-        className="md:hidden px-4 py-4 border cursor-pointer transition-all duration-200 space-y-2 border-terminal-accent-amber/12 bg-terminal-bg-panel group-hover:border-terminal-accent-amber/40 group-hover:bg-terminal-accent-amber/[0.04]"
+        className="md:hidden px-4 py-4 border cursor-pointer transition-all duration-200 space-y-2 border-terminal-accent-amber/20 bg-terminal-bg-panel group-hover:border-terminal-accent-amber/40 group-hover:bg-terminal-accent-amber/[0.04]"
       >
         <div className="flex items-start justify-between gap-2">
           <span className={`text-sm font-bold tracking-wider leading-tight font-mono ${nameColorClass} ${nameGlowClass}`}>
@@ -43,7 +43,7 @@ export default function ArtistRow({ artist: a }: Props) {
 
       {/* Desktop */}
       <div
-        className="hidden md:grid grid-cols-12 gap-2 px-4 py-4 border cursor-pointer transition-all duration-200 border-terminal-accent-amber/12 bg-terminal-bg-panel group-hover:border-terminal-accent-amber/40 group-hover:bg-terminal-accent-amber/[0.04]"
+        className="hidden md:grid grid-cols-12 gap-2 px-4 py-4 border cursor-pointer transition-all duration-200 border-terminal-accent-amber/20 bg-terminal-bg-panel group-hover:border-terminal-accent-amber/40 group-hover:bg-terminal-accent-amber/[0.04]"
       >
         <span className="col-span-1 text-xs text-terminal-muted font-mono"><DecodeText text={a.id} speed={0.4} scramble={2} /></span>
         <span className={`col-span-3 text-sm font-bold tracking-wider font-mono ${nameColorClass} ${nameGlowClass}`}>
