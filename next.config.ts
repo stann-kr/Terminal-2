@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
-// Cloudflare Workers D1 바인딩 에뮬레이션은 `npm run cf:preview` (opennextjs-cloudflare preview) 환경에서만 동작함
-// Docker dev 환경(`npm run dev`)에서는 D1 바인딩 없이 실행됨 — API 라우트는 D1 DB 생성 후 cf:preview 또는 배포 환경에서 동작
+// D1 바인딩은 Docker dev 환경에서 동작하지 않음 (workerd ARM64 호환성 문제)
+// API 라우트는 배포 환경(Cloudflare Workers) 또는 cf:preview에서만 정상 동작
 
 const nextConfig: NextConfig = {
   images: {
