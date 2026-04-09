@@ -1,0 +1,63 @@
+'use client';
+import { motion } from 'framer-motion';
+import PageLayout, { itemVariants } from '@/components/PageLayout';
+import ReturnLink from '@/components/ui/ReturnLink';
+import PageHeader from '@/components/ui/PageHeader';
+import DirectoryLink from '@/components/DirectoryLink';
+import { LabelText } from '@/components/ui/TerminalText';
+
+const LINKS = [
+  {
+    href: 'https://lumo.stann.kr',
+    label: 'Stann Lumo Web',
+    description: 'OFFICIAL WEBSITE / VISUAL ARCHIVE',
+    accent: 'gold' as const,
+  },
+  {
+    href: 'https://www.instagram.com/stannlumo/',
+    label: 'Stann Lumo Instagram',
+    description: 'SOCIAL CHANNEL / UPDATES',
+    accent: 'cyan' as const,
+  },
+  {
+    href: 'https://www.instagram.com/terminal_hub/',
+    label: 'Terminal Instagram',
+    description: 'EVENT FEED / SIGNAL BROADCAST',
+    accent: 'hot' as const,
+  },
+];
+
+export default function LinkPage() {
+  return (
+    <PageLayout>
+      <ReturnLink variants={itemVariants} />
+      <PageHeader path="/terminal/link" title="LINK.DAT" accent="amber" variants={itemVariants} />
+
+      <motion.div
+        variants={itemVariants}
+        className="border border-terminal-accent-amber/20 bg-terminal-bg-panel"
+      >
+        <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-amber/15 bg-black/40">
+          <span className="text-[10px] sm:text-xs tracking-widest text-terminal-accent-amber font-mono">
+            <LabelText text="▶ EXTERNAL CHANNELS — /terminal/link/" />
+          </span>
+          <span className="text-[10px] sm:text-xs text-terminal-muted font-mono">
+            <LabelText text="3 NODE(S)" />
+          </span>
+        </div>
+
+        {LINKS.map((link, i) => (
+          <DirectoryLink
+            key={link.href}
+            href={link.href}
+            label={link.label}
+            description={link.description}
+            index={i + 1}
+            accent={link.accent}
+            external
+          />
+        ))}
+      </motion.div>
+    </PageLayout>
+  );
+}

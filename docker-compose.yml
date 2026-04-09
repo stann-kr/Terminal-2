@@ -17,5 +17,7 @@ services:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
       - NEXT_TELEMETRY_DISABLED=1
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+      - CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID}
     command: npm run dev
     # 컨테이너 내부 쉘 접속 권장 명령어: docker compose run --rm web sh

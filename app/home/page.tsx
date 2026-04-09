@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import DirectoryLink from '@/components/DirectoryLink';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
 import { TitleText, SubtitleText, HeadingText, LabelText, MetaText, BodyText } from '@/components/ui/TerminalText';
-import CountdownBlock from '@/app/home/CountdownBlock';
+import CountdownBlock from '@/components/ui/CountdownBlock';
 import type { TerminalEvent } from '@/lib/eventData';
 
 const DIRS = [
@@ -13,18 +13,20 @@ const DIRS = [
   { href: '/lineup',   label: 'Lineup',   description: 'ARTIST ROSTER / DOCK',                     accent: 'gold' as const },
   { href: '/status',   label: 'Status',   description: 'SYSTEM DIAGNOSTICS / NETWORK TELEMETRY',   accent: 'hot' as const },
   { href: '/transmit', label: 'Transmit', description: 'VISITOR LOG / NODE SYNC',                 accent: 'purple' as const },
+  { href: '/link',     label: 'Link',     description: 'EXTERNAL CHANNELS / OFFICIAL LINKS',       accent: 'amber' as const },
 ];
 
 export default function HomePage() {
   const [upcomingEvent, setUpcomingEvent] = useState<TerminalEvent | null>(null);
+  const [eventError, setEventError] = useState(false);
 
   useEffect(() => {
     fetch('/api/events?status=UPCOMING')
-      .then((res) => res.json() as Promise<TerminalEvent[]>)
+      .then((res) => { if (!res.ok) throw new Error(); return res.json() as Promise<TerminalEvent[]>; })
       .then((data) => {
         if (data.length > 0) setUpcomingEvent(data[0]);
       })
-      .catch(console.error);
+      .catch(() => setEventError(true));
   }, []);
 
   const eventDate = upcomingEvent
@@ -78,18 +80,31 @@ export default function HomePage() {
           variants={itemVariants}
           className="mb-8 border py-6 px-4 border-terminal-accent-amber/20 bg-terminal-bg-panel"
         >
-          <div className="text-center mb-4">
-            <div className="mb-1 text-[10px] sm:text-xs text-terminal-muted tracking-[0.1em]">
-              <BodyText text={`NEXT ENTRY — ${eventDateLabel}`} />
+          {eventError ? (
+            <div className="text-center py-4 space-y-2">
+              <div className="text-xs font-bold tracking-widest text-terminal-accent-hot font-mono">
+                <LabelText text="⚠ SIGNAL LINK UNSTABLE" />
+              </div>
+              <div className="text-xs text-terminal-muted font-mono">
+                <MetaText text="DATABASE UNREACHABLE — RETRY LATER" />
+              </div>
             </div>
-            <div className="text-xl sm:text-2xl font-bold text-terminal-accent-amber tracking-[0.2em] drop-shadow-[0_0_16px_rgba(212,146,10,0.4)]">
-              <HeadingText text={upcomingEvent?.session ?? '—'} as="span" />
-            </div>
-            <div className="mt-1 text-[10px] sm:text-xs text-terminal-subdued tracking-[0.1em]">
-              <MetaText text={upcomingEvent ? `${upcomingEvent.subtitle} // ${upcomingEvent.venue}` : '—'} />
-            </div>
-          </div>
-          {eventDate && <CountdownBlock targetDate={eventDate} />}
+          ) : (
+            <>
+              <div className="text-center mb-4">
+                <div className="mb-1 text-[10px] sm:text-xs text-terminal-muted tracking-[0.1em]">
+                  <BodyText text={`NEXT ENTRY — ${eventDateLabel}`} />
+                </div>
+                <div className="text-xl sm:text-2xl font-bold text-terminal-accent-amber tracking-[0.2em] drop-shadow-[0_0_16px_rgba(212,146,10,0.4)]">
+                  <HeadingText text={upcomingEvent?.session ?? '—'} as="span" />
+                </div>
+                <div className="mt-1 text-[10px] sm:text-xs text-terminal-subdued tracking-[0.1em]">
+                  <MetaText text={upcomingEvent ? `${upcomingEvent.subtitle} // ${upcomingEvent.venue}` : '—'} />
+                </div>
+              </div>
+              {eventDate && <CountdownBlock targetDate={eventDate} />}
+            </>
+          )}
         </motion.div>
 
         {/* Directory */}
@@ -102,7 +117,7 @@ export default function HomePage() {
               <LabelText text="▶ ROOT DIRECTORY — /terminal/" />
             </span>
             <span className="text-[10px] sm:text-xs text-terminal-muted">
-              <LabelText text="5 MODULE(S)" />
+              <LabelText text="6 MODULE(S)" />
             </span>
           </div>
 

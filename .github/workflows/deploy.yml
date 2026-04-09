@@ -2,8 +2,7 @@ name: Deploy to Cloudflare Workers
 
 on:
   push:
-    branches:
-      - main
+    branches: [] # Cloudflare 대시보드 Git 연동으로 대체 — 비활성화
 
 jobs:
   deploy:
