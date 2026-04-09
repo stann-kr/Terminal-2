@@ -8,8 +8,8 @@ directory = ".open-next/assets"
 binding = "ASSETS"
 
 # D1 데이터베이스 바인딩
-# wrangler d1 create terminal-2-db 실행 후 생성된 database_id를 입력할 것
+# wrangler d1 create terminal-db 실행 후 생성된 database_id를 입력할 것
 [[d1_databases]]
 binding = "DB"
-database_name = "terminal-2-db"
-database_id = "" # TODO: wrangler d1 create terminal-2-db 명령어로 생성된 ID를 여기에 입력
+database_name = "terminal-db"
+database_id = "42d83d1e-e0ee-42af-91ff-d57c2387bb45"

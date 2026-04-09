@@ -15,7 +15,7 @@
 * **CI/CD:** `.github/workflows/deploy.yml` 작성 (main 브랜치 push → Cloudflare Workers 자동 배포).
 * **gitignore 업데이트:** `.open-next/` 추가.
 * **미완료 (수동 작업 필요):**
-  - `wrangler d1 create terminal-2-db` 실행 후 `wrangler.toml` database_id 입력
+  - `wrangler d1 create terminal-db` 실행 후 `wrangler.toml` database_id 입력
   - D1 마이그레이션 & 시드 실행 (`--remote`)
   - GitHub Secrets (CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID) 등록
 
