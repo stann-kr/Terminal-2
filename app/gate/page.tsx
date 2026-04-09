@@ -13,17 +13,18 @@ export default function GatePage() {
   const [tab, setTab] = useState<"upcoming" | "archive">("upcoming");
   const [events, setEvents] = useState<TerminalEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [selectedArchive, setSelectedArchive] = useState("");
 
   useEffect(() => {
     fetch("/api/events")
-      .then((res) => res.json() as Promise<TerminalEvent[]>)
+      .then((res) => { if (!res.ok) throw new Error(); return res.json() as Promise<TerminalEvent[]>; })
       .then((data) => {
         setEvents(data);
         const firstArchived = data.find((e) => e.status === "ARCHIVED");
         if (firstArchived) setSelectedArchive(firstArchived.id);
       })
-      .catch(console.error)
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -66,6 +67,15 @@ export default function GatePage() {
       {loading ? (
         <motion.div variants={itemVariants} className="text-xs font-mono text-terminal-muted text-center py-8">
           <LabelText text="▸ LOADING GATE DATA..." />
+        </motion.div>
+      ) : error ? (
+        <motion.div variants={itemVariants} className="border border-terminal-accent-hot/25 bg-terminal-bg-panel px-4 py-8 text-center space-y-2">
+          <div className="text-xs font-bold tracking-widest text-terminal-accent-hot font-mono">
+            <LabelText text="⚠ SIGNAL LINK UNSTABLE" />
+          </div>
+          <div className="text-xs text-terminal-muted font-mono">
+            <MetaText text="DATABASE UNREACHABLE — RETRY LATER" />
+          </div>
         </motion.div>
       ) : (
         <AnimatePresence mode="wait">

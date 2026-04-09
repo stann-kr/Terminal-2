@@ -13,6 +13,7 @@ interface LogEntry {
   handle: string;
   message: string;
   ts: string;
+  createdAt?: string;
 }
 
 export default function TransmitPage() {
@@ -27,7 +28,7 @@ export default function TransmitPage() {
   // 페이지 진입 시 DB에서 방명록 목록 로드
   useEffect(() => {
     fetch('/api/transmit')
-      .then(res => res.json() as Promise<LogEntry[]>)
+      .then(res => { if (!res.ok) throw new Error(); return res.json() as Promise<LogEntry[]>; })
       .then((data) => setLogs(data))
       .catch(() => setError('SIGNAL LINK UNSTABLE.'))
       .finally(() => setLoading(false));

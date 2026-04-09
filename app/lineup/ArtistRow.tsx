@@ -16,8 +16,8 @@ interface Props { artist: Artist; }
 
 export default function ArtistRow({ artist: a }: Props) {
   const statusColorClass = statusClassMap[a.status] || 'text-terminal-accent-amber';
-  const nameColorClass = a.name === '[REDACTED]' ? 'text-terminal-accent-hot' : 'text-terminal-primary';
-  const nameGlowClass = a.name === '[REDACTED]' ? statusGlowMap['CLASSIFIED'] : '';
+  const nameColorClass = a.name === '[ ENCRYPTED ]' ? 'text-terminal-accent-hot' : 'text-terminal-primary';
+  const nameGlowClass = a.name === '[ ENCRYPTED ]' ? statusGlowMap['CLASSIFIED'] : '';
 
   return (
     <div className="group">

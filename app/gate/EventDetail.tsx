@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import TerminalPanel from '@/components/TerminalPanel';
-import CountdownBlock from './CountdownBlock';
+import CountdownBlock from '@/components/ui/CountdownBlock';
 import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import type { TerminalEvent } from '@/lib/eventData';
 
@@ -30,7 +30,7 @@ export default function EventDetail({ event, showCountdown = false }: Props) {
               <MetaText text={`${event.date.replace(/-/g, '.')} · ${event.time}`} />
             </div>
           </div>
-          <CountdownBlock targetDate={eventDate} />
+          <CountdownBlock targetDate={eventDate} accent="cyan" />
         </TerminalPanel>
       )}
 

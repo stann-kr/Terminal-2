@@ -181,7 +181,7 @@ terminal-2/
 ### 7-1. 최초 D1 DB 생성
 
 ```bash
-docker compose run --rm web npx wrangler d1 create terminal-2-db
+docker compose run --rm web npx wrangler d1 create terminal-db
 ```
 
 → 출력된 `database_id`를 `wrangler.toml`에 입력.
@@ -193,20 +193,20 @@ docker compose run --rm web npx wrangler d1 create terminal-2-db
 docker compose run --rm web npx drizzle-kit generate
 
 # 로컬 에뮬레이터 적용
-docker compose run --rm web npx wrangler d1 migrations apply terminal-2-db --local
+docker compose run --rm web npx wrangler d1 migrations apply terminal-db --local
 
 # 프로덕션 적용
-docker compose run --rm web npx wrangler d1 migrations apply terminal-2-db --remote
+docker compose run --rm web npx wrangler d1 migrations apply terminal-db --remote
 ```
 
 ### 7-3. 초기 데이터 시드
 
 ```bash
 # 로컬
-docker compose run --rm web npx wrangler d1 execute terminal-2-db --local --file=drizzle/seed.sql
+docker compose run --rm web npx wrangler d1 execute terminal-db --local --file=migrations/seed.sql
 
 # 프로덕션
-docker compose run --rm web npx wrangler d1 execute terminal-2-db --remote --file=drizzle/seed.sql
+docker compose run --rm web npx wrangler d1 execute terminal-db --remote --file=migrations/seed.sql
 ```
 
 ### 7-4. 로컬 Workers 에뮬레이션
