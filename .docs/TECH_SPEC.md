@@ -13,18 +13,20 @@
 
 이전의 보편적 페이드인/아웃 전환 효과를 버려 완전히 터미널 특화형 텍스트 기반 Cipher(난수 복호화) 아키텍처로 통일됨.
 
-### 2.1 통합 컴포넌트 `<DecodeText>` 분석
+### 2.1 통합 컴포넌트 `<DecodeText>` 및 `<TerminalText>` 분석
 
-- **위치:** `components/DecodeText.tsx`
+- **위치:** `components/DecodeText.tsx`, `components/ui/TerminalText.tsx`
 - **핵심 역할:** 전달받은 단순 문자열(`text` Prop)을 초기 렌더링 시 난수 헥사코드(Hex)로 뒤섞어 보여주다가 본래 문자열 수준으로 디코딩(복호화)됨.
-- **주요 동적 속성:**
-  - `speed` / `scramble`: 복호화 속도 및 무작위성 깊이 조절 (통상 `speed=0.5~0.8`, `scramble=5~10` 권장)
-  - `scrambleOnUpdate`: `true`일 경우 텍스트 업데이트 시 매번 효과가 발생함. 카운트다운과 같이 빈번한 업데이트 시 `false`로 설정하여 초기 렌더링 시에만 효과를 주고 이후에는 일반 텍스트로 유지 가능.
+- **시맨틱 추상화 (`TerminalText.tsx`):**
+  - `DecodeText`의 복잡한 애니메이션 props(`speed`, `scramble` 등)를 직접 다루는 대신, 사전에 정의된 시맨틱 컴포넌트를 사용하여 스타일 일관성을 유지함.
+  - 제공 컴포넌트: `TitleText` (히어로), `HeadingText` (섹션 제목), `SubtitleText` (부제), `BodyText` (본문), `LabelText` (시스템 라벨), `MetaText` (메타데이터), `DataText` (실시간 데이터).
+- **주요 동적 속성 및 토큰화 (`lib/animationTokens.ts`):**
+  - 각 시맨틱 컴포넌트는 `animationTokens.ts`에 정의된 프리셋을 참조하여 동작함.
+  - `animateTextLength`: 타자기 효과 애니메이션 활성화 여부. 빈 문자열부터 길이가 늘어나는 연출로 레이아웃 점프 방지 기능을 보강함.
+  - `delay` 및 `animateTextLength` 연동: 페이지 전환 시 텍스트가 즉시 노출되어 번쩍이는(Flash) 현상을 방지하기 위해 재생 시작 전까지 빈 상태를 유지함.
 - **레이아웃 보존 기술 (Layout Shift 방지):**
   - 텍스트 길이가 시시각각 변동하면 줄바꿈이 빈번히 발생하여 브라우저의 전역 레이아웃 점프가 야기됨. 이를 원천 차단하기 위해 `@chenglou/pretext` 라이브러리의 DOM-less 텍스트 사이즈 측정을 `ResizeObserver` 및 `requestAnimationFrame`과 연계해 구동함.
-  - 마운트 직후 `window.getComputedStyle`로 실제 적용되는 폰트 메트릭스를 자동 추론해 컨테이너 높이(`minHeight`)를 사전에 확보함.
-  - `animateTextLength`: 타자기 효과 애니메이션 활성화 여부. 빈 문자열부터 길이가 늘어나는 연출로 레이아웃 점프 방지 기능을 보강함.
-  - 레이아웃 안정화: 컨테이너에 `overflow: hidden` 및 `height`, `min-height` 트랜지션을 동시 적용하여 텍스트의 동적 줄바꿈이 박스 크기를 급격하게 확장시키는 현상을 마스킹 처리함.
+  - 컨테이너에 `overflow: hidden` 및 `height`, `min-height` 트랜지션을 동시 적용하여 텍스트의 동적 줄바꿈이 박스 크기를 급격하게 확장시키는 현상을 마스킹 처리함.
 
 ### 2.2 페이지 구조 (PageLayout & Transition)
 
@@ -36,7 +38,7 @@
 ## 3. 타 에이전트를 위한 개발 가이드라인
 
 1. **신규 페이지 혹은 컴포넌트 개발 시 규칙:**
-   - 정적으로 고정되는 텍스트(예: 헤더, 라벨, 탭 이름, 로그 등)는 반드시 `<DecodeText text="문자열" />` 형태로 감싸서 렌더링할 것.
+   - 정적으로 고정되는 텍스트(예: 헤더, 라벨, 탭 이름, 로그 등)는 반드시 `<TerminalText>` 계열 컴포넌트(`TitleText`, `HeadingText` 등)로 감싸서 렌더링할 것. `DecodeText`를 직접 사용하는 것은 지양함.
    - `framer-motion`의 `variants` 내 애니메이션을 사용할 때는 `transition.ease` 배열 타입 충돌 여부(`Type 'number[]' is not assignable to type 'Easing...'`)를 주의하고, 반드시 기본 제공 문자열 네이밍 에셋(`ease: 'easeOut'`)으로 완화하여 기재함.
 2. **Typescript 무결성 확보 규칙:**
    - 렌더링 컴포넌트는 `use client` 디렉티브 선언을 엄수함.

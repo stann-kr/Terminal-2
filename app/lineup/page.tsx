@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
-import DecodeText from '@/components/DecodeText';
+import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
 import ArtistRow from './ArtistRow';
@@ -22,7 +22,7 @@ export default function LineupPage() {
           {EVENTS.map((ev) => {
             const isSelected = ev.id === selectedId;
             const isUpcoming = ev.status === 'UPCOMING';
-            
+
             let baseColorClasses = '';
             let textClasses = 'text-terminal-primary';
             if (isSelected) {
@@ -47,20 +47,20 @@ export default function LineupPage() {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className={`text-sm font-bold tracking-wider ${textClasses}`}>
-                        <DecodeText text={ev.session} speed={0.6} scramble={4} />
+                        <LabelText text={ev.session} />
                       </span>
                       {isUpcoming && (
                         <span className="text-xs px-1.5 py-0.5 tracking-widest text-terminal-accent-cyan border border-terminal-accent-cyan/40 bg-terminal-accent-cyan/10">
-                          <DecodeText text="UPCOMING" speed={0.5} scramble={4} />
+                          <LabelText text="UPCOMING" />
                         </span>
                       )}
                     </div>
                     <div className="text-xs mt-0.5 text-terminal-subdued">
-                      <DecodeText text={`${ev.subtitle} · ${ev.date.replace(/-/g, '.')}`} speed={0.5} scramble={4} />
+                      <MetaText text={`${ev.subtitle} · ${ev.date.replace(/-/g, '.')}`} />
                     </div>
                   </div>
                   <div className="text-xs shrink-0 text-terminal-muted">
-                    <DecodeText text={`${ev.artists.length} ACTS`} speed={0.5} scramble={3} />
+                    <MetaText text={`${ev.artists.length} ACTS`} />
                   </div>
                 </div>
               </button>
@@ -80,33 +80,28 @@ export default function LineupPage() {
             {/* Header */}
             <div className="mb-3 px-4 py-2 border-b hidden md:block border-terminal-accent-gold/30">
               <div className="grid grid-cols-12 gap-2 text-xs tracking-widest text-terminal-muted font-mono">
-                <span className="col-span-1"><DecodeText text="ID" speed={0.4} scramble={2} /></span>
-                <span className="col-span-3"><DecodeText text="ARTIST" speed={0.4} scramble={2} /></span>
-                <span className="col-span-1"><DecodeText text="ORG" speed={0.4} scramble={2} /></span>
-                <span className="col-span-3"><DecodeText text="DOCK" speed={0.4} scramble={2} /></span>
-                <span className="col-span-2"><DecodeText text="TIMESLOT" speed={0.4} scramble={2} /></span>
-                <span className="col-span-2"><DecodeText text="STATUS" speed={0.4} scramble={2} /></span>
+                <span className="col-span-1"><MetaText text="ID" /></span>
+                <span className="col-span-3"><MetaText text="ARTIST" /></span>
+                <span className="col-span-1"><MetaText text="ORG" /></span>
+                <span className="col-span-3"><MetaText text="DOCK" /></span>
+                <span className="col-span-2"><MetaText text="TIMESLOT" /></span>
+                <span className="col-span-2"><MetaText text="STATUS" /></span>
               </div>
             </div>
 
             <div className="space-y-2">
-              {selectedEvent.artists.map((a, i) => (
-                <div
-                  key={a.id}
-                  className="w-full"
-                >
+              {selectedEvent.artists.map((a) => (
+                <div key={a.id} className="w-full">
                   <ArtistRow artist={a} />
                 </div>
               ))}
             </div>
 
             <div className="mt-6 text-xs text-center text-terminal-muted font-mono">
-               <DecodeText
+              <SubtitleText
                 text={selectedEvent.status === 'UPCOMING'
                   ? '— DECRYPTING ADDITIONAL ROSTER — STANDBY —'
                   : '— SECTOR 01 COMPLETE — ANALOG DATA PURGED —'}
-                speed={0.5}
-                scramble={6}
               />
             </div>
           </motion.div>

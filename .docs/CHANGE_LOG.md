@@ -61,3 +61,10 @@
 * **빌드/린트 시스템 복구:** ESLint v9 다운그레이드로 Next.js 15 호환성 확보 및 `output: "export"` 제거로 빌드 안정화.
 * **UI 버그 수정:** `StatusMetric.tsx` 색상 토큰 오류 수정 및 `globals.css` 내 `text-shadow-glow` 유틸리티 디자인 토큰화.
 
+## [2026-04-09] 시맨틱 TerminalText 컴포넌트 도입 및 애니메이션 토큰화 적용
+
+* **`TerminalText.tsx` 신규 컴포넌트 세트 도입:** `TitleText`, `HeadingText`, `SubtitleText`, `BodyText`, `LabelText`, `MetaText`, `DataText`를 통해 텍스트 렌더링 의미론적 추상화 및 유지보수성 향상.
+* **`animationTokens.ts` 토큰화:** `DecodeText`의 속도, 스크램블 강도, 타자기 효과 여부 등을 시맨틱 프리셋으로 분리하여 전역에서 스타일 일관성 관리.
+* **전역 `DecodeText` 사용처 리팩토링:** 각 페이지 및 컴포넌트의 하드코딩된 애니메이션 props를 제거하고 `TerminalText` 계열 컴포넌트로 전면 교체.
+* **`DecodeText.tsx` 안정화 및 기능 확장:** `animateTextLength`와 `delay` 조합 시 초기 렌더링 노출 방지 로직 추가. 페이지 전환 시 텍스트 플래시 현상 해결.
+* **불필요한 레거시 코드 정리:** `DecodeText` 고도화로 대체된 `lib/hooks/usePretextLayout.ts` 삭제 및 관련 참조 제거.

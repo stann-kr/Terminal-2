@@ -1,6 +1,6 @@
 'use client';
 import { motion, Variants } from 'framer-motion';
-import DecodeText from '@/components/DecodeText';
+import { HeadingText, LabelText } from '@/components/ui/TerminalText';
 
 interface PageHeaderProps {
   path: string;
@@ -26,13 +26,10 @@ export default function PageHeader({ path, title, accent = 'amber', variants = d
   return (
     <motion.div variants={variants} className="mb-8 font-mono">
       <div className="text-xs tracking-widest mb-1 text-terminal-muted">
-        <DecodeText text={path} speed={0.6} scramble={5} />
+        <LabelText text={path} />
       </div>
-      <DecodeText
+      <HeadingText
         text={title}
-        as="h1"
-        speed={0.65}
-        scramble={10}
         className={`text-3xl font-bold tracking-[0.2em] ${accentClassMap[accent]}`}
       />
     </motion.div>

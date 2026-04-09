@@ -1,4 +1,4 @@
-import DecodeText from '@/components/DecodeText';
+import { DataText, MetaText } from '@/components/ui/TerminalText';
 
 interface Props {
   label: string;
@@ -33,13 +33,13 @@ export default function StatusMetric({ label, value, unit, accent = 'amber', del
       className={`border text-center py-5 px-3 bg-terminal-bg-panel transition-colors duration-300 ${accentClasses.split(' ')[0]}`}
     >
       <div className={`text-2xl font-bold mb-1 font-mono ${accentClasses.split(' ').slice(1).join(' ')}`}>
-        <DecodeText text={value} speed={0.4} scramble={4} />
+        <DataText text={value} />
       </div>
       <div className={`text-xs mb-2 font-mono ${labelColorClass}`}>
-        <DecodeText text={unit} speed={0.5} scramble={3} />
+        <MetaText text={unit} />
       </div>
       <div className="text-xs tracking-widest text-terminal-muted font-mono">
-        <DecodeText text={label} speed={0.5} scramble={5} />
+        <MetaText text={label} />
       </div>
     </div>
   );

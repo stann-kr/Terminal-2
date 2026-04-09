@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PageLayout, { itemVariants } from "@/components/PageLayout";
-import DecodeText from "@/components/DecodeText";
+import { LabelText, SubtitleText, MetaText, HeadingText } from "@/components/ui/TerminalText";
 import ReturnLink from "@/components/ui/ReturnLink";
 import PageHeader from "@/components/ui/PageHeader";
 import TerminalButton from "@/components/TerminalButton";
@@ -43,11 +43,7 @@ export default function GatePage() {
                   : "bg-transparent text-terminal-muted border-transparent hover:text-terminal-subdued"
               }`}
             >
-              <DecodeText
-                text={t === "upcoming" ? "▶ UPCOMING" : "◼ ARCHIVE"}
-                speed={0.6}
-                scramble={5}
-              />
+              <LabelText text={t === "upcoming" ? "▶ UPCOMING" : "◼ ARCHIVE"} />
             </button>
           ))}
         </div>
@@ -68,33 +64,23 @@ export default function GatePage() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="text-xs tracking-widest mb-1 font-mono text-terminal-muted">
-                    <DecodeText
-                      text={`${UPCOMING_EVENT.date.replace(/-/g, ".")} · ${UPCOMING_EVENT.time}`}
-                      speed={0.5}
-                      scramble={5}
+                    <MetaText text={`${UPCOMING_EVENT.date.replace(/-/g, ".")} · ${UPCOMING_EVENT.time}`} />
+                  </div>
+                  <div className="drop-shadow-[0_0_12px_rgba(58,152,128,0.4)]">
+                    <HeadingText
+                      text={UPCOMING_EVENT.session}
+                      as="span"
+                      className="text-xl font-bold tracking-[0.15em] text-terminal-accent-cyan"
                     />
                   </div>
-                  <DecodeText
-                    text={UPCOMING_EVENT.session}
-                    speed={0.6}
-                    scramble={8}
-                    className="text-xl font-bold tracking-[0.15em] text-terminal-accent-cyan drop-shadow-[0_0_12px_rgba(58,152,128,0.4)]"
-                  />
-                  <DecodeText
+                  <SubtitleText
                     text={UPCOMING_EVENT.subtitle}
-                    speed={0.4}
-                    scramble={5}
                     className="text-xs mt-1 text-terminal-subdued tracking-[0.1em]"
                   />
                 </div>
                 <div className="text-xs font-bold tracking-wider shrink-0 text-terminal-accent-cyan font-mono">
                   <span className="status-pulse mr-1">●</span>
-                  <DecodeText
-                    text="UPCOMING"
-                    speed={0.5}
-                    scramble={4}
-                    className="inline"
-                  />
+                  <LabelText text="UPCOMING" className="inline" />
                 </div>
               </div>
             </div>
@@ -130,25 +116,15 @@ export default function GatePage() {
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <div
-                        className={`text-sm font-bold tracking-wider ${selectedArchive === ev.id ? "text-terminal-accent-hot" : "text-terminal-primary"}`}
-                      >
-                        <DecodeText
-                          text={ev.session}
-                          speed={0.5}
-                          scramble={5}
-                        />
+                      <div className={`text-sm font-bold tracking-wider ${selectedArchive === ev.id ? "text-terminal-accent-hot" : "text-terminal-primary"}`}>
+                        <SubtitleText text={ev.session} />
                       </div>
                       <div className="text-xs mt-0.5 text-terminal-subdued">
-                        <DecodeText
-                          text={`${ev.subtitle} · ${ev.date.replace(/-/g, ".")}`}
-                          speed={0.4}
-                          scramble={4}
-                        />
+                        <MetaText text={`${ev.subtitle} · ${ev.date.replace(/-/g, ".")}`} />
                       </div>
                     </div>
                     <div className="text-xs tracking-wider shrink-0 text-terminal-muted">
-                      <DecodeText text="◼ ARCHIVED" speed={0.5} scramble={4} />
+                      <LabelText text="◼ ARCHIVED" />
                     </div>
                   </div>
                 </button>

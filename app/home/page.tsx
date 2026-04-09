@@ -1,8 +1,8 @@
 'use client';
 import { motion } from 'framer-motion';
 import DirectoryLink from '@/components/DirectoryLink';
-import DecodeText from '@/components/DecodeText';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
+import { TitleText, SubtitleText, HeadingText, LabelText, MetaText, BodyText } from '@/components/ui/TerminalText';
 import CountdownBlock from '@/app/home/CountdownBlock';
 
 const DIRS = [
@@ -24,27 +24,23 @@ export default function HomePage() {
             variants={itemVariants}
             className="text-[8px] sm:text-xs tracking-widest mb-3 text-terminal-muted"
           >
-            <DecodeText text="╔══════════════════════════════════════════╗" speed={0.8} scramble={3} />
+            <LabelText text="╔══════════════════════════════════════════╗" />
           </motion.div>
 
           <motion.h1
             variants={itemVariants}
-            className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.15em] sm:tracking-[0.3em] mb-2"
+            className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.15em] sm:tracking-[0.3em] mb-2 drop-shadow-[0_0_30px_rgba(212,146,10,0.5)]"
           >
-            <DecodeText
+            <TitleText
               text="TERMINAL"
               as="span"
-              speed={0.7}
-              scramble={10}
-              className="text-terminal-accent-amber drop-shadow-[0_0_30px_rgba(212,146,10,0.5)]"
+              className="text-terminal-accent-amber"
             />
           </motion.h1>
 
           <motion.div variants={itemVariants} className="text-[10px] sm:text-xs">
-            <DecodeText
+            <SubtitleText
               text="A VOYAGE TO THE UNKNOWN SECTOR"
-              speed={0.5}
-              scramble={8}
               delay={100}
               className="text-terminal-subdued text-center tracking-[0.1em]"
             />
@@ -54,7 +50,7 @@ export default function HomePage() {
             variants={itemVariants}
             className="text-[8px] sm:text-xs tracking-widest mt-3 text-terminal-muted"
           >
-            <DecodeText text="╚══════════════════════════════════════════╝" speed={0.8} scramble={3} />
+            <LabelText text="╚══════════════════════════════════════════╝" />
           </motion.div>
         </div>
 
@@ -65,25 +61,13 @@ export default function HomePage() {
         >
           <div className="text-center mb-4">
             <div className="mb-1 text-[10px] sm:text-xs text-terminal-muted tracking-[0.1em]">
-              <DecodeText
-                text="NEXT ENTRY — MAY 08 2026"
-                speed={0.45}
-                scramble={6}
-              />
+              <BodyText text="NEXT ENTRY — MAY 08 2026" />
             </div>
             <div className="text-xl sm:text-2xl font-bold text-terminal-accent-amber tracking-[0.2em] drop-shadow-[0_0_16px_rgba(212,146,10,0.4)]">
-              <DecodeText
-                text="TERMINAL [02]"
-                speed={0.6}
-                scramble={10}
-              />
+              <HeadingText text="TERMINAL [02]" as="span" />
             </div>
             <div className="mt-1 text-[10px] sm:text-xs text-terminal-subdued tracking-[0.1em]">
-              <DecodeText
-                text="Heliopause Outskirts // Faust Seoul"
-                speed={0.4}
-                scramble={6}
-              />
+              <MetaText text="Heliopause Outskirts // Faust Seoul" />
             </div>
           </div>
           <CountdownBlock targetDate={EVENT_DATE} />
@@ -96,17 +80,15 @@ export default function HomePage() {
         >
           <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-amber/15 bg-black/40">
             <span className="text-[10px] sm:text-xs tracking-widest text-terminal-accent-amber">
-              <DecodeText text="▶ ROOT DIRECTORY — /terminal/" speed={0.6} scramble={6} />
+              <LabelText text="▶ ROOT DIRECTORY — /terminal/" />
             </span>
             <span className="text-[10px] sm:text-xs text-terminal-muted">
-              <DecodeText text="5 MODULE(S)" speed={0.6} scramble={4} />
+              <LabelText text="5 MODULE(S)" />
             </span>
           </div>
 
           {DIRS.map((dir, i) => (
-            <div
-              key={dir.href}
-            >
+            <div key={dir.href}>
               <DirectoryLink {...dir} index={i + 1} />
             </div>
           ))}
@@ -117,8 +99,8 @@ export default function HomePage() {
           variants={itemVariants}
           className="mt-6 flex items-center justify-between text-[10px] sm:text-xs text-terminal-muted font-mono"
         >
-          <span><DecodeText text="KERNEL 2.2.0-heliopause_build" speed={0.4} scramble={4} /></span>
-          <span suppressHydrationWarning={true}><DecodeText text={new Date().toISOString().slice(0, 10)} speed={0.4} scramble={4} /></span>
+          <span><MetaText text="KERNEL 2.2.0-heliopause_build" /></span>
+          <span suppressHydrationWarning={true}><MetaText text={new Date().toISOString().slice(0, 10)} /></span>
         </motion.div>
     </PageLayout>
   );

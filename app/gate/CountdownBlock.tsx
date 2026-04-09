@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import DecodeText from '@/components/DecodeText';
+import { DataText } from '@/components/ui/TerminalText';
 
 interface Props { targetDate: Date; }
 
@@ -35,11 +35,8 @@ export default function CountdownBlock({ targetDate }: Props) {
     <div className="grid grid-cols-4 gap-3 font-mono" suppressHydrationWarning={true}>
       {blocks.map((b) => (
         <div key={b.label} className="text-center border border-terminal-accent-cyan/20 bg-black/40 py-4">
-          <DecodeText
+          <DataText
             text={b.val}
-            speed={0.8}
-            scramble={2}
-            scrambleOnUpdate={false}
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-terminal-accent-cyan text-shadow-glow-cyan flex items-center justify-center"
           />
           <div className="text-xs mt-1 tracking-widest text-terminal-accent-cyan/50">{b.label}</div>

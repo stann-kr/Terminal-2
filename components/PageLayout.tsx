@@ -1,28 +1,20 @@
 'use client';
 import React from 'react';
-import { motion, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { containerVariants, itemVariants } from '@/lib/animationTokens';
+
+// re-export: 기존 import 경로 유지 (PageLayout에서 import하는 파일 무변경)
+export { containerVariants, itemVariants };
 
 interface PageLayoutProps {
   children: React.ReactNode;
 }
 
-export const containerVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
-  },
-};
-
-export const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-};
-
 export default function PageLayout({ children }: PageLayoutProps) {
   return (
     <div className="relative w-full min-h-screen flex flex-col items-center overflow-x-hidden text-terminal-primary px-4 sm:px-6 pt-14 md:pt-20 pb-14 md:pb-20">
       <motion.div
-        className="relative z-10 w-full sm:w-[700px] md:w-[800px] flex flex-col items-start mx-auto shrink-0"
+        className="relative z-10 w-full sm:w-[700px] md:w-[800px] flex flex-col mx-auto shrink-0"
         variants={containerVariants}
         initial="hidden"
         animate="visible"

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import TerminalPanel from '@/components/TerminalPanel';
 import TerminalButton from '@/components/TerminalButton';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
-import DecodeText from '@/components/DecodeText';
+import { LabelText, SubtitleText, MetaText, DataText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
 
@@ -68,7 +68,7 @@ export default function TransmitPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs mb-1.5 tracking-widest font-mono text-terminal-muted">
-                <DecodeText text="ALIAS:" speed={0.6} scramble={4} />
+                <LabelText text="ALIAS:" />
               </label>
               <input
                 value={handle}
@@ -81,8 +81,8 @@ export default function TransmitPage() {
               <div>
                 <label className="block text-xs mb-1.5 tracking-widest font-mono text-terminal-muted">
                   <span className="flex justify-between w-full">
-                    <DecodeText text="MESSAGE:" speed={0.6} scramble={4} />
-                    <DecodeText text={`(${message.length}/280)`} speed={0.4} scramble={4} className="inline text-terminal-muted" />
+                    <LabelText text="MESSAGE:" />
+                    <DataText text={`(${message.length}/280)`} className="inline text-terminal-muted" />
                   </span>
                 </label>
                 <textarea
@@ -97,18 +97,18 @@ export default function TransmitPage() {
               <AnimatePresence mode="wait">
                 {error && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs font-mono text-terminal-accent-hot">
-                    <DecodeText text={`⚠ ERROR: ${error}`} speed={0.6} scramble={5} />
+                    <LabelText text={`⚠ ERROR: ${error}`} />
                   </motion.div>
                 )}
                 {sent && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs font-mono text-terminal-accent-amber">
-                    <DecodeText text="✓ SIGNAL COMMITTED TO DATABASE" speed={0.6} scramble={6} />
+                    <LabelText text="✓ SIGNAL COMMITTED TO DATABASE" />
                   </motion.div>
                 )}
               </AnimatePresence>
               <div className="flex justify-end pt-2">
                 <TerminalButton type="submit" variant="danger">
-                  <DecodeText text="▶ COMMIT SIGNAL" speed={0.6} scramble={5} />
+                  ▶ COMMIT SIGNAL
                 </TerminalButton>
               </div>
             </form>
@@ -126,17 +126,15 @@ export default function TransmitPage() {
                 >
                   <div className="flex items-center gap-3 mb-1.5">
                     <span className="text-xs font-bold tracking-wider font-mono text-terminal-accent-purple">
-                      <DecodeText text={entry.handle} speed={0.5} scramble={5} delay={i < 5 ? i * 40 : 0} />
+                      <SubtitleText text={entry.handle} delay={i < 5 ? i * 40 : 0} />
                     </span>
                     <span className="text-xs font-mono text-terminal-muted">
-                      <DecodeText text={entry.ts} speed={0.4} scramble={4} delay={i < 5 ? i * 40 : 0} />
+                      <MetaText text={entry.ts} delay={i < 5 ? i * 40 : 0} />
                     </span>
                   </div>
                   <div className="text-xs leading-relaxed font-mono text-terminal-subdued group-hover:text-terminal-primary transition-colors">
-                    <DecodeText
+                    <SubtitleText
                       text={`> ${entry.message}`}
-                      speed={0.5}
-                      scramble={8}
                       delay={i < 5 ? i * 40 : 0}
                     />
                   </div>

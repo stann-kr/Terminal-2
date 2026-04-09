@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion';
 import TerminalPanel from '@/components/TerminalPanel';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
-import DecodeText from '@/components/DecodeText';
+import { BodyText, LabelText, SubtitleText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
 
@@ -51,19 +51,13 @@ export default function AboutPage() {
           <TerminalPanel title="MANIFESTO_v1.txt" accent="green">
             <div className="space-y-1">
               {MANIFESTO.map((line, i) => (
-                <div
-                  key={i}
-                  className="text-xs leading-6"
-                >
+                <div key={i} className="text-xs leading-6">
                   {line === '' ? (
                     <span>&nbsp;</span>
                   ) : (
-                    <DecodeText
+                    <BodyText
                       text={line}
-                      speed={0.45}
-                      scramble={6}
                       delay={i * 50}
-                      animateTextLength={true}
                       className={`block ${line.startsWith('TERMINAL') ? 'text-terminal-primary' : 'text-terminal-subdued'}`}
                     />
                   )}
@@ -78,18 +72,13 @@ export default function AboutPage() {
           <TerminalPanel title="SYSINFO.DAT" accent="cyan">
             <div className="space-y-2">
               {SYSTEM_INFO.map((item, i) => (
-                <div
-                  key={item.key}
-                  className="flex items-start gap-2 sm:gap-3 text-xs font-mono"
-                >
+                <div key={item.key} className="flex items-start gap-2 sm:gap-3 text-xs font-mono">
                   <span className="w-24 sm:w-36 shrink-0 text-terminal-subdued">
-                    <DecodeText text={item.key} speed={0.6} scramble={4} delay={i * 30} />
+                    <LabelText text={item.key} delay={i * 30} />
                   </span>
                   <span className="text-terminal-muted">:</span>
-                  <DecodeText
+                  <SubtitleText
                     text={item.val}
-                    speed={0.5}
-                    scramble={6}
                     delay={i * 30}
                     className={item.key === 'STATUS' ? 'text-terminal-accent-amber' : 'text-terminal-accent-cyan'}
                   />

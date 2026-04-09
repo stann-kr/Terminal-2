@@ -4,7 +4,7 @@ import TerminalPanel from '@/components/TerminalPanel';
 import StatusMetric from './StatusMetric';
 import GlobeMapDynamic from './GlobeMapDynamic';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
-import DecodeText from '@/components/DecodeText';
+import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
 
@@ -49,7 +49,7 @@ export default function StatusPage() {
                 const statusColorClass =
                   s.status === 'ONLINE'  ? 'text-terminal-accent-amber' :
                   s.status === 'STANDBY' ? 'text-terminal-accent-gold' : 'text-terminal-muted';
-                
+
                 const loadBarColor = s.load > 70 ? 'bg-terminal-accent-gold' : 'bg-terminal-accent-amber';
 
                 return (
@@ -58,22 +58,22 @@ export default function StatusPage() {
                     <div className="md:hidden space-y-1.5 font-mono">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-terminal-primary">
-                          <DecodeText text={s.name} speed={0.6} scramble={4} delay={i * 20} />
+                          <LabelText text={s.name} delay={i * 20} />
                         </span>
                         <span className={`text-xs font-bold tracking-wider ${statusColorClass}`}>
                           <span className="status-pulse mr-1">●</span>
-                          <DecodeText text={s.status} speed={0.6} scramble={4} className="inline" delay={i * 20} />
+                          <LabelText text={s.status} className="inline" delay={i * 20} />
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
                         <span className="text-terminal-subdued">
-                          <DecodeText text={s.sector} speed={0.5} scramble={5} delay={i * 20} />
+                          <SubtitleText text={s.sector} delay={i * 20} />
                         </span>
                         <span className="text-terminal-accent-cyan">
-                          <DecodeText text={s.lag === 0 ? '—' : `${s.lag} ly`} speed={0.5} scramble={5} delay={i * 20} />
+                          <MetaText text={s.lag === 0 ? '—' : `${s.lag} ly`} delay={i * 20} />
                         </span>
                         <span className="text-terminal-subdued">
-                          <DecodeText text={`LOAD: ${s.load}%`} speed={0.5} scramble={5} delay={i * 20} />
+                          <MetaText text={`LOAD: ${s.load}%`} delay={i * 20} />
                         </span>
                       </div>
                       {s.load > 0 && (
@@ -86,13 +86,13 @@ export default function StatusPage() {
                     {/* Desktop */}
                     <div className="hidden md:grid grid-cols-12 gap-2 items-center text-xs font-mono">
                       <span className="col-span-2 font-bold text-terminal-primary">
-                        <DecodeText text={s.name} speed={0.6} scramble={4} delay={i * 20} />
+                        <LabelText text={s.name} delay={i * 20} />
                       </span>
                       <span className="col-span-3 truncate text-terminal-subdued">
-                        <DecodeText text={s.sector} speed={0.5} scramble={5} delay={i * 20} />
+                        <SubtitleText text={s.sector} delay={i * 20} />
                       </span>
                       <span className="col-span-2 text-terminal-accent-cyan">
-                        <DecodeText text={s.lag === 0 ? 'LOCAL' : `${s.lag} ly`} speed={0.5} scramble={5} delay={i * 20} />
+                        <MetaText text={s.lag === 0 ? 'LOCAL' : `${s.lag} ly`} delay={i * 20} />
                       </span>
                       <div className="col-span-2">
                         {s.load > 0 ? (
@@ -101,7 +101,7 @@ export default function StatusPage() {
                               <div className={`h-full rounded-full transition-all ${loadBarColor}`} style={{ width: `${s.load}%` }} />
                             </div>
                             <span className="text-terminal-subdued">
-                              <DecodeText text={`${s.load}%`} speed={0.5} scramble={4} delay={i * 20} />
+                              <MetaText text={`${s.load}%`} delay={i * 20} />
                             </span>
                           </>
                         ) : (
@@ -110,7 +110,7 @@ export default function StatusPage() {
                       </div>
                       <span className={`col-span-3 font-bold tracking-wider flex items-center gap-1 ${statusColorClass}`}>
                         <span className="status-pulse flex-shrink-0">●</span>
-                        <DecodeText text={s.status} speed={0.6} scramble={4} delay={i * 20} />
+                        <LabelText text={s.status} delay={i * 20} />
                       </span>
                     </div>
                   </div>

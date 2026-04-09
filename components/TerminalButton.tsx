@@ -1,6 +1,6 @@
 'use client';
 import { ReactNode, MouseEvent } from 'react';
-import DecodeText from './DecodeText';
+import { LabelText } from './ui/TerminalText';
 
 interface TerminalButtonProps {
   children: ReactNode;
@@ -38,7 +38,7 @@ export default function TerminalButton({
       className={`whitespace-nowrap cursor-pointer font-mono text-xs tracking-widest uppercase px-5 py-2.5 transition-all duration-200 flex items-center justify-center border ${v.base} ${v.hover} disabled:opacity-40 ${className}`}
     >
       {typeof children === 'string' ? (
-        <DecodeText text={children} speed={0.7} scramble={5} />
+        <LabelText text={children} />
       ) : (
         children
       )}

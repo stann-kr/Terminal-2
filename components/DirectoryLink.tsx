@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import DecodeText from './DecodeText';
+import { LabelText, HeadingText, SubtitleText } from '@/components/ui/TerminalText';
 
 type AccentColor = 'amber' | 'cyan' | 'gold' | 'hot' | 'purple';
 
@@ -35,14 +35,14 @@ export default function DirectoryLink({ href, label, description, index, accent 
         className={`flex items-start gap-4 py-3 px-4 border-b border-terminal-accent-amber/10 bg-transparent transition-all duration-200 ${v.hover}`}
       >
         <span className={`text-xs pt-0.5 w-6 shrink-0 transition-colors ${hovered ? v.text : 'text-terminal-muted'}`}>
-          <DecodeText text={String(index).padStart(2, '0')} speed={0.8} scramble={5} />
+          <LabelText text={String(index).padStart(2, '0')} />
         </span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-0.5">
             <span
               className={`text-sm font-bold tracking-widest uppercase transition-all duration-150 ${hovered ? `${v.text} ${v.glow}` : 'text-terminal-primary'}`}
             >
-              <DecodeText text={`[${label}]`} speed={0.65} scramble={8} className="text-inherit drop-shadow-inherit" />
+              <HeadingText text={`[${label}]`} as="span" className="text-inherit drop-shadow-inherit" />
             </span>
             {hovered && (
               <motion.span initial={{ opacity: 0, x: -4 }} animate={{ opacity: 1, x: 0 }} className={`text-xs ${v.text}`}>
@@ -51,7 +51,7 @@ export default function DirectoryLink({ href, label, description, index, accent 
             )}
           </div>
           <span className="text-terminal-subdued">
-            <DecodeText text={description} speed={0.5} scramble={6} delay={50} className="text-inherit" />
+            <SubtitleText text={description} delay={50} className="text-inherit" />
           </span>
         </div>
         <span className={`text-xs shrink-0 pt-0.5 transition-colors ${hovered ? v.text : 'text-terminal-muted'}`}>

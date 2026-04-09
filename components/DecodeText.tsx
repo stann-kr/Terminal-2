@@ -108,6 +108,16 @@ const DecodeText = memo(function DecodeText({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // animateTextLength + delay: use-scramble이 playOnMount=false일 때 전체 텍스트를
+  // DOM에 즉시 써버리는 것을 방지. replay() 이전까지 빈 상태 유지.
+  useEffect(() => {
+    if (!animateTextLength || delay <= 0) return;
+    if (measureRef.current) {
+      measureRef.current.innerHTML = '';
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // scrambleOnUpdate=false + settled: 텍스트 변경 시 직접 DOM 업데이트 (애니메이션 없이)
   useEffect(() => {
     if (scrambleOnUpdate || !animationSettledRef.current) return;
