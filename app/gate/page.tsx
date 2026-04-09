@@ -35,7 +35,7 @@ export default function GatePage() {
                   : 'bg-transparent text-terminal-muted border-transparent hover:text-terminal-subdued'
               }`}
             >
-              <DecodeText text={t === 'upcoming' ? '▶ UPCOMING' : '◼ ARCHIVE'} speed={0.6} scramble={5} />
+              <DecodeText text={t === 'upcoming' ? '▶ UPCOMING [02]' : '◼ ARCHIVE [01]'} speed={0.6} scramble={5} />
             </button>
           ))}
         </div>

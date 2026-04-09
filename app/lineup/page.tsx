@@ -83,7 +83,7 @@ export default function LineupPage() {
                 <span className="col-span-1"><DecodeText text="ID" speed={0.4} scramble={2} /></span>
                 <span className="col-span-3"><DecodeText text="ARTIST" speed={0.4} scramble={2} /></span>
                 <span className="col-span-1"><DecodeText text="ORG" speed={0.4} scramble={2} /></span>
-                <span className="col-span-3"><DecodeText text="GENRE" speed={0.4} scramble={2} /></span>
+                <span className="col-span-3"><DecodeText text="DOCK" speed={0.4} scramble={2} /></span>
                 <span className="col-span-2"><DecodeText text="TIMESLOT" speed={0.4} scramble={2} /></span>
                 <span className="col-span-2"><DecodeText text="STATUS" speed={0.4} scramble={2} /></span>
               </div>
@@ -101,10 +101,10 @@ export default function LineupPage() {
             </div>
 
             <div className="mt-6 text-xs text-center text-terminal-muted font-mono">
-              <DecodeText
+               <DecodeText
                 text={selectedEvent.status === 'UPCOMING'
-                  ? '— MORE ACTS TBA — STAY TUNED TO TERMINAL —'
-                  : `— SESSION COMPLETE — ${selectedEvent.artists.length} ACTS TRANSMITTED —`}
+                  ? '— DECRYPTING ADDITIONAL ROSTER — STANDBY —'
+                  : '— SECTOR 01 COMPLETE — ANALOG DATA PURGED —'}
                 speed={0.5}
                 scramble={6}
               />

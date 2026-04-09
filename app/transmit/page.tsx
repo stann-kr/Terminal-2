@@ -16,12 +16,9 @@ interface LogEntry {
 }
 
 const SEED_LOGS: LogEntry[] = [
-  { id: 'a1', handle: 'BASSHEAD_KR', message: 'last session nearly killed me. my ears are still ringing. THANK YOU.', ts: '2026.03.28 / 04:11' },
-  { id: 'a2', handle: 'NR_OBSERVER', message: 'the sound system in that basement is genuinely illegal. 10/10', ts: '2026.03.27 / 02:33' },
-  { id: 'a3', handle: 'VOID_DANCER', message: 'who was that mystery b2b at 7am? need to know', ts: '2026.03.26 / 09:14' },
-  { id: 'a4', handle: 'ACID_PILGRIM', message: 'flew in from berlin just for this. worth every km.', ts: '2026.03.25 / 22:05' },
-  { id: 'a5', handle: 'GHOST_NODE_77', message: 'REBEKAH playing untitled acid at sunrise should be a human right', ts: '2026.03.24 / 07:52' },
-  { id: 'a6', handle: 'DARKROOM_FAN', message: 'when is the next one? my soul needs this.', ts: '2026.03.23 / 18:40' },
+  { id: 'a1', handle: 'SYS_ADMIN', message: 'External data received. Analog noise filtered. Thank you ;)', ts: '2026.04.09 / 14:40' },
+  { id: 'a2', handle: 'STANN_LUMO', message: 'Database connected. Ready for Sector 02.', ts: '2026.04.09 / 14:12' },
+  { id: 'a3', handle: 'GUEST_09', message: 'System operating normally.', ts: '2026.04.09 / 13:55' },
 ];
 
 export default function TransmitPage() {
@@ -41,7 +38,7 @@ export default function TransmitPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!handle.trim() || !message.trim()) { setError('HANDLE AND MESSAGE REQUIRED.'); return; }
+    if (!handle.trim() || !message.trim()) { setError('ALIAS AND MESSAGE REQUIRED.'); return; }
     if (message.length > 280) { setError('MESSAGE EXCEEDS 280 CHARS.'); return; }
     const entry: LogEntry = {
       id: Date.now().toString(),
@@ -65,23 +62,22 @@ export default function TransmitPage() {
     <PageLayout>
       <ReturnLink variants={itemVariants} />
       <PageHeader path="/terminal/transmit" title="TRANSMIT.LOG" accent="purple" variants={itemVariants} />
-
-        {/* Input Form */}
-        <motion.div variants={itemVariants} className="mb-8">
-          <TerminalPanel title="NEW_TRANSMISSION — OPEN_CHANNEL" accent="hot">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs mb-1.5 tracking-widest font-mono text-terminal-muted">
-                  <DecodeText text="HANDLE_ID:" speed={0.6} scramble={4} />
-                </label>
-                <input
-                  value={handle}
-                  onChange={e => setHandle(e.target.value)}
-                  placeholder="ENTER_YOUR_HANDLE"
-                  maxLength={24}
-                  className="w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-purple/30 focus:border-terminal-accent-purple/70 transition-colors font-mono text-terminal-accent-purple caret-terminal-accent-purple"
-                />
-              </div>
+      {/* Input Form */}
+      <motion.div variants={itemVariants} className="mb-8">
+        <TerminalPanel title="VISITOR_LOG — NODE_SYNC" accent="hot">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs mb-1.5 tracking-widest font-mono text-terminal-muted">
+                <DecodeText text="ALIAS:" speed={0.6} scramble={4} />
+              </label>
+              <input
+                value={handle}
+                onChange={e => setHandle(e.target.value)}
+                placeholder="ENTER_ALIAS"
+                maxLength={24}
+                className="w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-purple/30 focus:border-terminal-accent-purple/70 transition-colors font-mono text-terminal-accent-purple caret-terminal-accent-purple"
+              />
+            </div>
               <div>
                 <label className="block text-xs mb-1.5 tracking-widest font-mono text-terminal-muted">
                   <span className="flex justify-between w-full">
@@ -92,7 +88,7 @@ export default function TransmitPage() {
                 <textarea
                   value={message}
                   onChange={e => setMessage(e.target.value)}
-                  placeholder="TRANSMIT YOUR MESSAGE TO THE UNDERGROUND..."
+                  placeholder="WRITE TO DATABASE..."
                   maxLength={280}
                   rows={3}
                   className="w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-purple/30 focus:border-terminal-accent-purple/70 resize-none transition-colors font-mono text-terminal-primary caret-terminal-accent-amber"
@@ -101,18 +97,18 @@ export default function TransmitPage() {
               <AnimatePresence mode="wait">
                 {error && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs font-mono text-terminal-accent-hot">
-                    <DecodeText text={`⚠ ${error}`} speed={0.6} scramble={5} />
+                    <DecodeText text={`⚠ ERROR: ${error}`} speed={0.6} scramble={5} />
                   </motion.div>
                 )}
                 {sent && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs font-mono text-terminal-accent-amber">
-                    <DecodeText text="✓ SIGNAL TRANSMITTED SUCCESSFULLY" speed={0.6} scramble={6} />
+                    <DecodeText text="✓ SIGNAL COMMITTED TO DATABASE" speed={0.6} scramble={6} />
                   </motion.div>
                 )}
               </AnimatePresence>
               <div className="flex justify-end pt-2">
                 <TerminalButton type="submit" variant="danger">
-                  <DecodeText text="▶ TRANSMIT SIGNAL" speed={0.6} scramble={5} />
+                  <DecodeText text="▶ COMMIT SIGNAL" speed={0.6} scramble={5} />
                 </TerminalButton>
               </div>
             </form>

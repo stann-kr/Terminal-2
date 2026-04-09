@@ -9,16 +9,16 @@ import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
 
 const RELAYS = [
-  { name: 'NEXUS-Ω',   sector: 'GALACTIC_CORE',        lag: 0,    load: 94, status: 'ONLINE' },
-  { name: 'ORION-I',   sector: 'ORION_ARM·INNER',       lag: 312,  load: 78, status: 'ONLINE' },
-  { name: 'SGTR-I',    sector: 'SAGITTARIUS_ARM',        lag: 487,  load: 55, status: 'ONLINE' },
-  { name: 'PRSUS-I',   sector: 'PERSEUS_ARM·INNER',      lag: 634,  load: 41, status: 'ONLINE' },
-  { name: 'CYGNS-II',  sector: 'CYGNUS_ARM·RELAY',       lag: 891,  load: 29, status: 'ONLINE' },
-  { name: 'NRMA-I',    sector: 'NORMA_ARM',              lag: 1204, load: 17, status: 'ONLINE' },
-  { name: 'ORION-II',  sector: 'ORION_ARM·OUTER',        lag: 1580, load: 0,  status: 'STANDBY' },
-  { name: 'PRSUS-II',  sector: 'PERSEUS_ARM·OUTER',      lag: 2340, load: 0,  status: 'STANDBY' },
-  { name: 'RIM-α',     sector: 'OUTER_RIM·ALPHA',        lag: 4120, load: 0,  status: 'DORMANT' },
-  { name: 'HALO-I',    sector: 'HALO_CLUSTER',           lag: 8800, load: 0,  status: 'DORMANT' },
+  { name: 'TRAPPIST-1',sector: 'AQUARIUS',        lag: 0,    load: 94, status: 'ONLINE' },
+  { name: 'KEPLER-452B',sector: 'CYGNUS',          lag: 312,  load: 78, status: 'ONLINE' },
+  { name: 'PROXIMA-B',  sector: 'CENTAURUS',      lag: 487,  load: 55, status: 'ONLINE' },
+  { name: 'GLIESE-581', sector: 'LIBRA',          lag: 634,  load: 41, status: 'ONLINE' },
+  { name: 'ORION-I',    sector: 'ORION_ARM·INNER', lag: 891,  load: 29, status: 'ONLINE' },
+  { name: 'SGTR-I',     sector: 'SAGITTARIUS_ARM',  lag: 1204, load: 17, status: 'ONLINE' },
+  { name: 'PRSUS-I',    sector: 'PERSEUS_ARM·INNER',lag: 1580, load: 0,  status: 'STANDBY' },
+  { name: 'CYGNS-II',   sector: 'CYGNUS_ARM·RELAY', lag: 2340, load: 0,  status: 'STANDBY' },
+  { name: 'NRMA-I',     sector: 'NORMA_ARM',        lag: 4120, load: 0,  status: 'DORMANT' },
+  { name: 'HALO-I',     sector: 'HALO_CLUSTER',     lag: 8800, load: 0,  status: 'DORMANT' },
 ];
 
 export default function StatusPage() {
@@ -29,8 +29,8 @@ export default function StatusPage() {
 
         {/* Metrics */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-          <StatusMetric label="ACTIVE_RELAYS" value="6 / 12" unit="NODES" accent="amber" delay={0.2} />
-          <StatusMetric label="SIGNAL_UPTIME" value="99.97" unit="%" accent="cyan" delay={0.3} />
+          <StatusMetric label="ACTIVE_RELAYS" value="4 / 12" unit="NODES" accent="amber" delay={0.2} />
+          <StatusMetric label="SIGNAL_UPTIME" value="100.00" unit="%" accent="cyan" delay={0.3} />
           <StatusMetric label="CORE_FREQ" value="148.3" unit="THz" accent="hot" delay={0.4} />
         </motion.div>
 

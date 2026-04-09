@@ -7,10 +7,10 @@ import CountdownBlock from '@/app/home/CountdownBlock';
 
 const DIRS = [
   { href: '/about',    label: 'About',    description: 'PLATFORM MANIFESTO / SYSTEM INFORMATION', accent: 'amber' as const },
-  { href: '/gate',     label: 'Gate',     description: 'NEXT EVENT / COUNTDOWN / COORDINATES',     accent: 'cyan' as const },
-  { href: '/lineup',   label: 'Lineup',   description: 'ARTIST ROSTER / SESSION IDs / TRACKLIST',  accent: 'gold' as const },
+  { href: '/gate',     label: 'Gate',     description: 'NEXT ENTRY / COUNTDOWN / COORDINATES',     accent: 'cyan' as const },
+  { href: '/lineup',   label: 'Lineup',   description: 'ARTIST ROSTER / DOCK',                     accent: 'gold' as const },
   { href: '/status',   label: 'Status',   description: 'SYSTEM DIAGNOSTICS / NETWORK TELEMETRY',   accent: 'hot' as const },
-  { href: '/transmit', label: 'Transmit', description: 'INCOMING SIGNAL LOG / VISITOR BROADCAST',  accent: 'purple' as const },
+  { href: '/transmit', label: 'Transmit', description: 'VISITOR LOG / NODE SYNC',                 accent: 'purple' as const },
 ];
 
 const EVENT_DATE = new Date('2026-05-08T23:00:00');
@@ -42,7 +42,7 @@ export default function HomePage() {
 
           <motion.div variants={itemVariants} className="text-[10px] sm:text-xs">
             <DecodeText
-              text="UNDERGROUND TECHNO PLATFORM · SESSION ACTIVE"
+              text="A VOYAGE TO THE UNKNOWN SECTOR"
               speed={0.5}
               scramble={8}
               delay={100}
@@ -66,7 +66,7 @@ export default function HomePage() {
           <div className="text-center mb-4">
             <div className="mb-1 text-[10px] sm:text-xs text-terminal-muted tracking-[0.1em]">
               <DecodeText
-                text="NEXT EVENT — MAY 08 2026"
+                text="NEXT ENTRY — MAY 08 2026"
                 speed={0.45}
                 scramble={6}
               />
@@ -80,7 +80,7 @@ export default function HomePage() {
             </div>
             <div className="mt-1 text-[10px] sm:text-xs text-terminal-subdued tracking-[0.1em]">
               <DecodeText
-                text="Heliopause Outskirts"
+                text="Heliopause Outskirts // Faust Seoul"
                 speed={0.4}
                 scramble={6}
               />
@@ -117,7 +117,7 @@ export default function HomePage() {
           variants={itemVariants}
           className="mt-6 flex items-center justify-between text-[10px] sm:text-xs text-terminal-muted font-mono"
         >
-          <span><DecodeText text="KERNEL 4.2.0-underground" speed={0.4} scramble={4} /></span>
+          <span><DecodeText text="KERNEL 2.2.0-heliopause_build" speed={0.4} scramble={4} /></span>
           <span suppressHydrationWarning={true}><DecodeText text={new Date().toISOString().slice(0, 10)} speed={0.4} scramble={4} /></span>
         </motion.div>
     </PageLayout>

@@ -5,23 +5,21 @@ import { useScramble } from 'use-scramble';
 import TerminalButton from './TerminalButton';
 
 const BOOT_LINES = [
-  { text: 'TERMINAL BIOS v4.2.0  [2026-03-31]', delay: 0 },
-  { text: 'MEMORY TEST: 0KB ... 524288KB OK', delay: 120 },
-  { text: 'DETECTING HYPNOTIC SEQUENCER... FOUND [IRQ=9]', delay: 220 },
-  { text: 'MOUNTING FRAME_DRAGGING.SYS... OK', delay: 340 },
-  { text: 'LOADING ACID_MATRIX.DLL.............. OK', delay: 480 },
-  { text: 'CONNECTING TO FAUST_SERVER: 192.168.0.XT... OK', delay: 620 },
-  { text: 'INITIALIZING AUDIO SUBSYSTEM: 909-MODE ENABLED', delay: 800 },
-  { text: 'SCANNING BASS FREQUENCIES: 20Hz–200Hz... LOCK', delay: 960 },
-  { text: 'LOADING DARKROOM_PROTOCOL v7.7... OK', delay: 1120 },
-  { text: 'CALIBRATING STROBE_TIMING.SYS... SYNC OK', delay: 1300 },
-  { text: 'MOUNTING /dev/underground/....... OK', delay: 1480 },
-  { text: 'AUTHENTICATING ACCESS CREDENTIALS... GRANTED', delay: 1700 },
-  { text: 'WARNING: PSYCHEDELIC CONTENT DETECTED', delay: 1900, warn: true },
-  { text: 'BYPASSING COGNITIVE_FILTER.EXE... OK', delay: 2050 },
-  { text: 'SPAWNING TERMINAL PROCESS [PID:0x7F3A]... OK', delay: 2250 },
-  { text: '──────────────────────────────────────────', delay: 2400 },
-  { text: 'SYSTEM READY. WELCOME TO THE UNDERGROUND.', delay: 2600, accent: true },
+  { text: 'TERMINAL BIOS v2.2.0 [2026-05-08]', delay: 0 },
+  { text: 'MEMORY TEST: 0KB ... 524288KB OK', delay: 100 },
+  { text: 'DETECTING MASTER CLOCK... FOUND [IRQ=9]', delay: 200 },
+  { text: 'MOUNTING FRAME_DRAGGING.SYS... OK', delay: 300 },
+  { text: 'LOADING DSP_CORE.DLL.............. OK', delay: 450 },
+  { text: 'CONNECTING TO FAUST_SERVER: 126.99.37.53... OK', delay: 600 },
+  { text: 'INITIALIZING KIRSCH AUDIO SUBSYSTEM: ENABLED', delay: 800 },
+  { text: 'FILTERING ANALOG NOISE (SECTOR 01)... 100% PURGED', delay: 1000 },
+  { text: 'CALIBRATING TRAJECTORY TO HELIOPAUSE... SYNC OK', delay: 1200 },
+  { text: 'MOUNTING /dev/snd/pcmC0D0p....... OK', delay: 1400 },
+  { text: 'AUTHENTICATING ACCESS CREDENTIALS... GRANTED', delay: 1650 },
+  { text: 'WARNING: DEEP SPACE ENTRY APPROACHING', delay: 1850, warn: true },
+  { text: 'SPAWNING TERMINAL PROCESS [PID:0x02]... OK', delay: 2050 },
+  { text: '──────────────────────────────────────────', delay: 2200 },
+  { text: 'SYSTEM READY. AWAITING INPUT.', delay: 2400, accent: true },
 ];
 
 interface BootLineProps {

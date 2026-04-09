@@ -14,12 +14,10 @@ export default function EventDetail({ event, showCountdown = false }: Props) {
   const eventDate = new Date(`${event.date}T23:00:00`);
 
   const locationFields = [
-    { k: 'VENUE_ID',    v: event.venue },
+    { k: 'GATE_ID',     v: event.venue },
     { k: 'DISTRICT',    v: event.district },
     { k: 'COORDINATES', v: event.coords },
     { k: 'CAPACITY',    v: event.capacity },
-    { k: 'DRESS_CODE',  v: event.dressCode },
-    { k: 'ENTRY_AGE',   v: event.ageRestriction },
     { k: 'SOUND_SYS',   v: event.sound },
   ];
 
@@ -46,7 +44,12 @@ export default function EventDetail({ event, showCountdown = false }: Props) {
         <div className="space-y-3">
           {event.status === 'UPCOMING' && (
             <div className="text-xs font-mono text-terminal-subdued">
-              <DecodeText text="⚠ EXACT ADDRESS DISCLOSED 24H BEFORE EVENT TO CONFIRMED ATTENDEES" speed={0.4} scramble={4} />
+              <DecodeText
+                text="⚠ EXACT GATE DISCLOSED TO AUTHORIZED PERSONNEL ONLY."
+                speed={0.5}
+                scramble={6}
+                className="text-terminal-accent-amber font-mono text-[10px] sm:text-xs"
+              />
             </div>
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

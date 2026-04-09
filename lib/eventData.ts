@@ -1,11 +1,11 @@
 export type EventStatus = "UPCOMING" | "LIVE" | "ARCHIVED";
-export type ArtistStatus = "CONFIRMED" | "CLASSIFIED" | "PENDING";
+export type ArtistStatus = "CONFIRMED" | "CLASSIFIED" | "PENDING" | "ARCHIVED" | "AWAITING DECRYPTION";
 
 export interface Artist {
   id: string;
   name: string;
   origin: string;
-  genre: string;
+  dock: string;
   time: string;
   status: ArtistStatus;
 }
@@ -20,8 +20,6 @@ export interface TerminalEvent {
   district: string;
   coords: string;
   capacity: string;
-  dressCode: string;
-  ageRestriction: string;
   sound: string;
   status: EventStatus;
   artists: Artist[];
@@ -34,119 +32,67 @@ export const EVENTS: TerminalEvent[] = [
     subtitle: "Heliopause Outskirts",
     date: "2026-05-08",
     time: "23:00 KST",
-    venue: "CLASSIFIED_LOCATION_B",
-    district: "SEONGDONG-GU // SECTOR-12",
-    coords: "37.5636° N, 127.0369° E",
-    capacity: "300 NODES MAX",
-    dressCode: "ALL BLACK MANDATORY",
-    ageRestriction: "18+ ONLY",
-    sound: "FUNKTION-ONE / CUSTOM RIG",
+    venue: "FAUST SEOUL",
+    district: "YONGSAN-GU // ITAEWON",
+    coords: "37.5335° N, 126.9958° E",
+    capacity: "CAPACITY: CLASSIFIED",
+    sound: "KIRSCH AUDIO SYSTEM",
     status: "UPCOMING",
     artists: [
       {
-        id: "TRM-02-001",
-        name: "DJ1",
-        origin: "UK",
-        genre: "TECHNO",
-        time: "23:00–01:00",
-        status: "CONFIRMED",
-      },
-      {
-        id: "TRM-02-002",
-        name: "DJ2",
-        origin: "UK",
-        genre: "TECHNO",
-        time: "01:00–03:00",
-        status: "CONFIRMED",
-      },
-      {
-        id: "TRM-02-003",
-        name: "DJ3",
-        origin: "UK",
-        genre: "TECHNO",
-        time: "03:00–05:00",
-        status: "CONFIRMED",
-      },
-      {
-        id: "TRM-02-004",
-        name: "DJ4",
+        id: "02-A",
+        name: "STANN LUMO",
         origin: "KR",
-        genre: "TECHNO",
-        time: "05:00–07:00",
+        dock: "1",
+        time: "TBA",
         status: "CONFIRMED",
       },
       {
-        id: "TRM-02-005",
-        name: "DJ5",
-        origin: "SE",
-        genre: "TECHNO",
-        time: "07:00–09:00",
-        status: "CONFIRMED",
-      },
-      {
-        id: "TRM-02-006",
-        name: "[REDACTED]",
-        origin: "??",
-        genre: "??? / CLASSIFIED",
-        time: "09:00–10:00",
-        status: "CLASSIFIED",
+        id: "02-B",
+        name: "[ ENCRYPTED ]",
+        origin: "--",
+        dock: "2",
+        time: "TBA",
+        status: "AWAITING DECRYPTION",
       },
     ],
   },
   {
     id: "TRM-01",
     session: "TERMINAL [01]",
-    subtitle: "Signal Origin",
-    date: "2026-03-14",
+    subtitle: "Departure Notice",
+    date: "2025-03-07",
     time: "23:00 KST",
-    venue: "CLASSIFIED_LOCATION_A",
-    district: "MAPO-GU // SECTOR-7",
-    coords: "37.5480° N, 126.9975° E",
+    venue: "FAUST SEOUL",
+    district: "YONGSAN-GU // ITAEWON",
+    coords: "37.5335° N, 126.9958° E",
     capacity: "200 NODES MAX",
-    dressCode: "ALL BLACK MANDATORY",
-    ageRestriction: "18+ ONLY",
-    sound: "FUNKTION-ONE / CUSTOM RIG",
+    sound: "KIRSCH AUDIO SYSTEM",
     status: "ARCHIVED",
     artists: [
       {
-        id: "TRM-01-001",
-        name: "DJ1",
-        origin: "SE",
-        genre: "TECHNO",
-        time: "23:00–01:00",
-        status: "CONFIRMED",
-      },
-      {
-        id: "TRM-01-002",
-        name: "DJ2",
-        origin: "UK",
-        genre: "TECHNO",
-        time: "01:00–03:00",
-        status: "CONFIRMED",
-      },
-      {
-        id: "TRM-01-003",
-        name: "DJ3",
-        origin: "UK",
-        genre: "TECHNO",
-        time: "03:00–05:00",
-        status: "CONFIRMED",
-      },
-      {
-        id: "TRM-01-004",
-        name: "DJ4",
+        id: "01-A",
+        name: "STANN LUMO",
         origin: "KR",
-        genre: "TECHNO",
-        time: "05:00–07:00",
-        status: "CONFIRMED",
+        dock: "1",
+        time: "02:00–04:00",
+        status: "ARCHIVED",
       },
       {
-        id: "TRM-01-005",
-        name: "DJ5",
+        id: "01-B",
+        name: "MARCUS L",
         origin: "KR",
-        genre: "TECHNO",
-        time: "07:00–09:00",
-        status: "CONFIRMED",
+        dock: "2",
+        time: "04:00–06:00",
+        status: "ARCHIVED",
+      },
+      {
+        id: "01-C",
+        name: "MARCUS L",
+        origin: "KR",
+        dock: "2",
+        time: "04:00–06:00",
+        status: "ARCHIVED",
       },
     ],
   },

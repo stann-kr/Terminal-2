@@ -38,7 +38,7 @@ export default function ArtistRow({ artist: a }: Props) {
           <span className="text-terminal-subdued"><DecodeText text={a.origin} speed={0.5} scramble={3} /></span>
           <span className="text-terminal-accent-gold"><DecodeText text={a.time} speed={0.5} scramble={3} /></span>
         </div>
-        <div className="text-xs text-terminal-subdued font-mono"><DecodeText text={a.genre} speed={0.5} scramble={3} /></div>
+        <div className="text-xs text-terminal-subdued font-mono"><DecodeText text={`DOCK ${a.dock}`} speed={0.5} scramble={3} /></div>
       </div>
 
       {/* Desktop */}
@@ -50,7 +50,7 @@ export default function ArtistRow({ artist: a }: Props) {
           <DecodeText text={a.name} speed={0.6} scramble={4} />
         </span>
         <span className="col-span-1 text-xs text-terminal-subdued font-mono"><DecodeText text={a.origin} speed={0.5} scramble={3} /></span>
-        <span className="col-span-3 text-xs text-terminal-subdued font-mono"><DecodeText text={a.genre} speed={0.5} scramble={3} /></span>
+        <span className="col-span-3 text-xs text-terminal-subdued font-mono"><DecodeText text={`DOCK ${a.dock}`} speed={0.5} scramble={3} /></span>
         <span className="col-span-2 text-xs text-terminal-accent-gold font-mono"><DecodeText text={a.time} speed={0.5} scramble={3} /></span>
         <span className={`col-span-2 text-xs font-bold tracking-wider font-mono ${statusColorClass}`}>
           <span className="status-pulse mr-1">●</span><DecodeText text={a.status} speed={0.6} scramble={4} className="inline" />

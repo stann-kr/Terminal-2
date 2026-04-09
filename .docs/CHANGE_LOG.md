@@ -30,6 +30,13 @@
 * **페이지 전환 효과 개선 (`PageTransition.tsx`):** 진입 시 `opacity 0→1` fade-in(0.3s) 추가. exit를 즉시(`duration: 0`)로 처리하여 이전 페이지 잔상 제거. Suspense fallback에서 `min-h-screen` 제거.
 * **ParticleFieldDynamic loading fallback 처리 (`ParticleFieldDynamic.tsx`):** `loading: () => null` 추가로 동적 import 로딩 중 빈 공간 노출 방지.
 
+## [2026-04-09] v2.2.0-Heliopause 업데이트 및 컨텐츠 리팩토링
+* **전역 빌드 버전 하향 조정:** 시스템 전반의 빌드 버전을 `4.2.0`에서 `2.2.0`으로 변경. Home, About, BootSequence, SleepScreen 등 모든 UI 반영 완료.
+* **데이터 구조 및 라인업 리팩토링:** `Artist` 인터페이스의 `genre` 필드를 `dock`으로 변경. 아티스트 데이터를 도크 번호(`1`, `2`) 기반으로 재편하고 `TRACKLIST` 필드 제거.
+* **컨텐츠 보안 및 필터링:** `Gate` 상세 정보에서 `DRESS_CODE`, `ENTRY_AGE` 항목 삭제. `About` 페이지 `SYSTEM_INFO`에서 `AUDIO_SPECTRUM` 항목 제거.
+* **텍스트 순화 및 경로 간소화:** `Transmit` 페이지의 `Cloudflare D1` 기술 명칭을 `NODE_SYNC` 및 일반 데이터베이스 명칭으로 변경. 홈 페이지 루트 경로를 `/terminal/`로 간소화.
+* **마스터 가이드 업데이트:** `.docs/private/TEXT_CONTENT.md`를 최신 리팩토링 서사 및 데이터 구조에 맞춰 전면 현행화.
+
 ## [2026-04-09] 레이아웃 버그 수정 및 UX 개선
 
 * **`[]` 제목 위아래 배치 버그 수정 (`DirectoryLink.tsx`):** `DecodeText` 외부 `<div>`(block 요소)가 `[`와 `]` 사이에 삽입되어 위아래 배치되던 문제 해결. `[${label}]`을 text 내부로 통합하여 한 줄 렌더링.

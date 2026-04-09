@@ -23,8 +23,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TERMINAL — Underground Techno Platform",
-  description: "Access granted. Welcome to the underground.",
+  title: "TERMINAL — A Voyage to the Unknown Sector",
+  description: "Seoul-based techno platform designing an industrial station where audio signals and data intersect.",
 };
 
 export const viewport = {

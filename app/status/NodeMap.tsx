@@ -2,14 +2,14 @@
 import { useState, useEffect } from 'react';
 
 const NODES = [
-  { x: 72, y: 28, label: 'SEO' },
-  { x: 78, y: 25, label: 'TOK' },
-  { x: 20, y: 35, label: 'NYC' },
-  { x: 48, y: 28, label: 'BER' },
-  { x: 50, y: 30, label: 'AMS' },
-  { x: 45, y: 35, label: 'MAD' },
-  { x: 63, y: 45, label: 'BOM' },
-  { x: 82, y: 55, label: 'SYD' },
+  { x: 72, y: 28, label: 'TRAPPIST' },
+  { x: 78, y: 25, label: 'KEPLER' },
+  { x: 20, y: 35, label: 'PROXIMA' },
+  { x: 48, y: 28, label: 'GLIESE' },
+  { x: 50, y: 30, label: 'SIRIUS' },
+  { x: 45, y: 35, label: 'VEGA' },
+  { x: 63, y: 45, label: 'ALTAIR' },
+  { x: 82, y: 55, label: 'RIGEL' },
 ];
 
 export default function NodeMap() {
