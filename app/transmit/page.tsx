@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import AnimatedHeight from '@/components/ui/AnimatedHeight';
 import TerminalPanel from '@/components/TerminalPanel';
 import TerminalButton from '@/components/TerminalButton';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
@@ -149,31 +150,58 @@ export default function TransmitPage() {
         >
           <div className="space-y-4">
             {/* 로그 목록 */}
-            <div className="space-y-4 min-h-[120px]">
-              {loading ? (
-                <div className="text-xs font-mono text-terminal-muted text-center py-4">
-                  <LabelText text="▸ SYNCHRONIZING WITH DATABASE..." />
-                </div>
-              ) : logs.length === 0 ? (
-                <div className="text-xs font-mono text-terminal-muted text-center py-4">
-                  <MetaText text="NO ENTRIES FOUND." />
-                </div>
-              ) : logs.map((entry, i) => (
-                <div key={entry.id} className="border-b border-terminal-accent-cyan/10 pb-4 last:border-0 last:pb-0">
-                  <div className="flex items-center gap-3 mb-1.5">
-                    <span className="text-xs font-bold tracking-wider font-mono text-terminal-accent-purple">
-                      <SubtitleText text={entry.handle} delay={i * 40} />
-                    </span>
-                    <span className="text-xs font-mono text-terminal-muted">
-                      <MetaText text={entry.ts} delay={i * 40} />
-                    </span>
-                  </div>
-                  <div className="text-xs leading-relaxed font-mono text-terminal-subdued">
-                    <SubtitleText text={`> ${entry.message}`} delay={i * 40} />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <AnimatedHeight>
+              <AnimatePresence mode="wait">
+                {loading ? (
+                  <motion.div
+                    key="loading"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="text-xs font-mono text-terminal-muted text-center py-4"
+                  >
+                    <LabelText text="▸ SYNCHRONIZING WITH DATABASE..." />
+                  </motion.div>
+                ) : logs.length === 0 ? (
+                  <motion.div
+                    key="empty"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="text-xs font-mono text-terminal-muted text-center py-4"
+                  >
+                    <MetaText text="NO ENTRIES FOUND." />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={currentPage}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="space-y-4"
+                  >
+                    {logs.map((entry, i) => (
+                      <div key={entry.id} className="border-b border-terminal-accent-cyan/10 pb-4 last:border-0 last:pb-0">
+                        <div className="flex items-center gap-3 mb-1.5">
+                          <span className="text-xs font-bold tracking-wider font-mono text-terminal-accent-purple">
+                            <SubtitleText text={entry.handle} delay={i * 40} />
+                          </span>
+                          <span className="text-xs font-mono text-terminal-muted">
+                            <MetaText text={entry.ts} delay={i * 40} />
+                          </span>
+                        </div>
+                        <div className="text-xs leading-relaxed font-mono text-terminal-subdued">
+                          <SubtitleText text={`> ${entry.message}`} delay={i * 40} />
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </AnimatedHeight>
 
             {/* 페이지네이션 */}
             <div className="flex items-center justify-between pt-2 border-t border-terminal-accent-cyan/10">

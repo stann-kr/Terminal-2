@@ -1,6 +1,6 @@
 'use client';
-import { motion, AnimatePresence } from 'framer-motion';
 import TerminalPanel from '@/components/TerminalPanel';
+import AnimatedHeight from '@/components/ui/AnimatedHeight';
 import CountdownBlock from '@/components/ui/CountdownBlock';
 import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import type { TerminalEvent } from '@/lib/eventData';
@@ -23,27 +23,16 @@ export default function EventDetail({ event, showCountdown = false }: Props) {
 
   return (
     <div className="space-y-4">
-      <AnimatePresence>
-        {showCountdown && (
-          <motion.div
-            key="countdown"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-            style={{ overflow: 'hidden' }}
-          >
-            <TerminalPanel title="MISSION_CLOCK" accent="cyan">
-              <div className="text-center mb-4">
-                <div className="text-xs tracking-widest mb-1 font-mono text-terminal-muted">
-                  <MetaText text={`${event.date.replace(/-/g, '.')} · ${event.time}`} />
-                </div>
-              </div>
-              <CountdownBlock targetDate={eventDate} accent="cyan" />
-            </TerminalPanel>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <AnimatedHeight show={showCountdown}>
+        <TerminalPanel title="MISSION_CLOCK" accent="cyan">
+          <div className="text-center mb-4">
+            <div className="text-xs tracking-widest mb-1 font-mono text-terminal-muted">
+              <MetaText text={`${event.date.replace(/-/g, '.')} · ${event.time}`} />
+            </div>
+          </div>
+          <CountdownBlock targetDate={eventDate} accent="cyan" />
+        </TerminalPanel>
+      </AnimatedHeight>
 
       {event.status === 'ARCHIVED' && (
         <div className="px-3 py-2 border text-xs tracking-widest font-mono border-terminal-accent-hot/30 text-terminal-accent-hot bg-terminal-accent-hot/5">

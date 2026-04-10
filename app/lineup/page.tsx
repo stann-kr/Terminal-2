@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import AnimatedHeight from '@/components/ui/AnimatedHeight';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
 import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
@@ -100,6 +101,7 @@ export default function LineupPage() {
           </motion.div>
 
           {/* Artist list */}
+          <AnimatedHeight>
           <AnimatePresence mode="wait">
             <motion.div
               key={selectedId}
@@ -142,6 +144,7 @@ export default function LineupPage() {
               )}
             </motion.div>
           </AnimatePresence>
+          </AnimatedHeight>
         </>
       )}
     </PageLayout>
