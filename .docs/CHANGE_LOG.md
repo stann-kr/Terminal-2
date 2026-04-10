@@ -1,5 +1,25 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-11] KO/EN 언어 선택 기능
+
+### 추가
+- `lib/lang.ts`: localStorage 기반 언어 설정 유틸
+- `lib/langContext.tsx`: Lang React Context + `useLang()` 훅
+- `lib/i18n.ts`: 홈 DIRS 설명 및 About 매니페스토 KO 번역
+- `components/ui/LangToggle.tsx`: `[ KO ] / [ EN ]` 브래킷 토글 컴포넌트
+
+### 변경
+- `components/BootSequence.tsx`: 3단계 부팅 (Phase1 로그+프로그레스 바 → 언어 선택 프롬프트 → Phase3 로그)
+- `app/layout.tsx`: LangProvider 전역 래핑 추가
+- `app/home/page.tsx`: 푸터 STATUS:ACTIVE → LangToggle, DIRS 설명 번역 분기
+- `app/about/page.tsx`: MANIFESTO KO/EN 분기
+
+### 번역 범위
+- 번역 대상: 홈 디렉토리 설명 6개, About 매니페스토 본문
+- 영어 유지: 서브타이틀, 시스템 로그, 터미널 명령어 스타일 텍스트
+
+---
+
 ## [2026-04-09] Cloudflare D1 DB 연동 및 Workers 배포 구현
 
 * **DB 범위 확정:** Transmit(방명록), Gate(이벤트), Lineup(아티스트) 3개 섹션을 D1으로 전환 결정. About/Home/Status 텍스트는 정적 유지.
