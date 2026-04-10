@@ -1,8 +1,12 @@
 const NODE_KEY = 'terminal_node_id';
 
+const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // O/0, I/1, L 제외
+
 function generateNodeId(): string {
-  const num = Math.floor(Math.random() * 1000000);
-  return `NODE-${String(num).padStart(6, '0')}`;
+  const result = Array.from({ length: 5 }, () =>
+    CHARS[Math.floor(Math.random() * CHARS.length)]
+  ).join('');
+  return `NODE-${result}`;
 }
 
 export function getNodeId(): string {
