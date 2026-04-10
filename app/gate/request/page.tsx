@@ -110,7 +110,7 @@ export default function RequestAccessPage() {
     'w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-cyan/30 focus:border-terminal-accent-cyan/70 transition-colors font-mono text-terminal-accent-cyan caret-terminal-accent-cyan placeholder:text-terminal-muted/40';
 
   return (
-    <PageLayout>
+    <PageLayout centerContent={false}>
       <ReturnLink variants={itemVariants} />
       <PageHeader
         path="/terminal/gate/request"
@@ -278,9 +278,9 @@ export default function RequestAccessPage() {
                         ✓
                       </div>
                     </div>
-                    <p className="text-xs font-mono text-terminal-muted leading-relaxed group-hover:text-terminal-subdued transition-colors m-0">
+                    <span className="text-xs font-mono text-terminal-muted leading-relaxed group-hover:text-terminal-subdued transition-colors">
                       <MetaText text="I CONSENT TO THE COLLECTION AND USE OF MY PERSONAL INFORMATION (NAME, EMAIL, INSTAGRAM ID) FOR THE PURPOSE OF EVENT GUEST MANAGEMENT. DATA WILL NOT BE SHARED WITH THIRD PARTIES." />
-                    </p>
+                    </span>
                   </label>
                 </div>
 
