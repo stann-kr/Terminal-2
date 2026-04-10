@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function EventDetail({ event, showCountdown = false }: Props) {
-  const eventDate = new Date(`${event.date}T23:00:00`);
+  const eventDate = new Date(`${event.date}T${event.time.replace(' KST', '')}:00`);
 
   const locationFields = [
     { k: 'GATE_ID',     v: event.venue },
@@ -33,7 +33,7 @@ export default function EventDetail({ event, showCountdown = false }: Props) {
             transition={{ duration: 0.4, ease: 'easeOut' }}
             style={{ overflow: 'hidden' }}
           >
-            <TerminalPanel title="COUNTDOWN_ACTIVE" accent="cyan">
+            <TerminalPanel title="MISSION_CLOCK" accent="cyan">
               <div className="text-center mb-4">
                 <div className="text-xs tracking-widest mb-1 font-mono text-terminal-muted">
                   <MetaText text={`${event.date.replace(/-/g, '.')} · ${event.time}`} />

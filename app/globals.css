@@ -1,4 +1,4 @@
-@import url('https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,10 +8,10 @@
     --color-bg-base: 12 9 4;
     --color-bg-panel: 18 14 8;
     --color-bg-panel-border: 212 146 10;
-    
+
     --color-text-primary: 232 216 144;
     --color-text-subdued: 106 80 48;
-    --color-text-muted: 58 42 16;
+    --color-text-muted: 88 82 52;
 
     --color-accent-amber: 212 146 10;
     --color-accent-cyan: 58 152 128;

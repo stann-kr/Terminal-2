@@ -35,6 +35,11 @@ interface DecodeTextProps {
    * 텍스트 레이아웃 점프 방지에 매우 효과적입니다.
    */
   animateTextLength?: boolean;
+  /**
+   * true: height 측정 컨테이너 없이 Tag를 직접 렌더링.
+   * 높이가 고정되거나 부모가 레이아웃을 제어하는 경우 사용 (카운트다운 숫자 등).
+   */
+  autoHeight?: boolean;
 }
 
 /**
@@ -58,6 +63,7 @@ const DecodeText = memo(function DecodeText({
   playOnMount = true,
   scrambleOnUpdate = true,
   animateTextLength = false,
+  autoHeight = false,
 }: DecodeTextProps) {
   // 외부 div: minHeight 측정/적용 전용
   const containerRef = useRef<HTMLDivElement>(null);
@@ -127,9 +133,9 @@ const DecodeText = memo(function DecodeText({
   }, [text, scrambleOnUpdate]);
 
   // pretext 레이아웃 측정: measureRef 사용 (scrambleRef 독립)
-  // useLayoutEffect: React commit 후 브라우저 페인트 전 동기 실행
-  // → fonts.ready microtask가 페인트 전에 처리되어 minHeight를 첫 페인트에 반영 → 플래시 방지
+  // autoHeight=true이면 측정 불필요 — 부모 레이아웃이 높이를 제어함
   useLayoutEffect(() => {
+    if (autoHeight) return;
     let animationFrameId: number;
 
     const measureAndLayout = () => {
@@ -189,15 +195,17 @@ const DecodeText = memo(function DecodeText({
       resizeObserver.observe(containerRef.current);
     }
 
-    // 초기 측정: RAF 없이 즉시 microtask로 처리
-    // fonts.ready가 이미 resolved면 microtask로 즉시 실행 → 페인트 전 minHeight 확정
-    document.fonts.ready.then(measureAndLayout);
+    // 초기 측정: RAF 후 처리 — 레이아웃 안정화 후 너비를 측정하여 높이 오측정 방지
+    // (즉시 측정 시 flex/grid 레이아웃이 확정되기 전 너비를 읽어 과도한 높이가 설정됨)
+    animationFrameId = requestAnimationFrame(() => {
+      document.fonts.ready.then(measureAndLayout);
+    });
 
     return () => {
       resizeObserver.disconnect();
       cancelAnimationFrame(animationFrameId);
     };
-  }, [text, explicitFont, explicitLineHeight]);
+  }, [text, explicitFont, explicitLineHeight, autoHeight]);
 
   /**
    * 안정적인 callback ref: useCallback([])으로 마운트 시 1회만 생성.
@@ -215,6 +223,20 @@ const DecodeText = memo(function DecodeText({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // 빈 deps: scrambleRef(stable RefObject)와 animationSettledRef(ref)는 안정적
+
+  // autoHeight: 측정 컨테이너 없이 Tag 직접 렌더 (카운트다운 숫자 등 고정 레이아웃용)
+  if (autoHeight) {
+    return (
+      <Tag
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ref={setTagRef as any}
+        className={className}
+        style={{ whiteSpace: "pre-wrap", display: "block", ...style }}
+      >
+        {null}
+      </Tag>
+    );
+  }
 
   return (
     // transition: height, min-height — 내용이 채워지며 점진적으로 높이가 커지는 grow 효과
