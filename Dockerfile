@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
-FROM node:20-alpine
+FROM node:20-bookworm-slim
 
-# Apple Silicon에서 네이티브 의존성 빌드를 위한 필수 패키지 설치
-RUN apk add --no-cache libc6-compat python3 make g++
+# 네이티브 의존성 빌드 + workerd(glibc 2.36 필요) 실행을 위한 패키지 설치
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
