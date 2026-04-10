@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import PageLayout, { itemVariants } from "@/components/PageLayout";
 import { LabelText, SubtitleText, MetaText, HeadingText } from "@/components/ui/TerminalText";
 import ReturnLink from "@/components/ui/ReturnLink";
@@ -119,9 +120,11 @@ export default function GatePage() {
                   <EventDetail event={upcomingEvent} showCountdown />
 
                   <div className="text-center pt-2">
-                    <TerminalButton className="px-8" variant="primary">
-                      ▶ REQUEST ACCESS PASS
-                    </TerminalButton>
+                    <Link href="/gate/request">
+                      <TerminalButton className="px-8" variant="primary">
+                        ▶ REQUEST ACCESS PASS
+                      </TerminalButton>
+                    </Link>
                   </div>
                 </>
               )}

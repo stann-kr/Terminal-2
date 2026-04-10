@@ -9,14 +9,23 @@ interface Props {
   accent?: 'amber' | 'cyan';
 }
 
-function getTimeLeft(target: Date) {
+interface TimeDelta {
+  elapsed: boolean;
+  d: number;
+  h: number;
+  m: number;
+  s: number;
+}
+
+function getTimeDelta(target: Date): TimeDelta {
   const diff = target.getTime() - Date.now();
-  if (diff <= 0) return { d: 0, h: 0, m: 0, s: 0 };
+  const abs = Math.abs(diff);
   return {
-    d: Math.floor(diff / 86400000),
-    h: Math.floor((diff % 86400000) / 3600000),
-    m: Math.floor((diff % 3600000) / 60000),
-    s: Math.floor((diff % 60000) / 1000),
+    elapsed: diff < 0,
+    d: Math.floor(abs / 86400000),
+    h: Math.floor((abs % 86400000) / 3600000),
+    m: Math.floor((abs % 3600000) / 60000),
+    s: Math.floor((abs % 60000) / 1000),
   };
 }
 
@@ -26,64 +35,70 @@ const accentStyles = {
     value: 'text-terminal-accent-amber',
     glow: 'drop-shadow-[0_0_24px_rgba(212,146,10,0.6)]',
     label: 'text-terminal-muted',
-    labelGlow: '',
     wrapperClass: 'grid grid-cols-4 gap-2 sm:gap-4',
     cellClass: 'text-center border py-3 sm:py-4 bg-black/50',
     valueSize: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-mono flex items-center justify-center',
     labelClass: 'text-xs mt-2 tracking-widest font-mono',
+    modeLabel: 'text-terminal-accent-amber/60',
   },
   cyan: {
     border: 'border-terminal-accent-cyan/20',
     value: 'text-terminal-accent-cyan text-shadow-glow-cyan',
     glow: '',
     label: 'text-terminal-accent-cyan/50',
-    labelGlow: '',
     wrapperClass: 'grid grid-cols-4 gap-3 font-mono',
     cellClass: 'text-center border bg-black/40 py-4',
     valueSize: 'text-3xl sm:text-4xl md:text-5xl font-bold flex items-center justify-center',
     labelClass: 'text-xs mt-1 tracking-widest',
+    modeLabel: 'text-terminal-accent-cyan/60',
   },
 };
 
 export default function CountdownBlock({ targetDate, accent = 'amber' }: Props) {
-  const [t, setT] = useState({ d: 0, h: 0, m: 0, s: 0 });
+  const [delta, setDelta] = useState<TimeDelta>({ elapsed: false, d: 0, h: 0, m: 0, s: 0 });
 
   useEffect(() => {
-    setT(getTimeLeft(targetDate));
-    const interval = setInterval(() => setT(getTimeLeft(targetDate)), 1000);
+    setDelta(getTimeDelta(targetDate));
+    const interval = setInterval(() => setDelta(getTimeDelta(targetDate)), 1000);
     return () => clearInterval(interval);
   }, [targetDate]);
 
   const blocks = [
-    { label: 'DAYS',    val: String(t.d).padStart(2, '0') },
-    { label: 'HOURS',   val: String(t.h).padStart(2, '0') },
-    { label: 'MINUTES', val: String(t.m).padStart(2, '0') },
-    { label: 'SECONDS', val: String(t.s).padStart(2, '0') },
+    { label: 'DAYS',    val: String(delta.d).padStart(2, '0') },
+    { label: 'HOURS',   val: String(delta.h).padStart(2, '0') },
+    { label: 'MINUTES', val: String(delta.m).padStart(2, '0') },
+    { label: 'SECONDS', val: String(delta.s).padStart(2, '0') },
   ];
 
   const s = accentStyles[accent];
 
   return (
     <motion.div
-      className={s.wrapperClass}
       suppressHydrationWarning={true}
       initial={{ y: 8 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
     >
-      {blocks.map((b) => (
-        <div key={b.label} className={`${s.cellClass} ${s.border}`}>
-          <div className={s.glow}>
-            <DataText
-              text={b.val}
-              className={`${s.valueSize} ${s.value}`}
-            />
+      {/* T+/T- 모드 레이블 */}
+      <div className={`text-center mb-2 text-[10px] tracking-[0.2em] font-mono font-bold ${s.modeLabel}`}>
+        <MetaText text={delta.elapsed ? 'T+ ELAPSED' : 'T- COUNTDOWN'} />
+      </div>
+
+      <div className={s.wrapperClass}>
+        {blocks.map((b) => (
+          <div key={b.label} className={`${s.cellClass} ${s.border}`}>
+            <div className={s.glow}>
+              <DataText
+                text={b.val}
+                className={`${s.valueSize} ${s.value}`}
+              />
+            </div>
+            <div className={`${s.labelClass} ${s.label}`}>
+              <MetaText text={b.label} autoHeight />
+            </div>
           </div>
-          <div className={`${s.labelClass} ${s.label}`}>
-            <MetaText text={b.label} />
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </motion.div>
   );
 }
