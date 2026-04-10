@@ -3,6 +3,11 @@ module.exports = {
   content: ["./{app,components,libs,pages,hooks}/**/*.{html,js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        'pixie': ['ProcrastinatingPixie', 'monospace'],
+        'orbit': ['Orbit', 'monospace'],
+        'mono': ['Orbit', 'var(--font-space-mono)', 'monospace'],
+      },
       colors: {
         'terminal': {
           'bg-base': 'rgb(var(--color-bg-base) / <alpha-value>)',

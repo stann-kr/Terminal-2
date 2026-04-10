@@ -135,7 +135,7 @@ export default function HomePage() {
 
         <motion.h1
           variants={itemVariants}
-          className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.15em] sm:tracking-[0.3em] mb-2 drop-shadow-[0_0_30px_rgba(212,146,10,0.5)]"
+          className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.15em] sm:tracking-[0.3em] mb-2 drop-shadow-[0_0_30px_rgba(212,146,10,0.5)] font-pixie"
         >
           <TitleText
             text="TERMINAL"

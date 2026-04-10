@@ -1,9 +1,30 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css");
+
+@font-face {
+  font-family: 'ProcrastinatingPixie';
+  src: url('/fonts/ProcrastinatingPixie-WyVOO.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Orbit';
+  src: url('/fonts/Orbit-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html, body {
+    font-family: 'Orbit', monospace;
+  }
+
   :root {
     --color-bg-base: 12 9 4;
     --color-bg-panel: 18 14 8;
