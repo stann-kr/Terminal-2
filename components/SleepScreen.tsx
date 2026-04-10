@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import TerminalButton from '@/components/TerminalButton';
 
 interface SleepScreenProps {
   onWake: () => void;
@@ -46,8 +47,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center cursor-pointer select-none bg-black font-mono"
-      onClick={wake}
+      className="fixed inset-0 z-50 flex flex-col justify-center items-center px-8 md:px-16 select-none bg-black font-mono"
       animate={waking ? { opacity: 0, filter: 'brightness(3) blur(4px)' } : { opacity: 1 }}
       transition={{ duration: 0.5 }}
       exit={{ opacity: 0 }}
@@ -57,7 +57,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
         background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.3) 3px, rgba(0,0,0,0.3) 6px)',
       }} />
 
-      <div className="relative z-10 text-center px-8 max-w-xl">
+      <div className="relative z-10 w-full max-w-3xl text-center">
         {/* Clock */}
         <div className="text-5xl md:text-7xl font-bold mb-8 phosphor-text tracking-[0.1em] text-terminal-accent-amber drop-shadow-[0_0_20px_rgba(212,146,10,0.5)]" suppressHydrationWarning={true}>
           {time}
@@ -78,11 +78,13 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
 
         {!waking ? (
           <motion.div
-            className="text-xs tracking-widest text-terminal-accent-amber"
-            animate={{ opacity: [0, 1, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
           >
-            ── TOUCH TO WAKE ──
+            <TerminalButton onClick={wake} variant="primary" className="px-8">
+              [ RESUME SESSION ]
+            </TerminalButton>
           </motion.div>
         ) : (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs tracking-widest text-terminal-accent-amber drop-shadow-[0_0_8px_rgba(212,146,10,0.6)]">

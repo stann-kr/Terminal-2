@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { DataText, MetaText } from '@/components/ui/TerminalText';
 
 interface Props {
@@ -63,7 +64,13 @@ export default function CountdownBlock({ targetDate, accent = 'amber' }: Props) 
   const s = accentStyles[accent];
 
   return (
-    <div className={s.wrapperClass} suppressHydrationWarning={true}>
+    <motion.div
+      className={s.wrapperClass}
+      suppressHydrationWarning={true}
+      initial={{ y: 8 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
+    >
       {blocks.map((b) => (
         <div key={b.label} className={`${s.cellClass} ${s.border}`}>
           <div className={s.glow}>
@@ -77,6 +84,6 @@ export default function CountdownBlock({ targetDate, accent = 'amber' }: Props) 
           </div>
         </div>
       ))}
-    </div>
+    </motion.div>
   );
 }

@@ -81,7 +81,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col justify-center items-start px-8 md:px-16 overflow-hidden bg-black font-mono"
+      className="fixed inset-0 z-50 flex flex-col justify-center items-center px-8 md:px-16 overflow-hidden bg-black font-mono"
       animate={powering ? { scaleY: 0.001, filter: 'brightness(0)' } : { scaleY: 1, filter: 'brightness(1)' }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
       exit={{ opacity: 0, filter: 'brightness(3) blur(8px)', transition: { duration: 0.5 } }}
