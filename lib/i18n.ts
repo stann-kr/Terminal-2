@@ -44,7 +44,7 @@ export const commonKo = {
 // ─────────────────────────────────────────────
 
 export const homeKo = {
-  nextEntry: "다음 입장 —",
+  nextEntry: "다음 발사 —",
   rootDir: "▶ 루트 디렉토리 — /terminal/",
   moduleCount: "6 모듈",
 };
