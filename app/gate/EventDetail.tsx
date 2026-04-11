@@ -50,7 +50,7 @@ export default function EventDetail({ event, showCountdown = false }: Props) {
           {event.status === 'UPCOMING' && (
             <div className="text-xs font-mono text-terminal-subdued">
               <SubtitleText
-                text={lang === 'ko' ? gateKo.locationWarning : '⚠ EXACT GATE DISCLOSED TO AUTHORIZED PERSONNEL ONLY.'}
+                text={lang === 'ko' ? gateKo.locationWarning : '⚠ DETAILED LOCATION & GATE INFORMATION FOR THE SESSION.'}
                 className="text-terminal-accent-amber font-mono text-[10px] sm:text-xs"
               />
             </div>

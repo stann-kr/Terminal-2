@@ -59,7 +59,7 @@ export const gateKo = {
   loading: "▸ 게이트 데이터 로딩 중...",
   requestBtn: "▶ 입장 신청",
   archivedLabel: "◼ 아카이브됨",
-  locationWarning: "⚠ 정확한 장소는 승인된 인원에게만 공개됩니다.",
+  locationWarning: "⚠ 세션 참가를 위한 상세 위치 및 게이트 정보입니다.",
   /** `◼ 세션 종료 — ${date}` */
   sessionArchived: (date: string) => `◼ 세션 종료 — ${date}`,
 };
@@ -83,7 +83,7 @@ export const requestKo = {
   invitationLines: [
     "이 채널에 대한 접근 권한이 부여되었습니다.",
     "이 초대는 개인적이며 양도 불가합니다.",
-    "TERMINAL은 비공개 이벤트입니다 — 승인된 인원만 입장 가능합니다.",
+    "TERMINAL은 RSVP 기반 이벤트입니다 — 신청 절차를 완료해주세요.",
     "입장 심사를 위해 아래 양식을 작성해 제출하세요.",
     "인증 코드가 필요합니다. 없는 경우,",
     "초대인에게 현재 세션 코드를 문의하세요.",
