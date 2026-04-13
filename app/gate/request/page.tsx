@@ -6,6 +6,7 @@ import PageHeader from '@/components/ui/PageHeader';
 import ReturnLink from '@/components/ui/ReturnLink';
 import TerminalPanel from '@/components/TerminalPanel';
 import TerminalButton from '@/components/TerminalButton';
+import SubmitButton from '@/components/SubmitButton';
 import { LabelText, MetaText, SubtitleText } from '@/components/ui/TerminalText';
 import { useLang } from '@/lib/langContext';
 import { requestKo } from '@/lib/i18n';
@@ -72,6 +73,7 @@ export default function RequestAccessPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     setError('');
     setSubmitting(true);
 
@@ -319,11 +321,12 @@ export default function RequestAccessPage() {
 
                 {/* 제출 버튼 */}
                 <div className="flex justify-end pt-2">
-                  <TerminalButton type="submit" variant="primary" disabled={submitting}>
-                    {submitting
-                      ? (lang === 'ko' ? requestKo.submitting : '▸ TRANSMITTING...')
-                      : (lang === 'ko' ? requestKo.submitBtn : '▶ SUBMIT REQUEST')}
-                  </TerminalButton>
+                  <SubmitButton
+                    isSubmitting={submitting}
+                    variant="primary"
+                    defaultText={lang === 'ko' ? requestKo.submitBtn : '▶ SUBMIT REQUEST'}
+                    loadingText={lang === 'ko' ? requestKo.submitting : '▸ TRANSMITTING...'}
+                  />
                 </div>
               </form>
             </TerminalPanel>
