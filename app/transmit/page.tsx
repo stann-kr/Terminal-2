@@ -1,9 +1,10 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedHeight from '@/components/ui/AnimatedHeight';
 import TerminalPanel from '@/components/TerminalPanel';
 import TerminalButton from '@/components/TerminalButton';
+import SubmitButton from '@/components/SubmitButton';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
 import { LabelText, SubtitleText, MetaText, DataText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
@@ -37,6 +38,8 @@ export default function TransmitPage() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submittingRef = useRef(false);
 
   const fetchPage = (page: number) => {
     setLoading(true);
@@ -54,9 +57,12 @@ export default function TransmitPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submittingRef.current) return;
     if (!handle.trim() || !message.trim()) { setError(lang === 'ko' ? transmitKo.errors.required : 'ALIAS AND MESSAGE REQUIRED.'); return; }
     if (message.length > 280) { setError(lang === 'ko' ? transmitKo.errors.tooLong : 'MESSAGE EXCEEDS 280 CHARS.'); return; }
 
+    submittingRef.current = true;
+    setIsSubmitting(true);
     try {
       const res = await fetch('/api/transmit', {
         method: 'POST',
@@ -82,6 +88,9 @@ export default function TransmitPage() {
       fetchPage(1);
     } catch {
       setError(lang === 'ko' ? transmitKo.errors.connection : 'TRANSMISSION FAILED. CHECK CONNECTION.');
+    } finally {
+      submittingRef.current = false;
+      setIsSubmitting(false);
     }
   };
 
@@ -137,9 +146,12 @@ export default function TransmitPage() {
               )}
             </AnimatePresence>
             <div className="flex justify-end pt-2">
-              <TerminalButton type="submit" variant="danger">
-                {lang === 'ko' ? transmitKo.submitBtn : '▶ COMMIT SIGNAL'}
-              </TerminalButton>
+              <SubmitButton
+                isSubmitting={isSubmitting}
+                variant="danger"
+                defaultText={lang === 'ko' ? transmitKo.submitBtn : '▶ COMMIT SIGNAL'}
+                loadingText={lang === 'ko' ? transmitKo.submitting : '▸ TRANSMITTING...'}
+              />
             </div>
           </form>
         </TerminalPanel>

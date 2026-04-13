@@ -162,6 +162,7 @@ export const transmitKo = {
   placeholderAlias: "별칭 입력",
   placeholderMsg: "데이터베이스에 기록...",
   committed: "✓ 신호 전송 완료",
+  submitting: "▸ 전송 중...",
   submitBtn: "▶ 신호 전송",
   syncing: "▸ 데이터베이스 동기화 중...",
   noEntries: "기록 없음.",

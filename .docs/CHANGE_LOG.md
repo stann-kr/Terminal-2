@@ -1,5 +1,14 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-13] 전송 버튼 중복 클릭 방지 및 컴포넌트화
+
+* **SubmitButton 컴포넌트 신규 생성 (`components/SubmitButton.tsx`):** 전송 중 상태(`isSubmitting`)를 Prop으로 받아 버튼 비활성화 및 로딩 텍스트(`▸ 전송 중...`) 표시를 자동 처리하는 전용 제출 버튼 구현.
+* **중복 제출 방지 로직 적용:**
+    * `app/transmit/page.tsx`: `isSubmitting` 상태 추가 및 `handleSubmit` 함수 내 실행 가드 로직 구현.
+    * `app/gate/request/page.tsx`: 기존 `submitting` 상태를 활용하여 `handleSubmit` 최상단에 중복 실행 방지 가드 추가.
+* **TerminalButton UI 개선:** 버튼 비활성화(`disabled`) 시 `cursor-not-allowed` 스타일을 추가하여 시각적 피드백 강화.
+* **i18n 번역 추가:** `lib/i18n.ts` 내 `transmitKo` 객체에 `submitting` ("▸ 전송 중...") 필드 추가.
+
 ## [2026-04-13] 모바일 환경 버튼 레이아웃 안정화
 
 * **TerminalButton UI 수정 (`TerminalButton.tsx`):** `LabelText` 호출 시 `autoHeight={true}` 속성 적용.

@@ -1,11 +1,12 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
 import PageHeader from '@/components/ui/PageHeader';
 import ReturnLink from '@/components/ui/ReturnLink';
 import TerminalPanel from '@/components/TerminalPanel';
 import TerminalButton from '@/components/TerminalButton';
+import SubmitButton from '@/components/SubmitButton';
 import { LabelText, MetaText, SubtitleText } from '@/components/ui/TerminalText';
 import { useLang } from '@/lib/langContext';
 import { requestKo } from '@/lib/i18n';
@@ -46,7 +47,8 @@ export default function RequestAccessPage() {
     accessCode: '',
     privacyConsent: false,
   });
-  const [submitting, setSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submittingRef = useRef(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
@@ -72,8 +74,10 @@ export default function RequestAccessPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submittingRef.current) return;
     setError('');
-    setSubmitting(true);
+    submittingRef.current = true;
+    setIsSubmitting(true);
 
     try {
       const res = await fetch('/api/gate/request', {
@@ -111,7 +115,8 @@ export default function RequestAccessPage() {
     } catch {
       setError(lang === 'ko' ? requestKo.errors.CONNECTION_ERROR : 'TRANSMISSION FAILED. CHECK CONNECTION.');
     } finally {
-      setSubmitting(false);
+      submittingRef.current = false;
+      setIsSubmitting(false);
     }
   };
 
@@ -319,11 +324,12 @@ export default function RequestAccessPage() {
 
                 {/* 제출 버튼 */}
                 <div className="flex justify-end pt-2">
-                  <TerminalButton type="submit" variant="primary" disabled={submitting}>
-                    {submitting
-                      ? (lang === 'ko' ? requestKo.submitting : '▸ TRANSMITTING...')
-                      : (lang === 'ko' ? requestKo.submitBtn : '▶ SUBMIT REQUEST')}
-                  </TerminalButton>
+                  <SubmitButton
+                    isSubmitting={isSubmitting}
+                    variant="primary"
+                    defaultText={lang === 'ko' ? requestKo.submitBtn : '▶ SUBMIT REQUEST'}
+                    loadingText={lang === 'ko' ? requestKo.submitting : '▸ TRANSMITTING...'}
+                  />
                 </div>
               </form>
             </TerminalPanel>
