@@ -228,7 +228,7 @@ export default function TransmitPage() {
             <div className="flex items-center justify-between pt-2 border-t border-terminal-accent-cyan/10">
               <button
                 onClick={() => fetchPage(currentPage - 1)}
-                disabled={currentPage <= 1 || isFetching || isInitialLoad}
+                disabled={currentPage <= 1 || isFetching || isInitialLoad || isSubmitting}
                 className="text-xs font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-amber disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {lang === 'ko' ? transmitKo.prevBtn : '◀ PREV'}
@@ -238,7 +238,7 @@ export default function TransmitPage() {
               </span>
               <button
                 onClick={() => fetchPage(currentPage + 1)}
-                disabled={currentPage >= totalPages || isFetching || isInitialLoad}
+                disabled={currentPage >= totalPages || isFetching || isInitialLoad || isSubmitting}
                 className="text-xs font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-amber disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {lang === 'ko' ? transmitKo.nextBtn : 'NEXT ▶'}
