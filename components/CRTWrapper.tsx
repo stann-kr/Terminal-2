@@ -7,20 +7,13 @@ export default function CRTWrapper({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-terminal-bg-base">
-      {/* 전역 노이즈 (Global Noise Overlay) */}
-      <div
-        className="pointer-events-none fixed inset-0 z-50 mix-blend-overlay opacity-30"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
 
       {/* Screen curvature shadow (Vignette) */}
       <div
         className="pointer-events-none fixed inset-0 z-50 mix-blend-multiply"
         style={{
           background: ENABLE_VIGNETTE
-            ? 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%)'
+            ? 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.3) 100%)'
             : 'transparent',
         }}
       />
@@ -51,7 +44,7 @@ export default function CRTWrapper({ children }: { children: React.ReactNode }) 
         className="pointer-events-none fixed inset-0 z-30 opacity-70"
         style={{
           boxShadow: ENABLE_VIGNETTE
-            ? 'inset 0 0 60px rgba(0,0,0,0.5), inset 2px 0 rgba(200,80,32,0.05), inset -2px 0 rgba(58,152,128,0.05)'
+            ? 'inset 0 0 60px rgba(0,0,0,0.25), inset 2px 0 rgba(200,80,32,0.05), inset -2px 0 rgba(58,152,128,0.05)'
             : 'inset 2px 0 rgba(200,80,32,0.05), inset -2px 0 rgba(58,152,128,0.05)',
         }}
       />

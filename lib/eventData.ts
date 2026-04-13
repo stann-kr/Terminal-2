@@ -28,6 +28,8 @@ export interface TerminalEvent {
   sound: string;
   status: EventStatus;
   artists: Artist[];
+  accessCode?: string;
+  invitationLines?: string[];
 }
 
 export const EVENTS: TerminalEvent[] = [

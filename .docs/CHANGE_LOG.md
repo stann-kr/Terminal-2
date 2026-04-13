@@ -1,5 +1,46 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-13] 전송 로그 페이지네이션 UX 개선
+
+* **로딩 상태 분리 (`isInitialLoad`, `isFetching`):** 최초 화면 진입 시의 전체 로딩 상태와 페이지 이동 시의 데이터 패칭 상태를 분리하여 UX를 개선함.
+* **Framer Motion `popLayout` 모드 적용:** `AnimatePresence`의 모드를 `wait`에서 `popLayout`으로 변경하여, 페이지 전환 시 이전 콘텐츠가 즉시 레이아웃에서 빠지고 새 콘텐츠가 자리를 차지하도록 수정함. 이를 통해 `AnimatedHeight` 컴포넌트가 높이 0을 거치지 않고 자연스럽게 다음 높이로 트랜지션되도록 구현함.
+* **페이지 이동 시 시각적 피드백 강화:** 데이터를 불러오는 동안 기존 로그 목록의 `opacity`를 0.5로 조절하여 로딩 중임을 나타내고, 데이터 패칭 및 메시지 전송 중(`isSubmitting`)에 페이지네이션 버튼을 비활성화하여 중복 요청 및 레이스 컨디션을 방지함.
+* **애니메이션 타이밍 최적화:** 로그 리스트 진입/이탈 애니메이션의 `duration` 및 `opacity` 트랜지션을 조정하여 더 부드러운 전환 효과를 제공함.
+
+## [2026-04-13] 전송 버튼 중복 클릭 방지 및 컴포넌트화
+
+* **SubmitButton 컴포넌트 신규 생성 (`components/SubmitButton.tsx`):** 전송 중 상태(`isSubmitting`)를 Prop으로 받아 버튼 비활성화 및 로딩 텍스트(`▸ 전송 중...`) 표시를 자동 처리하는 전용 제출 버튼 구현.
+* **중복 제출 방지 로직 적용:**
+    * `app/transmit/page.tsx`: `isSubmitting` 상태 추가 및 `handleSubmit` 함수 내 실행 가드 로직 구현.
+    * `app/gate/request/page.tsx`: 기존 `submitting` 상태를 활용하여 `handleSubmit` 최상단에 중복 실행 방지 가드 추가.
+* **TerminalButton UI 개선:** 버튼 비활성화(`disabled`) 시 `cursor-not-allowed` 스타일을 추가하여 시각적 피드백 강화.
+* **i18n 번역 추가:** `lib/i18n.ts` 내 `transmitKo` 객체에 `submitting` ("▸ 전송 중...") 필드 추가.
+
+## [2026-04-13] 모바일 환경 버튼 레이아웃 안정화
+
+* **TerminalButton UI 수정 (`TerminalButton.tsx`):** `LabelText` 호출 시 `autoHeight={true}` 속성 적용.
+* **성능 및 UX 개선:** 버튼 내부의 불필요한 높이 측정 래퍼를 제거하여 모바일 환경에서 텍스트 디코딩 시 발생하는 버튼 높이 튕김(Jitter) 현상 해결. 브라우저 기본 레이아웃 엔진이 버튼 패딩에 맞춰 높이를 직접 제어하도록 최적화.
+
+## [2026-04-11] KO/EN 언어 선택 기능
+
+### 추가
+- `lib/lang.ts`: localStorage 기반 언어 설정 유틸
+- `lib/langContext.tsx`: Lang React Context + `useLang()` 훅
+- `lib/i18n.ts`: 홈 DIRS 설명 및 About 매니페스토 KO 번역
+- `components/ui/LangToggle.tsx`: `[ KO ] / [ EN ]` 브래킷 토글 컴포넌트
+
+### 변경
+- `components/BootSequence.tsx`: 3단계 부팅 (Phase1 로그+프로그레스 바 → 언어 선택 프롬프트 → Phase3 로그)
+- `app/layout.tsx`: LangProvider 전역 래핑 추가
+- `app/home/page.tsx`: 푸터 STATUS:ACTIVE → LangToggle, DIRS 설명 번역 분기
+- `app/about/page.tsx`: MANIFESTO KO/EN 분기
+
+### 번역 범위
+- 번역 대상: 홈 디렉토리 설명 6개, About 매니페스토 본문
+- 영어 유지: 서브타이틀, 시스템 로그, 터미널 명령어 스타일 텍스트
+
+---
+
 ## [2026-04-09] Cloudflare D1 DB 연동 및 Workers 배포 구현
 
 * **DB 범위 확정:** Transmit(방명록), Gate(이벤트), Lineup(아티스트) 3개 섹션을 D1으로 전환 결정. About/Home/Status 텍스트는 정적 유지.

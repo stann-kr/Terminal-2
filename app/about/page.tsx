@@ -5,6 +5,8 @@ import PageLayout, { itemVariants } from '@/components/PageLayout';
 import { BodyText, LabelText, SubtitleText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
+import { useLang } from '@/lib/langContext';
+import { manifestoKo } from '@/lib/i18n';
 
 const MANIFESTO = [
   'TERMINAL is a Seoul-based techno platform designing an industrial station',
@@ -41,6 +43,9 @@ const SYSTEM_INFO = [
 ];
 
 export default function AboutPage() {
+  const { lang } = useLang();
+  const manifesto = lang === 'ko' ? manifestoKo : MANIFESTO;
+
   return (
     <PageLayout>
       <ReturnLink variants={itemVariants} />
@@ -50,7 +55,7 @@ export default function AboutPage() {
         <motion.div variants={itemVariants} className="mb-6">
           <TerminalPanel title="MANIFESTO_v1.txt" accent="green">
             <div className="space-y-1">
-              {MANIFESTO.map((line, i) => (
+              {manifesto.map((line, i) => (
                 <div key={i} className="text-xs leading-6">
                   {line === '' ? (
                     <span>&nbsp;</span>

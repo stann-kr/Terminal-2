@@ -1,8 +1,10 @@
 'use client';
-import { motion } from 'framer-motion';
 import TerminalPanel from '@/components/TerminalPanel';
+import AnimatedHeight from '@/components/ui/AnimatedHeight';
 import CountdownBlock from '@/components/ui/CountdownBlock';
 import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
+import { useLang } from '@/lib/langContext';
+import { gateKo } from '@/lib/i18n';
 import type { TerminalEvent } from '@/lib/eventData';
 
 interface Props {
@@ -11,7 +13,8 @@ interface Props {
 }
 
 export default function EventDetail({ event, showCountdown = false }: Props) {
-  const eventDate = new Date(`${event.date}T23:00:00`);
+  const { lang } = useLang();
+  const eventDate = new Date(`${event.date}T${event.time.replace(' KST', '')}:00`);
 
   const locationFields = [
     { k: 'GATE_ID',     v: event.venue },
@@ -23,8 +26,8 @@ export default function EventDetail({ event, showCountdown = false }: Props) {
 
   return (
     <div className="space-y-4">
-      {showCountdown && (
-        <TerminalPanel title="COUNTDOWN_ACTIVE" accent="cyan">
+      <AnimatedHeight show={showCountdown}>
+        <TerminalPanel title="MISSION_CLOCK" accent="cyan">
           <div className="text-center mb-4">
             <div className="text-xs tracking-widest mb-1 font-mono text-terminal-muted">
               <MetaText text={`${event.date.replace(/-/g, '.')} · ${event.time}`} />
@@ -32,11 +35,13 @@ export default function EventDetail({ event, showCountdown = false }: Props) {
           </div>
           <CountdownBlock targetDate={eventDate} accent="cyan" />
         </TerminalPanel>
-      )}
+      </AnimatedHeight>
 
       {event.status === 'ARCHIVED' && (
         <div className="px-3 py-2 border text-xs tracking-widest font-mono border-terminal-accent-hot/30 text-terminal-accent-hot bg-terminal-accent-hot/5">
-          <LabelText text={`◼ SESSION ARCHIVED — ${event.date.replace(/-/g, '.')}`} />
+          <LabelText text={lang === 'ko'
+            ? gateKo.sessionArchived(event.date.replace(/-/g, '.'))
+            : `◼ SESSION ARCHIVED — ${event.date.replace(/-/g, '.')}`} />
         </div>
       )}
 
@@ -45,7 +50,7 @@ export default function EventDetail({ event, showCountdown = false }: Props) {
           {event.status === 'UPCOMING' && (
             <div className="text-xs font-mono text-terminal-subdued">
               <SubtitleText
-                text="⚠ EXACT GATE DISCLOSED TO AUTHORIZED PERSONNEL ONLY."
+                text={lang === 'ko' ? gateKo.locationWarning : '⚠ DETAILED LOCATION & GATE INFORMATION FOR THE SESSION.'}
                 className="text-terminal-accent-amber font-mono text-[10px] sm:text-xs"
               />
             </div>

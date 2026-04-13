@@ -5,8 +5,10 @@ import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
 import DirectoryLink from '@/components/DirectoryLink';
 import { LabelText } from '@/components/ui/TerminalText';
+import { useLang } from '@/lib/langContext';
+import { linkKo } from '@/lib/i18n';
 
-const LINKS = [
+const LINKS_EN = [
   {
     href: 'https://lumo.stann.kr',
     label: 'Stann Lumo Web',
@@ -28,6 +30,14 @@ const LINKS = [
 ];
 
 export default function LinkPage() {
+  const { lang } = useLang();
+
+  const LINKS = lang === 'ko' ? [
+    { ...LINKS_EN[0], description: linkKo.descriptions.stannWeb },
+    { ...LINKS_EN[1], description: linkKo.descriptions.stannInsta },
+    { ...LINKS_EN[2], description: linkKo.descriptions.terminalInsta },
+  ] : LINKS_EN;
+
   return (
     <PageLayout>
       <ReturnLink variants={itemVariants} />
@@ -39,10 +49,10 @@ export default function LinkPage() {
       >
         <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-amber/15 bg-black/40">
           <span className="text-[10px] sm:text-xs tracking-widest text-terminal-accent-amber font-mono">
-            <LabelText text="▶ EXTERNAL CHANNELS — /terminal/link/" />
+            <LabelText text={lang === 'ko' ? linkKo.externalChannels : '▶ EXTERNAL CHANNELS — /terminal/link/'} />
           </span>
           <span className="text-[10px] sm:text-xs text-terminal-muted font-mono">
-            <LabelText text="3 NODE(S)" />
+            <LabelText text={lang === 'ko' ? linkKo.nodeCount : '3 NODE(S)'} />
           </span>
         </div>
 

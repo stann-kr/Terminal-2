@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
 import { artists } from "@/lib/db/schema";
 
-export const runtime = "edge";
 
 /**
  * GET /api/artists?eventId={id}

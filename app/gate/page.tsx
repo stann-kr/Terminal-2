@@ -1,15 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import PageLayout, { itemVariants } from "@/components/PageLayout";
 import { LabelText, SubtitleText, MetaText, HeadingText } from "@/components/ui/TerminalText";
 import ReturnLink from "@/components/ui/ReturnLink";
 import PageHeader from "@/components/ui/PageHeader";
 import TerminalButton from "@/components/TerminalButton";
 import EventDetail from "./EventDetail";
+import { useLang } from "@/lib/langContext";
+import { gateKo, commonKo } from "@/lib/i18n";
 import type { TerminalEvent } from "@/lib/eventData";
 
 export default function GatePage() {
+  const { lang } = useLang();
   const [tab, setTab] = useState<"upcoming" | "archive">("upcoming");
   const [events, setEvents] = useState<TerminalEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,20 +32,20 @@ export default function GatePage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const upcomingEvent = events.find((e) => e.status === "UPCOMING") ?? events[0];
+  const upcomingEvent = events.find((e) => e.status === "UPCOMING") || events[0] || null;
   const archivedEvents = events.filter((e) => e.status === "ARCHIVED");
   const selectedEvent =
     tab === "upcoming"
       ? upcomingEvent
-      : (events.find((e) => e.id === selectedArchive) ?? archivedEvents[0]);
+      : (events.find((e) => e.id === selectedArchive) || archivedEvents[0] || null);
 
   return (
     <PageLayout>
       <ReturnLink variants={itemVariants} />
       <PageHeader
         path="/terminal/gate"
-        title="GATE.EXE"
-        accent="cyan"
+        title="GATE"
+        accent={tab === "upcoming" ? "cyan" : "amber"}
         variants={itemVariants}
       />
 
@@ -49,32 +53,31 @@ export default function GatePage() {
       <motion.div variants={itemVariants} className="mb-6">
         <div className="inline-flex p-1 gap-1 bg-black/50 border border-terminal-accent-amber/15">
           {(["upcoming", "archive"] as const).map((t) => (
-            <button
+            <TerminalButton
               key={t}
+              variant={tab === t ? "primary" : "ghost"}
+              className="px-4 py-1.5 text-[10px]"
               onClick={() => setTab(t)}
-              className={`px-4 py-1.5 text-xs tracking-widest cursor-pointer transition-all duration-200 whitespace-nowrap font-mono border ${
-                tab === t
-                  ? "bg-terminal-accent-amber/15 text-terminal-accent-amber border-terminal-accent-amber/40"
-                  : "bg-transparent text-terminal-muted border-transparent hover:text-terminal-subdued"
-              }`}
             >
-              <LabelText text={t === "upcoming" ? "▶ UPCOMING" : "◼ ARCHIVE"} />
-            </button>
+              {t === "upcoming"
+                ? (lang === "ko" ? gateKo.tabUpcoming : "▶ UPCOMING")
+                : (lang === "ko" ? gateKo.tabArchive : "◼ ARCHIVE")}
+            </TerminalButton>
           ))}
         </div>
       </motion.div>
 
       {loading ? (
         <motion.div variants={itemVariants} className="text-xs font-mono text-terminal-muted text-center py-8">
-          <LabelText text="▸ LOADING GATE DATA..." />
+          <LabelText text={lang === 'ko' ? gateKo.loading : '▸ LOADING GATE DATA...'} />
         </motion.div>
       ) : error ? (
         <motion.div variants={itemVariants} className="border border-terminal-accent-hot/25 bg-terminal-bg-panel px-4 py-8 text-center space-y-2">
           <div className="text-xs font-bold tracking-widest text-terminal-accent-hot font-mono">
-            <LabelText text="⚠ SIGNAL LINK UNSTABLE" />
+            <LabelText text={lang === 'ko' ? commonKo.signalUnstable : '⚠ SIGNAL LINK UNSTABLE'} />
           </div>
           <div className="text-xs text-terminal-muted font-mono">
-            <MetaText text="DATABASE UNREACHABLE — RETRY LATER" />
+            <MetaText text={lang === 'ko' ? commonKo.dbUnreachable : 'DATABASE UNREACHABLE — RETRY LATER'} />
           </div>
         </motion.div>
       ) : (
@@ -119,9 +122,11 @@ export default function GatePage() {
                   <EventDetail event={upcomingEvent} showCountdown />
 
                   <div className="text-center pt-2">
-                    <TerminalButton className="px-8" variant="primary">
-                      ▶ REQUEST ACCESS PASS
-                    </TerminalButton>
+                    <Link href="/gate/request">
+                      <TerminalButton className="px-8" variant="primary">
+                        {lang === 'ko' ? gateKo.requestBtn : '▶ REQUEST ACCESS PASS'}
+                      </TerminalButton>
+                    </Link>
                   </div>
                 </>
               )}
@@ -156,8 +161,11 @@ export default function GatePage() {
                           <MetaText text={`${ev.subtitle} · ${ev.date.replace(/-/g, ".")}`} />
                         </div>
                       </div>
-                      <div className="text-xs tracking-wider shrink-0 text-terminal-muted">
-                        <LabelText text="◼ ARCHIVED" />
+                      <div className="text-xs tracking-wider shrink-0 text-terminal-muted flex items-center">
+                        <LabelText
+                          autoHeight
+                          text={lang === 'ko' ? gateKo.archivedLabel : '◼ ARCHIVED'}
+                        />
                       </div>
                     </div>
                   </button>
@@ -170,9 +178,10 @@ export default function GatePage() {
                   key={selectedEvent.id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
                 >
-                  <EventDetail event={selectedEvent} showCountdown={false} />
+                  <EventDetail event={selectedEvent} />
                 </motion.div>
               )}
             </motion.div>

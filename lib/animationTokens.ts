@@ -36,7 +36,7 @@ export const decode = {
   /** 메타 정보 — 날짜, ID, 하단 상태 */
   meta: { speed: 0.4, scramble: 4, animateTextLength: true },
   /** 실시간 데이터 — 카운트다운, 메트릭 수치 (매초 업데이트, 타자기 효과 제외) */
-  data: { speed: 0.3, scramble: 2, scrambleOnUpdate: false as const },
+  data: { speed: 0.3, scramble: 2, scrambleOnUpdate: false as const, autoHeight: true as const },
 } as const;
 
 export type DecodePreset = keyof typeof decode;

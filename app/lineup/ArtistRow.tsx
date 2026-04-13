@@ -1,6 +1,8 @@
 'use client';
 import type { Artist } from '@/lib/eventData';
 import { LabelText, MetaText } from '@/components/ui/TerminalText';
+import { useLang } from '@/lib/langContext';
+import { lineupKo } from '@/lib/i18n';
 
 const statusClassMap: Record<string, string> = {
   CONFIRMED: 'text-terminal-accent-amber',
@@ -15,6 +17,7 @@ const statusGlowMap: Record<string, string> = {
 interface Props { artist: Artist; }
 
 export default function ArtistRow({ artist: a }: Props) {
+  const { lang } = useLang();
   const statusColorClass = statusClassMap[a.status] || 'text-terminal-accent-amber';
   const nameColorClass = a.name === '[ ENCRYPTED ]' ? 'text-terminal-accent-hot' : 'text-terminal-primary';
   const nameGlowClass = a.name === '[ ENCRYPTED ]' ? statusGlowMap['CLASSIFIED'] : '';
@@ -37,7 +40,7 @@ export default function ArtistRow({ artist: a }: Props) {
           <span className="text-terminal-subdued"><MetaText text={a.origin} /></span>
           <span className="text-terminal-accent-gold"><MetaText text={a.time} /></span>
         </div>
-        <div className="text-xs text-terminal-subdued font-mono"><MetaText text={`DOCK ${a.dock}`} /></div>
+        <div className="text-xs text-terminal-subdued font-mono"><MetaText text={lang === 'ko' ? lineupKo.dock(a.dock) : `DOCK ${a.dock}`} /></div>
       </div>
 
       {/* Desktop */}
@@ -47,7 +50,7 @@ export default function ArtistRow({ artist: a }: Props) {
           <LabelText text={a.name} />
         </span>
         <span className="col-span-1 text-xs text-terminal-subdued font-mono"><MetaText text={a.origin} /></span>
-        <span className="col-span-3 text-xs text-terminal-subdued font-mono"><MetaText text={`DOCK ${a.dock}`} /></span>
+        <span className="col-span-3 text-xs text-terminal-subdued font-mono"><MetaText text={lang === 'ko' ? lineupKo.dock(a.dock) : `DOCK ${a.dock}`} /></span>
         <span className="col-span-2 text-xs text-terminal-accent-gold font-mono"><MetaText text={a.time} /></span>
         <span className={`col-span-2 text-xs font-bold tracking-wider font-mono ${statusColorClass}`}>
           <span className="status-pulse mr-1">●</span>

@@ -7,6 +7,8 @@ import PageLayout, { itemVariants } from '@/components/PageLayout';
 import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
+import { useLang } from '@/lib/langContext';
+import { statusKo } from '@/lib/i18n';
 
 const RELAYS = [
   { name: 'TRAPPIST-1',sector: 'AQUARIUS',        lag: 0,    load: 94, status: 'ONLINE' },
@@ -22,6 +24,7 @@ const RELAYS = [
 ];
 
 export default function StatusPage() {
+  const { lang } = useLang();
   return (
     <PageLayout>
       <ReturnLink variants={itemVariants} />
@@ -29,9 +32,9 @@ export default function StatusPage() {
 
         {/* Metrics */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-          <StatusMetric label="ACTIVE_RELAYS" value="4 / 12" unit="NODES" accent="amber" delay={0.2} />
-          <StatusMetric label="SIGNAL_UPTIME" value="100.00" unit="%" accent="cyan" delay={0.3} />
-          <StatusMetric label="CORE_FREQ" value="148.3" unit="THz" accent="hot" delay={0.4} />
+          <StatusMetric label={lang === 'ko' ? statusKo.labelActiveRelays : 'ACTIVE_RELAYS'} value="4 / 12" unit={lang === 'ko' ? statusKo.unitNodes : 'NODES'} accent="amber" delay={0.2} />
+          <StatusMetric label={lang === 'ko' ? statusKo.labelSignalUptime : 'SIGNAL_UPTIME'} value="100.00" unit="%" accent="cyan" delay={0.3} />
+          <StatusMetric label={lang === 'ko' ? statusKo.labelCoreFreq : 'CORE_FREQ'} value="148.3" unit="THz" accent="hot" delay={0.4} />
         </motion.div>
 
         {/* Node Map */}
@@ -73,7 +76,7 @@ export default function StatusPage() {
                           <MetaText text={s.lag === 0 ? '—' : `${s.lag} ly`} delay={i * 20} />
                         </span>
                         <span className="text-terminal-subdued">
-                          <MetaText text={`LOAD: ${s.load}%`} delay={i * 20} />
+                          <MetaText text={lang === 'ko' ? statusKo.load(s.load) : `LOAD: ${s.load}%`} delay={i * 20} />
                         </span>
                       </div>
                       {s.load > 0 && (

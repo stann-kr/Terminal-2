@@ -13,6 +13,8 @@ interface TextProps {
   delay?: number;
   as?: 'span' | 'p' | 'div' | 'h1' | 'h2' | 'h3';
   onComplete?: () => void;
+  /** height 측정 컨테이너 없이 직접 렌더 (고정 레이아웃 컨텍스트용) */
+  autoHeight?: boolean;
 }
 
 // ─── Semantic Text 컴포넌트 ───────────────────────────────────────────────────
