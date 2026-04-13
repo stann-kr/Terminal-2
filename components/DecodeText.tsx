@@ -141,7 +141,7 @@ const DecodeText = memo(function DecodeText({
     const measureAndLayout = () => {
       const container = containerRef.current;
       const textNode = measureRef.current;
-      if (!container || !textNode) return;
+      if (!container || !textNode || text === undefined || text === null) return;
 
       let width = container.offsetWidth;
       // 컨테이너가 auto-sizing span 안에 있어 초기 너비가 매우 좁은 경우(1ch 등),

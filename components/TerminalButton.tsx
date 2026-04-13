@@ -38,7 +38,7 @@ export default function TerminalButton({
       className={`whitespace-nowrap cursor-pointer font-mono text-xs tracking-widest uppercase px-5 py-2.5 transition-all duration-200 flex items-center justify-center border ${v.base} ${v.hover} disabled:opacity-40 ${className}`}
     >
       {typeof children === 'string' ? (
-        <LabelText text={children} />
+        <LabelText text={children} autoHeight />
       ) : (
         children
       )}
