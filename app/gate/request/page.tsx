@@ -125,7 +125,7 @@ export default function RequestAccessPage() {
     : (event?.invitationLines ?? DEFAULT_INVITATION_LINES);
 
   const inputClass =
-    'w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-cyan/30 focus:border-terminal-accent-cyan/70 transition-colors font-mono text-terminal-accent-cyan caret-terminal-accent-cyan placeholder:text-terminal-muted/40';
+    'w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-secondary/30 focus:border-terminal-accent-secondary/70 transition-colors font-mono text-terminal-accent-secondary caret-terminal-accent-secondary placeholder:text-terminal-muted/40';
 
   return (
     <PageLayout centerContent={false}>
@@ -133,7 +133,7 @@ export default function RequestAccessPage() {
       <PageHeader
         path="/terminal/gate/request"
         title="ACCESS.REQUEST"
-        accent="cyan"
+        accent="secondary"
         variants={itemVariants}
       />
 
@@ -144,9 +144,9 @@ export default function RequestAccessPage() {
       ) : !isActive ? (
         /* 비활성 기간 안내 */
         <motion.div variants={itemVariants}>
-          <TerminalPanel title="REQUEST_STATUS" accent="hot">
+          <TerminalPanel title="REQUEST_STATUS" accent="alert">
             <div className="space-y-3 text-center py-4">
-              <div className="text-sm font-bold tracking-widest font-mono text-terminal-accent-hot">
+              <div className="text-sm font-bold tracking-widest font-mono text-terminal-accent-alert">
                 <LabelText text={lang === 'ko' ? requestKo.periodInactive : '⚠ REQUEST PERIOD INACTIVE'} />
               </div>
               <div className="text-xs font-mono text-terminal-muted space-y-1">
@@ -162,7 +162,7 @@ export default function RequestAccessPage() {
                         ? requestKo.eventDate(event.date.replace(/-/g, '.'), event.time)
                         : `EVENT DATE — ${event.date.replace(/-/g, '.')} · ${event.time}`} />
                     </div>
-                    <div className="pt-1 text-terminal-accent-amber">
+                    <div className="pt-1 text-terminal-accent-primary">
                       <MetaText text={lang === 'ko'
                         ? requestKo.windowCountdown(daysUntil - ACCESS_WINDOW_DAYS)
                         : `WINDOW OPENS IN T-${daysUntil - ACCESS_WINDOW_DAYS} DAYS`} />
@@ -182,9 +182,9 @@ export default function RequestAccessPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <TerminalPanel title="REQUEST_COMMITTED" accent="cyan">
+          <TerminalPanel title="REQUEST_COMMITTED" accent="secondary">
             <div className="text-center py-6 space-y-2">
-              <div className="text-sm font-bold tracking-widest font-mono text-terminal-accent-cyan">
+              <div className="text-sm font-bold tracking-widest font-mono text-terminal-accent-secondary">
                 <LabelText text={lang === 'ko' ? requestKo.committed : '✓ REQUEST COMMITTED — AWAIT CONFIRMATION'} />
               </div>
               <div className="text-xs font-mono text-terminal-muted">
@@ -198,7 +198,7 @@ export default function RequestAccessPage() {
         <div className="space-y-4">
           {/* 초대 메시지 */}
           <motion.div variants={itemVariants}>
-            <TerminalPanel title="INVITATION_BRIEF" accent="cyan">
+            <TerminalPanel title="INVITATION_BRIEF" accent="secondary">
               <div className="space-y-1.5">
                 {invitationLines.map((line, i) => (
                   <div key={i} className="text-xs font-mono text-terminal-subdued tracking-wide">
@@ -211,7 +211,7 @@ export default function RequestAccessPage() {
 
           {/* 신청 폼 */}
           <motion.div variants={itemVariants}>
-            <TerminalPanel title="GUEST_REQUEST_FORM" accent="cyan">
+            <TerminalPanel title="GUEST_REQUEST_FORM" accent="secondary">
               <form onSubmit={handleSubmit} className="space-y-4">
 
                 {/* 이름 */}
@@ -296,8 +296,8 @@ export default function RequestAccessPage() {
                       />
                       <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${
                         form.privacyConsent
-                          ? 'border-terminal-accent-cyan bg-terminal-accent-cyan/20 text-terminal-accent-cyan'
-                          : 'border-terminal-accent-cyan/30 text-transparent'
+                          ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
+                          : 'border-terminal-accent-secondary/30 text-transparent'
                       }`}>
                         ✓
                       </div>
@@ -315,7 +315,7 @@ export default function RequestAccessPage() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="text-xs font-mono text-terminal-accent-hot"
+                      className="text-xs font-mono text-terminal-accent-alert"
                     >
                       <LabelText text={`⚠ ERROR: ${error}`} />
                     </motion.div>

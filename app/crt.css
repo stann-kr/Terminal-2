@@ -6,12 +6,12 @@
 
 :root {
   /* ── globals.css의 RGB 변수를 브릿지로 래핑 ── */
-  --crt-green:      rgb(var(--color-accent-amber));       /* #d4920a */
-  --crt-green-dim:  rgb(var(--color-text-subdued));       /* #6a5030 */
-  --crt-green-glow: rgb(var(--color-accent-amber) / 0.14);
-  --crt-cyan:       rgb(var(--color-accent-cyan));        /* #3a9880 */
-  --crt-hot:        rgb(var(--color-accent-hot));         /* #c85020 */
-  --crt-amber:      rgb(var(--color-accent-gold));        /* #c8a030 */
+  --crt-primary:      rgb(var(--color-accent-primary));       /* #d4920a */
+  --crt-primary-dim:  rgb(var(--color-text-subdued));       /* #6a5030 */
+  --crt-primary-glow: rgb(var(--color-accent-primary) / 0.14);
+  --crt-secondary:    rgb(var(--color-accent-secondary));        /* #3a9880 */
+  --crt-alert:        rgb(var(--color-accent-alert));         /* #c85020 */
+  --crt-warn:         rgb(var(--color-accent-warn));        /* #c8a030 */
   --crt-bg:         rgb(var(--color-bg-base));            /* #0c0904 */
   --crt-surface:    rgb(var(--color-bg-panel));           /* #120e08 */
   --crt-border:     rgb(var(--color-bg-panel-border) / 0.22);
@@ -103,29 +103,29 @@ body {
 .fade-in-terminal { animation: fade-in-terminal 0.4s ease forwards; }
 .status-pulse { animation: status-pulse 2s ease-in-out infinite; }
 
-.phosphor-text {
-  text-shadow: 0 0 8px rgb(var(--color-accent-amber) / 0.7), 0 0 16px rgb(var(--color-accent-amber) / 0.2);
+.phosphor-primary {
+  text-shadow: 0 0 8px rgb(var(--color-accent-primary) / 0.7), 0 0 16px rgb(var(--color-accent-primary) / 0.2);
 }
 
-.phosphor-cyan {
-  text-shadow: 0 0 8px rgb(var(--color-accent-cyan) / 0.7), 0 0 16px rgb(var(--color-accent-cyan) / 0.2);
+.phosphor-secondary {
+  text-shadow: 0 0 8px rgb(var(--color-accent-secondary) / 0.7), 0 0 16px rgb(var(--color-accent-secondary) / 0.2);
 }
 
-.phosphor-hot {
-  text-shadow: 0 0 8px rgb(var(--color-accent-hot) / 0.7), 0 0 16px rgb(var(--color-accent-hot) / 0.2);
+.phosphor-alert {
+  text-shadow: 0 0 8px rgb(var(--color-accent-alert) / 0.7), 0 0 16px rgb(var(--color-accent-alert) / 0.2);
 }
 
 .terminal-border {
   border: 1px solid var(--crt-border);
-  box-shadow: 0 0 12px var(--crt-green-glow), inset 0 0 12px rgba(0,0,0,0.5);
+  box-shadow: 0 0 12px var(--crt-primary-glow), inset 0 0 12px rgba(0,0,0,0.5);
 }
 
 .hover-glow:hover {
-  border-color: var(--crt-green) !important;
-  box-shadow: 0 0 20px var(--crt-green-glow), inset 0 0 8px rgb(var(--color-accent-amber) / 0.05) !important;
-  color: var(--crt-green) !important;
+  border-color: var(--crt-primary) !important;
+  box-shadow: 0 0 20px var(--crt-primary-glow), inset 0 0 8px rgb(var(--color-accent-primary) / 0.05) !important;
+  color: var(--crt-primary) !important;
 }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--crt-bg); }
-::-webkit-scrollbar-thumb { background: var(--crt-green-dim); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: var(--crt-primary-dim); border-radius: 2px; }

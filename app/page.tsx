@@ -30,7 +30,7 @@ export default function EntryController() {
   };
 
   if (phase === 'loading') {
-    return <div className="fixed inset-0 bg-black" />;
+    return <div className="fixed inset-0 bg-terminal-bg-base" />;
   }
 
   return (

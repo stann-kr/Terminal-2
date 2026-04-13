@@ -6,14 +6,14 @@ import * as THREE from 'three';
 
 // 디자인 토큰 기반 테마 색상 정의 (Three.js 렌더링용)
 const THEME_COLORS = {
-  AMBER: '#d4920a',     // terminal-accent-amber
-  AMBER_BRIGHT: '#ffcc44',
-  CYAN: '#3a9880',      // terminal-accent-cyan
-  HOT: '#c85020',       // terminal-accent-hot
-  GOLD: '#c8a030',      // terminal-accent-gold
-  MUTED: '#4a3820',     // terminal-muted
-  NEBULA: '#3a1860',    // Nebula deep purple
-  DUST: '#c87820',      // Space dust
+  PRIMARY: '#D6E5ED',        // 포스터 메인 Icy Blue
+  PRIMARY_BRIGHT: '#FFFFFF', // 더 밝은 화이트
+  SECONDARY: '#8C9BA5',      // 채도 빠진 Muted Icy Blue
+  ALERT: '#B34747',          // 차가운 톤의 탁한 레드 (Muted Red)
+  WARN: '#B39847',           // 차가운 톤의 탁한 골드/옐로우
+  MUTED: '#5A646E',          // 아주 딥하고 탁한 블루그레이
+  NEBULA: '#1F2633',         // 스페이스 배경에 스며드는 깊은 네이비
+  DUST: '#8C9BA5',           // 차가운 먼지 (Secondary와 동일톤)
 };
 
 const NODES = [
@@ -68,15 +68,19 @@ function GalaxyDisk() {
         const brightness = 0.4 + Math.random() * 0.6;
         const isCore = t < 0.15;
         if (isCore) {
-          colors.push(brightness * 1.0, brightness * 0.85, brightness * 0.4);
+          // 코어는 가장 밝은 화이트/아이스블루
+          colors.push(brightness * 0.95, brightness * 0.98, brightness * 1.0);
         } else {
           const blend = Math.random();
           if (blend < 0.5) {
-            colors.push(brightness * 0.85, brightness * 0.55, brightness * 0.15);
+            // 기본 Icy Blue (D6E5ED 근사치)
+            colors.push(brightness * 0.84, brightness * 0.90, brightness * 0.93);
           } else if (blend < 0.8) {
-            colors.push(brightness * 0.5, brightness * 0.7, brightness * 1.0);
+            // 약간 더 딥한 블루 (명도 낮춤)
+            colors.push(brightness * 0.60, brightness * 0.70, brightness * 0.85);
           } else {
-            colors.push(brightness * 1.0, brightness * 0.9, brightness * 0.8);
+            // 매우 흐릿한 스페이스 블루그레이
+            colors.push(brightness * 0.55, brightness * 0.60, brightness * 0.70);
           }
         }
       }
@@ -89,7 +93,8 @@ function GalaxyDisk() {
       const phi = (Math.random() - 0.5) * 0.4;
       positions.push(Math.cos(theta) * r, phi * r, Math.sin(theta) * r);
       const b = 0.7 + Math.random() * 0.3;
-      colors.push(b * 1.0, b * 0.8, b * 0.3);
+      // 코어 포인트 화이트 아이스블루
+      colors.push(b * 0.95, b * 0.98, b * 1.0);
     }
 
     return { positions: new Float32Array(positions), colors: new Float32Array(colors) };
@@ -152,7 +157,7 @@ function NodeLayer() {
     <group ref={groupRef}>
       {arcLines.map((pts, i) => {
         const geo = new THREE.BufferGeometry().setFromPoints(pts);
-        const mat = new THREE.LineBasicMaterial({ color: THEME_COLORS.HOT, transparent: true, opacity: 0.22, linewidth: 1 });
+        const mat = new THREE.LineBasicMaterial({ color: THEME_COLORS.ALERT, transparent: true, opacity: 0.22, linewidth: 1 });
         return (
           <primitive key={i} object={new THREE.Line(geo, mat)} />
         );
@@ -163,7 +168,7 @@ function NodeLayer() {
           <mesh>
             <sphereGeometry args={[i === 0 ? 0.055 : 0.032, 10, 10]} />
             <meshBasicMaterial
-              color={i === 0 ? THEME_COLORS.AMBER_BRIGHT : node.active ? THEME_COLORS.AMBER : THEME_COLORS.MUTED}
+              color={i === 0 ? THEME_COLORS.PRIMARY_BRIGHT : node.active ? THEME_COLORS.PRIMARY : THEME_COLORS.MUTED}
               transparent
               opacity={node.active ? 1 : 0.45}
             />
@@ -192,7 +197,7 @@ function PulseRing({ index }: { index: number }) {
     <mesh ref={ringRef}>
       <ringGeometry args={[0.04, 0.065, 16]} />
       <meshBasicMaterial
-        color={index === 0 ? THEME_COLORS.AMBER_BRIGHT : THEME_COLORS.AMBER}
+        color={index === 0 ? THEME_COLORS.PRIMARY_BRIGHT : THEME_COLORS.PRIMARY}
         transparent
         opacity={0.5}
         side={THREE.DoubleSide}

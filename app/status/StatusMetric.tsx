@@ -4,29 +4,41 @@ interface Props {
   label: string;
   value: string;
   unit: string;
-  accent?: 'amber' | 'cyan' | 'hot' | 'green' | 'gold';
+  accent?: 'primary' | 'secondary' | 'alert' | 'warn' | 'tertiary' | 'amber' | 'cyan' | 'hot' | 'green' | 'gold';
   delay?: number;
 }
 
 const accentClassMap = {
-  amber: 'border-terminal-accent-amber/25 text-terminal-accent-amber drop-shadow-[0_0_12px_rgba(212,146,10,0.4)]',
-  cyan: 'border-terminal-accent-cyan/25 text-terminal-accent-cyan drop-shadow-[0_0_12px_rgba(58,152,128,0.4)]',
-  hot: 'border-terminal-accent-hot/25 text-terminal-accent-hot drop-shadow-[0_0_12px_rgba(200,80,32,0.4)]',
-  green: 'border-terminal-accent-cyan/25 text-terminal-accent-cyan drop-shadow-[0_0_12px_rgba(58,152,128,0.4)]',
-  gold: 'border-terminal-accent-gold/25 text-terminal-accent-gold drop-shadow-[0_0_12px_rgba(200,160,48,0.4)]',
+  primary:   'border-terminal-accent-primary/25 text-terminal-accent-primary drop-shadow-[0_0_12px_rgb(var(--color-accent-primary)/0.4)]',
+  secondary: 'border-terminal-accent-secondary/25 text-terminal-accent-secondary drop-shadow-[0_0_12px_rgb(var(--color-accent-secondary)/0.4)]',
+  alert:     'border-terminal-accent-alert/25 text-terminal-accent-alert drop-shadow-[0_0_12px_rgb(var(--color-accent-alert)/0.4)]',
+  warn:      'border-terminal-accent-warn/25 text-terminal-accent-warn drop-shadow-[0_0_12px_rgb(var(--color-accent-warn)/0.4)]',
+  tertiary:  'border-terminal-accent-tertiary/25 text-terminal-accent-tertiary drop-shadow-[0_0_12px_rgb(var(--color-accent-tertiary)/0.4)]',
+  /* Legacy mapping */
+  amber: 'border-terminal-accent-primary/25 text-terminal-accent-primary drop-shadow-[0_0_12px_rgb(var(--color-accent-primary)/0.4)]',
+  cyan:  'border-terminal-accent-secondary/25 text-terminal-accent-secondary drop-shadow-[0_0_12px_rgb(var(--color-accent-secondary)/0.4)]',
+  hot:   'border-terminal-accent-alert/25 text-terminal-accent-alert drop-shadow-[0_0_12px_rgb(var(--color-accent-alert)/0.4)]',
+  green: 'border-terminal-accent-secondary/25 text-terminal-accent-secondary drop-shadow-[0_0_12px_rgb(var(--color-accent-secondary)/0.4)]',
+  gold:  'border-terminal-accent-warn/25 text-terminal-accent-warn drop-shadow-[0_0_12px_rgb(var(--color-accent-warn)/0.4)]',
 };
 
 const labelColorMap = {
-  amber: 'text-terminal-accent-amber/50',
-  cyan: 'text-terminal-accent-cyan/50',
-  hot: 'text-terminal-accent-hot/50',
-  green: 'text-terminal-accent-cyan/50',
-  gold: 'text-terminal-accent-gold/50',
+  primary:   'text-terminal-accent-primary/50',
+  secondary: 'text-terminal-accent-secondary/50',
+  alert:     'text-terminal-accent-alert/50',
+  warn:      'text-terminal-accent-warn/50',
+  tertiary:  'text-terminal-accent-tertiary/50',
+  /* Legacy mapping */
+  amber: 'text-terminal-accent-primary/50',
+  cyan:  'text-terminal-accent-secondary/50',
+  hot:   'text-terminal-accent-alert/50',
+  green: 'text-terminal-accent-secondary/50',
+  gold:  'text-terminal-accent-warn/50',
 };
 
-export default function StatusMetric({ label, value, unit, accent = 'amber', delay = 0 }: Props) {
-  const accentClasses = accentClassMap[accent];
-  const labelColorClass = labelColorMap[accent];
+export default function StatusMetric({ label, value, unit, accent = 'primary', delay = 0 }: Props) {
+  const accentClasses = accentClassMap[accent] || accentClassMap.primary;
+  const labelColorClass = labelColorMap[accent] || labelColorMap.primary;
 
   return (
     <div

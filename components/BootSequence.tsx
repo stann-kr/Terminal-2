@@ -57,9 +57,9 @@ function BootLine({ text, accent, warn, cyan }: BootLineProps) {
   });
 
   let colorClass = 'text-terminal-subdued font-normal';
-  if (accent) colorClass = 'text-terminal-accent-amber drop-shadow-[0_0_8px_rgba(212,146,10,0.8)] font-bold';
-  else if (cyan) colorClass = 'text-terminal-accent-cyan font-normal';
-  else if (warn) colorClass = 'text-terminal-accent-gold font-normal';
+  if (accent) colorClass = 'text-terminal-accent-primary drop-shadow-[0_0_8px_rgb(var(--color-accent-primary)/0.8)] font-bold';
+  else if (cyan) colorClass = 'text-terminal-accent-secondary font-normal';
+  else if (warn) colorClass = 'text-terminal-accent-warn font-normal';
 
   return (
     <div
@@ -96,7 +96,7 @@ function ProgressLine({ label }: { label: string }) {
   return (
     <div className="text-xs md:text-sm leading-6 font-mono text-terminal-subdued">
       <span>{label} </span>
-      <span className="text-terminal-accent-amber">{'█'.repeat(filled)}</span>
+      <span className="text-terminal-accent-primary">{'█'.repeat(filled)}</span>
       <span className="text-terminal-muted/30">{'░'.repeat(empty)}</span>
       <span className="text-terminal-muted ml-2">{pct}%</span>
     </div>
@@ -125,10 +125,10 @@ function LangSelectPrompt({ onSelect }: LangSelectPromptProps) {
         disabled={chosen !== null}
         className={`font-mono text-xs md:text-sm tracking-widest px-3 py-1 border transition-colors cursor-pointer disabled:cursor-default ${
           active
-            ? 'border-terminal-accent-cyan text-terminal-accent-cyan bg-terminal-accent-cyan/10'
+            ? 'border-terminal-accent-secondary text-terminal-accent-secondary bg-terminal-accent-secondary/10'
             : inactive
             ? 'border-terminal-muted/20 text-terminal-muted/20'
-            : 'border-terminal-accent-cyan/50 text-terminal-accent-cyan/70 hover:border-terminal-accent-cyan hover:text-terminal-accent-cyan hover:bg-terminal-accent-cyan/5'
+            : 'border-terminal-accent-secondary/50 text-terminal-accent-secondary/70 hover:border-terminal-accent-secondary hover:text-terminal-accent-secondary hover:bg-terminal-accent-secondary/5'
         }`}
       >
         {label}
@@ -138,7 +138,7 @@ function LangSelectPrompt({ onSelect }: LangSelectPromptProps) {
 
   return (
     <div className="mt-3 mb-1">
-      <div className="text-xs md:text-sm font-mono text-terminal-accent-cyan/80 mb-2 tracking-wider">
+      <div className="text-xs md:text-sm font-mono text-terminal-accent-secondary/80 mb-2 tracking-wider">
         ▸ SELECT SYSTEM LANGUAGE :
       </div>
       <div className="flex items-center gap-3">
@@ -197,7 +197,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col justify-center items-center px-8 md:px-16 overflow-hidden bg-black font-mono"
+      className="fixed inset-0 z-50 flex flex-col justify-center items-center px-8 md:px-16 overflow-hidden bg-terminal-bg-base font-mono"
       animate={powering ? { scaleY: 0.001, filter: 'brightness(0)' } : { scaleY: 1, filter: 'brightness(1)' }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
       exit={{ opacity: 0, filter: 'brightness(3) blur(8px)', transition: { duration: 0.5 } }}
@@ -211,7 +211,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
                 <ProgressLine label={item.label} />
               ) : (
                 <>
-                  {item.warn && <span className="text-terminal-accent-gold text-xs font-mono">⚠ </span>}
+                  {item.warn && <span className="text-terminal-accent-warn text-xs font-mono">⚠ </span>}
                   <BootLine text={item.text} accent={item.accent} warn={item.warn} />
                 </>
               )}
@@ -230,7 +230,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
         {phase3Items.map((item, i) =>
           visiblePhase3.includes(i) ? (
             <motion.div key={`p3-${i}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.05 }}>
-              {item.warn && <span className="text-terminal-accent-gold text-xs font-mono">⚠ </span>}
+              {item.warn && <span className="text-terminal-accent-warn text-xs font-mono">⚠ </span>}
               <BootLine text={item.text} accent={item.accent} warn={item.warn} cyan={item.cyan} />
             </motion.div>
           ) : null
@@ -238,7 +238,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
 
         {/* 커서 블링크 */}
         {!powering && !done && (
-          <span className="cursor-blink text-xs text-terminal-accent-amber">█</span>
+          <span className="cursor-blink text-xs text-terminal-accent-primary">█</span>
         )}
 
         {/* ENTER TERMINAL 버튼 */}

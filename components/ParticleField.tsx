@@ -174,7 +174,7 @@ function LogoLayer({
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        color="#d4920a"
+        color="#D6E5ED"
         size={0.05}
         map={circleMap}
         transparent
@@ -281,18 +281,14 @@ export default function ParticleField() {
         {/* 후처리 효과 (Post-processing) */}
         <EffectComposer multisampling={0}>
           <Bloom
-            intensity={2.5} // 성능을 위해 약간 감소
-            luminanceThreshold={0.2}
-            luminanceSmoothing={0.9}
-            mipmapBlur={false} // mipmapBlur 비활성화로 성능 대폭 향상
-          />
-          <ChromaticAberration
-            offset={new THREE.Vector2(0.002, 0.002)}
-            blendFunction={BlendFunction.NORMAL}
+            intensity={3.5} // 빛 번짐을 조금 더 강하게
+            luminanceThreshold={0.15} // 더 어두운 파티클도 빛나게
+            luminanceSmoothing={0.8}
+            mipmapBlur={false}
           />
           <Scanline
-            density={1.5}
-            opacity={0.05}
+            density={1.8} // 주사선 밀도를 살짝 높여 질감 추가
+            opacity={0.08} // 주사선을 조금 더 선명하게
             blendFunction={BlendFunction.OVERLAY}
           />
           <Vignette

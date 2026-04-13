@@ -26,34 +26,37 @@
   }
 
   :root {
-    --color-bg-base: 12 9 4;
-    --color-bg-panel: 18 14 8;
-    --color-bg-panel-border: 212 146 10;
+    /* Base Colors - Monochrome Blueprint Theme */
+    --color-bg-base: 5 6 10;
+    --color-bg-panel: 10 13 20;
+    --color-bg-panel-border: 31 38 51;
 
-    --color-text-primary: 232 216 144;
-    --color-text-subdued: 106 80 48;
-    --color-text-muted: 88 82 52;
+    --color-text-primary: 214 229 237;
+    --color-text-subdued: 140 155 165;
+    --color-text-muted: 90 100 110;
 
-    --color-accent-amber: 212 146 10;
-    --color-accent-cyan: 58 152 128;
-    --color-accent-hot: 200 80 32;
-    --color-accent-gold: 200 160 48;
-    --color-accent-purple: 136 104 168;
-    --color-accent-warn: 255 140 0;
+    /* Semantic Accents - Monochromatic & Sterile */
+    --color-accent-primary: 214 229 237;   /* Icy Blue (포스터 메인 컬러와 동일) */
+    --color-accent-secondary: 140 155 165; /* Muted Icy Blue (투명도/명도로 계층 구분) */
+    --color-accent-tertiary: 90 100 110;   /* Dark Icy Blue */
+    
+    /* Status Colors - Muted & Desaturated */
+    --color-accent-alert: 179 71 71;       /* Muted Red (채도 빠진 건조한 빨강) */
+    --color-accent-warn: 179 152 71;       /* Muted Gold (채도 빠진 건조한 노랑) */
   }
 }
 
 @layer utilities {
-  .text-shadow-glow-amber {
-    text-shadow: 0 0 16px rgb(var(--color-accent-amber) / 0.4);
+  .text-shadow-glow-primary {
+    text-shadow: 0 0 16px rgb(var(--color-accent-primary) / 0.4);
   }
-  .text-shadow-glow-cyan {
-    text-shadow: 0 0 16px rgb(var(--color-accent-cyan) / 0.4);
+  .text-shadow-glow-secondary {
+    text-shadow: 0 0 16px rgb(var(--color-accent-secondary) / 0.4);
   }
-  .text-shadow-glow-hot {
-    text-shadow: 0 0 16px rgb(var(--color-accent-hot) / 0.4);
+  .text-shadow-glow-alert {
+    text-shadow: 0 0 16px rgb(var(--color-accent-alert) / 0.4);
   }
-  .text-shadow-glow-gold {
-    text-shadow: 0 0 16px rgb(var(--color-accent-gold) / 0.4);
+  .text-shadow-glow-warn {
+    text-shadow: 0 0 16px rgb(var(--color-accent-warn) / 0.4);
   }
 }

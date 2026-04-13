@@ -13,16 +13,16 @@ interface TerminalButtonProps {
 
 const variantClassMap = {
   primary: {
-    base: 'text-terminal-accent-amber border-terminal-accent-amber/50 bg-terminal-accent-amber/5 shadow-[0_0_12px_rgba(212,146,10,0.18)]',
-    hover: 'hover:bg-terminal-accent-amber/10',
+    base: 'text-terminal-accent-primary border-terminal-accent-primary/50 bg-terminal-accent-primary/5 shadow-[0_0_12px_rgb(var(--color-accent-primary)/0.18)]',
+    hover: 'hover:bg-terminal-accent-primary/10',
   },
   ghost: {
-    base: 'text-terminal-subdued border-terminal-accent-amber/15 bg-transparent',
-    hover: 'hover:bg-terminal-accent-amber/5',
+    base: 'text-terminal-subdued border-terminal-accent-primary/15 bg-transparent',
+    hover: 'hover:bg-terminal-accent-primary/5',
   },
   danger: {
-    base: 'text-terminal-accent-hot border-terminal-accent-hot/50 bg-terminal-accent-hot/5 shadow-[0_0_12px_rgba(200,80,32,0.18)]',
-    hover: 'hover:bg-terminal-accent-hot/10',
+    base: 'text-terminal-accent-alert border-terminal-accent-alert/50 bg-terminal-accent-alert/5 shadow-[0_0_12px_rgb(var(--color-accent-alert)/0.18)]',
+    hover: 'hover:bg-terminal-accent-alert/10',
   },
 };
 

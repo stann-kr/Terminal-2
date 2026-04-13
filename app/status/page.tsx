@@ -28,32 +28,32 @@ export default function StatusPage() {
   return (
     <PageLayout>
       <ReturnLink variants={itemVariants} />
-      <PageHeader path="/terminal/status" title="STATUS.SYS" accent="hot" variants={itemVariants} />
+      <PageHeader path="/terminal/status" title="STATUS.SYS" accent="alert" variants={itemVariants} />
 
         {/* Metrics */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-          <StatusMetric label={lang === 'ko' ? statusKo.labelActiveRelays : 'ACTIVE_RELAYS'} value="4 / 12" unit={lang === 'ko' ? statusKo.unitNodes : 'NODES'} accent="amber" delay={0.2} />
-          <StatusMetric label={lang === 'ko' ? statusKo.labelSignalUptime : 'SIGNAL_UPTIME'} value="100.00" unit="%" accent="cyan" delay={0.3} />
-          <StatusMetric label={lang === 'ko' ? statusKo.labelCoreFreq : 'CORE_FREQ'} value="148.3" unit="THz" accent="hot" delay={0.4} />
+          <StatusMetric label={lang === 'ko' ? statusKo.labelActiveRelays : 'ACTIVE_RELAYS'} value="4 / 12" unit={lang === 'ko' ? statusKo.unitNodes : 'NODES'} accent="primary" delay={0.2} />
+          <StatusMetric label={lang === 'ko' ? statusKo.labelSignalUptime : 'SIGNAL_UPTIME'} value="100.00" unit="%" accent="secondary" delay={0.3} />
+          <StatusMetric label={lang === 'ko' ? statusKo.labelCoreFreq : 'CORE_FREQ'} value="148.3" unit="THz" accent="alert" delay={0.4} />
         </motion.div>
 
         {/* Node Map */}
         <motion.div variants={itemVariants} className="mb-6">
-          <TerminalPanel title="GALACTIC_NODE_MAP — REALTIME" accent="hot">
+          <TerminalPanel title="GALACTIC_NODE_MAP — REALTIME" accent="alert">
             <GlobeMapDynamic />
           </TerminalPanel>
         </motion.div>
 
         {/* Relay Telemetry */}
         <motion.div variants={itemVariants}>
-          <TerminalPanel title="RELAY_TELEMETRY.log" accent="amber">
+          <TerminalPanel title="RELAY_TELEMETRY.log" accent="primary">
             <div className="space-y-4">
               {RELAYS.map((s, i) => {
                 const statusColorClass =
-                  s.status === 'ONLINE'  ? 'text-terminal-accent-amber' :
-                  s.status === 'STANDBY' ? 'text-terminal-accent-gold' : 'text-terminal-muted';
+                  s.status === 'ONLINE'  ? 'text-terminal-accent-primary' :
+                  s.status === 'STANDBY' ? 'text-terminal-accent-warn' : 'text-terminal-muted';
 
-                const loadBarColor = s.load > 70 ? 'bg-terminal-accent-gold' : 'bg-terminal-accent-amber';
+                const loadBarColor = s.load > 70 ? 'bg-terminal-accent-warn' : 'bg-terminal-accent-primary';
 
                 return (
                   <div key={s.name} className="group">
@@ -72,7 +72,7 @@ export default function StatusPage() {
                         <span className="text-terminal-subdued">
                           <SubtitleText text={s.sector} delay={i * 20} />
                         </span>
-                        <span className="text-terminal-accent-cyan">
+                        <span className="text-terminal-accent-secondary">
                           <MetaText text={s.lag === 0 ? '—' : `${s.lag} ly`} delay={i * 20} />
                         </span>
                         <span className="text-terminal-subdued">
@@ -80,7 +80,7 @@ export default function StatusPage() {
                         </span>
                       </div>
                       {s.load > 0 && (
-                        <div className="h-1.5 rounded-full overflow-hidden bg-terminal-accent-amber/10">
+                        <div className="h-1.5 rounded-full overflow-hidden bg-terminal-accent-primary/10">
                           <div className={`h-full rounded-full transition-all ${loadBarColor}`} style={{ width: `${s.load}%` }} />
                         </div>
                       )}
@@ -94,13 +94,13 @@ export default function StatusPage() {
                       <span className="col-span-3 truncate text-terminal-subdued">
                         <SubtitleText text={s.sector} delay={i * 20} />
                       </span>
-                      <span className="col-span-2 text-terminal-accent-cyan">
+                      <span className="col-span-2 text-terminal-accent-secondary">
                         <MetaText text={s.lag === 0 ? 'LOCAL' : `${s.lag} ly`} delay={i * 20} />
                       </span>
                       <div className="col-span-2">
                         {s.load > 0 ? (
                           <>
-                            <div className="h-1.5 rounded-full overflow-hidden mb-1 bg-terminal-accent-amber/10">
+                            <div className="h-1.5 rounded-full overflow-hidden mb-1 bg-terminal-accent-primary/10">
                               <div className={`h-full rounded-full transition-all ${loadBarColor}`} style={{ width: `${s.load}%` }} />
                             </div>
                             <span className="text-terminal-subdued">

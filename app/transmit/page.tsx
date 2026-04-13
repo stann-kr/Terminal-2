@@ -103,11 +103,11 @@ export default function TransmitPage() {
   return (
     <PageLayout>
       <ReturnLink variants={itemVariants} />
-      <PageHeader path="/terminal/transmit" title="TRANSMIT.LOG" accent="purple" variants={itemVariants} />
+      <PageHeader path="/terminal/transmit" title="TRANSMIT.LOG" accent="tertiary" variants={itemVariants} />
 
       {/* Input Form */}
       <motion.div variants={itemVariants} className="mb-8">
-        <TerminalPanel title="VISITOR_LOG — NODE_SYNC" accent="hot">
+        <TerminalPanel title="VISITOR_LOG — NODE_SYNC" accent="alert">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <div className="w-full text-xs mb-1.5 tracking-widest font-mono text-terminal-muted">
@@ -118,7 +118,7 @@ export default function TransmitPage() {
                 onChange={e => { setHandle(e.target.value); setNodeId(e.target.value); }}
                 placeholder={lang === 'ko' ? transmitKo.placeholderAlias : 'ENTER_ALIAS'}
                 maxLength={24}
-                className="w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-purple/30 focus:border-terminal-accent-purple/70 transition-colors font-mono text-terminal-accent-purple caret-terminal-accent-purple"
+                className="w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-tertiary/30 focus:border-terminal-accent-tertiary/70 transition-colors font-mono text-terminal-accent-tertiary caret-terminal-accent-tertiary"
               />
             </div>
             <div>
@@ -134,17 +134,17 @@ export default function TransmitPage() {
                 placeholder={lang === 'ko' ? transmitKo.placeholderMsg : 'WRITE TO DATABASE...'}
                 maxLength={280}
                 rows={3}
-                className="w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-purple/30 focus:border-terminal-accent-purple/70 resize-none transition-colors font-mono text-terminal-primary caret-terminal-accent-amber"
+                className="w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-tertiary/30 focus:border-terminal-accent-tertiary/70 resize-none transition-colors font-mono text-terminal-primary caret-terminal-accent-primary"
               />
             </div>
             <AnimatePresence mode="wait">
               {error && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs font-mono text-terminal-accent-hot">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs font-mono text-terminal-accent-alert">
                   <LabelText text={`⚠ ERROR: ${error}`} />
                 </motion.div>
               )}
               {sent && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs font-mono text-terminal-accent-amber">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs font-mono text-terminal-accent-primary">
                   <LabelText text={lang === 'ko' ? transmitKo.committed : '✓ SIGNAL COMMITTED TO DATABASE'} />
                 </motion.div>
               )}
@@ -167,7 +167,7 @@ export default function TransmitPage() {
           title={isInitialLoad
             ? (lang === 'ko' ? transmitKo.logSyncing : 'SIGNAL_LOG — SYNCING...')
             : (lang === 'ko' ? transmitKo.logTitle(total) : `SIGNAL_LOG — ${total} ENTRIES`)}
-          accent="green"
+          accent="primary"
         >
           <div className="space-y-4">
             {/* 로그 목록 */}
@@ -205,9 +205,9 @@ export default function TransmitPage() {
                     className="space-y-4 w-full"
                   >
                     {logs.map((entry, i) => (
-                      <div key={entry.id} className="border-b border-terminal-accent-cyan/10 pb-4 last:border-0 last:pb-0">
+                      <div key={entry.id} className="border-b border-terminal-accent-secondary/10 pb-4 last:border-0 last:pb-0">
                         <div className="flex items-center gap-3 mb-1.5">
-                          <span className="text-xs font-bold tracking-wider font-mono text-terminal-accent-purple">
+                          <span className="text-xs font-bold tracking-wider font-mono text-terminal-accent-tertiary">
                             <SubtitleText text={entry.handle} delay={i * 40} />
                           </span>
                           <span className="text-xs font-mono text-terminal-muted">
@@ -225,11 +225,11 @@ export default function TransmitPage() {
             </AnimatedHeight>
 
             {/* 페이지네이션 */}
-            <div className="flex items-center justify-between pt-2 border-t border-terminal-accent-cyan/10">
+            <div className="flex items-center justify-between pt-2 border-t border-terminal-accent-secondary/10">
               <button
                 onClick={() => fetchPage(currentPage - 1)}
                 disabled={currentPage <= 1 || isFetching || isInitialLoad || isSubmitting}
-                className="text-xs font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-amber disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="text-xs font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {lang === 'ko' ? transmitKo.prevBtn : '◀ PREV'}
               </button>
@@ -239,7 +239,7 @@ export default function TransmitPage() {
               <button
                 onClick={() => fetchPage(currentPage + 1)}
                 disabled={currentPage >= totalPages || isFetching || isInitialLoad || isSubmitting}
-                className="text-xs font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-amber disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="text-xs font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {lang === 'ko' ? transmitKo.nextBtn : 'NEXT ▶'}
               </button>

@@ -29,7 +29,7 @@ export default function HomePage() {
         lang === "ko"
           ? dirDescKo.about
           : "PLATFORM MANIFESTO / SYSTEM INFORMATION",
-      accent: "amber" as const,
+      accent: "primary" as const,
     },
     {
       href: "/gate",
@@ -38,13 +38,13 @@ export default function HomePage() {
         lang === "ko"
           ? dirDescKo.gate
           : "NEXT ENTRY / COUNTDOWN / REQUEST ACCESS",
-      accent: "cyan" as const,
+      accent: "primary" as const,
     },
     {
       href: "/lineup",
       label: "Lineup",
       description: lang === "ko" ? dirDescKo.lineup : "ARTIST ROSTER / DOCK",
-      accent: "gold" as const,
+      accent: "primary" as const,
     },
     {
       href: "/status",
@@ -53,21 +53,21 @@ export default function HomePage() {
         lang === "ko"
           ? dirDescKo.status
           : "SYSTEM DIAGNOSTICS / NETWORK TELEMETRY",
-      accent: "hot" as const,
+      accent: "primary" as const,
     },
     {
       href: "/transmit",
       label: "Transmit",
       description:
         lang === "ko" ? dirDescKo.transmit : "VISITOR LOG / NODE SYNC",
-      accent: "purple" as const,
+      accent: "primary" as const,
     },
     {
       href: "/link",
       label: "Link",
       description:
         lang === "ko" ? dirDescKo.link : "EXTERNAL CHANNELS / OFFICIAL LINKS",
-      accent: "amber" as const,
+      accent: "primary" as const,
     },
   ];
 
@@ -135,12 +135,12 @@ export default function HomePage() {
 
         <motion.h1
           variants={itemVariants}
-          className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.15em] sm:tracking-[0.3em] mb-2 drop-shadow-[0_0_30px_rgba(212,146,10,0.5)] font-pixie"
+          className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.15em] sm:tracking-[0.3em] mb-2 drop-shadow-[0_0_30px_rgb(var(--color-accent-primary)/0.5)] font-pixie"
         >
           <TitleText
             text="TERMINAL"
             as="span"
-            className="text-terminal-accent-amber"
+            className="text-terminal-accent-primary"
           />
         </motion.h1>
 
@@ -163,11 +163,11 @@ export default function HomePage() {
       {/* Next Event Countdown */}
       <motion.div
         variants={itemVariants}
-        className="mb-8 border py-6 px-4 border-terminal-accent-amber/20 bg-terminal-bg-panel"
+        className="mb-8 border py-6 px-4 border-terminal-accent-primary/20 bg-terminal-bg-panel"
       >
         {eventError ? (
           <div className="text-center py-4 space-y-2">
-            <div className="text-xs font-bold tracking-widest text-terminal-accent-hot font-mono">
+            <div className="text-xs font-bold tracking-widest text-terminal-accent-alert font-mono">
               <LabelText
                 text={
                   lang === "ko"
@@ -194,7 +194,7 @@ export default function HomePage() {
                   text={`${lang === "ko" ? homeKo.nextEntry : "NEXT LAUNCH —"} ${eventDateLabel}`}
                 />
               </div>
-              <div className="text-xl sm:text-2xl font-bold text-terminal-accent-amber tracking-[0.2em] drop-shadow-[0_0_16px_rgba(212,146,10,0.4)]">
+              <div className="text-xl sm:text-2xl font-bold text-terminal-accent-primary tracking-[0.2em] drop-shadow-[0_0_16px_rgb(var(--color-accent-primary)/0.4)]">
                 <HeadingText text={upcomingEvent?.session ?? "—"} as="span" />
               </div>
               <div className="mt-1 text-[10px] sm:text-xs text-terminal-subdued tracking-[0.1em]">
@@ -217,10 +217,10 @@ export default function HomePage() {
       {/* Directory */}
       <motion.div
         variants={itemVariants}
-        className="border border-terminal-accent-amber/20 bg-terminal-bg-panel"
+        className="border border-terminal-accent-primary/20 bg-terminal-bg-panel"
       >
-        <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-amber/15 bg-black/40">
-          <span className="text-[10px] sm:text-xs tracking-widest text-terminal-accent-amber">
+        <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-primary/15 bg-[#0c0c10]/40">
+          <span className="text-[10px] sm:text-xs tracking-widest text-terminal-accent-primary">
             <LabelText
               text={
                 lang === "ko" ? homeKo.rootDir : "▶ ROOT DIRECTORY — /terminal/"

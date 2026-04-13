@@ -28,7 +28,7 @@ export default function CRTWrapper({ children }: { children: React.ReactNode }) 
 
       {/* Moving scanline beam */}
       <motion.div
-        className="pointer-events-none fixed left-0 right-0 z-40 h-[15vh] bg-gradient-to-b from-transparent via-terminal-accent-amber/[0.06] to-transparent"
+        className="pointer-events-none fixed left-0 right-0 z-40 h-[15vh] bg-gradient-to-b from-transparent via-terminal-accent-primary/[0.06] to-transparent"
         animate={{
           top: ['-20%', '120%'],
         }}
@@ -44,15 +44,15 @@ export default function CRTWrapper({ children }: { children: React.ReactNode }) 
         className="pointer-events-none fixed inset-0 z-30 opacity-70"
         style={{
           boxShadow: ENABLE_VIGNETTE
-            ? 'inset 0 0 60px rgba(0,0,0,0.25), inset 2px 0 rgba(200,80,32,0.05), inset -2px 0 rgba(58,152,128,0.05)'
-            : 'inset 2px 0 rgba(200,80,32,0.05), inset -2px 0 rgba(58,152,128,0.05)',
+            ? 'inset 0 0 60px rgba(0,0,0,0.25), inset 2px 0 rgb(var(--color-accent-alert)/0.05), inset -2px 0 rgb(var(--color-accent-secondary)/0.05)'
+            : 'inset 2px 0 rgb(var(--color-accent-alert)/0.05), inset -2px 0 rgb(var(--color-accent-secondary)/0.05)',
         }}
       />
 
       {/* Phosphor glow */}
       <div
         className="pointer-events-none fixed inset-0 z-20 opacity-[0.03]"
-        style={{ background: 'radial-gradient(ellipse at center, rgb(var(--color-accent-amber)) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(ellipse at center, rgb(var(--color-accent-primary)) 0%, transparent 70%)' }}
       />
 
       <div className="relative z-10">{children}</div>
