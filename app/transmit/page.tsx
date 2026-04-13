@@ -37,17 +37,21 @@ export default function TransmitPage() {
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submittingRef = useRef(false);
 
   const fetchPage = (page: number) => {
-    setLoading(true);
+    setIsFetching(true);
     fetch(`/api/transmit?page=${page}`)
       .then(res => { if (!res.ok) throw new Error(); return res.json() as Promise<LogPage>; })
       .then(data => { setLogPage(data); setCurrentPage(data.page); })
       .catch(() => setError(lang === 'ko' ? transmitKo.errors.linkUnstable : 'SIGNAL LINK UNSTABLE.'))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setIsInitialLoad(false);
+        setIsFetching(false);
+      });
   };
 
   useEffect(() => {
@@ -160,7 +164,7 @@ export default function TransmitPage() {
       {/* Log */}
       <motion.div variants={itemVariants}>
         <TerminalPanel
-          title={loading
+          title={isInitialLoad
             ? (lang === 'ko' ? transmitKo.logSyncing : 'SIGNAL_LOG — SYNCING...')
             : (lang === 'ko' ? transmitKo.logTitle(total) : `SIGNAL_LOG — ${total} ENTRIES`)}
           accent="green"
@@ -168,8 +172,8 @@ export default function TransmitPage() {
           <div className="space-y-4">
             {/* 로그 목록 */}
             <AnimatedHeight>
-              <AnimatePresence mode="wait">
-                {loading ? (
+              <AnimatePresence mode="popLayout" initial={false}>
+                {isInitialLoad ? (
                   <motion.div
                     key="loading"
                     initial={{ opacity: 0 }}
@@ -195,10 +199,10 @@ export default function TransmitPage() {
                   <motion.div
                     key={currentPage}
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    animate={{ opacity: isFetching ? 0.5 : 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                    className="space-y-4"
+                    transition={{ duration: 0.2 }}
+                    className="space-y-4 w-full"
                   >
                     {logs.map((entry, i) => (
                       <div key={entry.id} className="border-b border-terminal-accent-cyan/10 pb-4 last:border-0 last:pb-0">
@@ -224,7 +228,7 @@ export default function TransmitPage() {
             <div className="flex items-center justify-between pt-2 border-t border-terminal-accent-cyan/10">
               <button
                 onClick={() => fetchPage(currentPage - 1)}
-                disabled={currentPage <= 1 || loading}
+                disabled={currentPage <= 1 || isFetching || isInitialLoad || isSubmitting}
                 className="text-xs font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-amber disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {lang === 'ko' ? transmitKo.prevBtn : '◀ PREV'}
@@ -234,7 +238,7 @@ export default function TransmitPage() {
               </span>
               <button
                 onClick={() => fetchPage(currentPage + 1)}
-                disabled={currentPage >= totalPages || loading}
+                disabled={currentPage >= totalPages || isFetching || isInitialLoad || isSubmitting}
                 className="text-xs font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-amber disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {lang === 'ko' ? transmitKo.nextBtn : 'NEXT ▶'}
