@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useLayoutEffect, useCallback, memo, type CSSProperties } from "react";
+import { useRef, useEffect, useLayoutEffect, useCallback, memo, useState, type CSSProperties } from "react";
 import { useScramble } from "use-scramble";
 import { prepare, layout } from "@chenglou/pretext";
 
@@ -77,18 +77,21 @@ const DecodeText = memo(function DecodeText({
   // scrambleOnUpdate=false: use-scramble에 전달하는 텍스트를 초기값으로 고정 → 텍스트 변경 시 재스크램블 방지
   const frozenTextRef = useRef(text);
 
-  // delay > 0이면 마운트 후 비활성, setTimeout으로 replay
+  // delay 상태 관리: delay가 끝나기 전까지는 텍스트를 비워둡니다.
+  const [isDelaying, setIsDelaying] = useState(delay > 0);
+
+  // delay > 0이면 마운트 후 비활성, setTimeout으로 텍스트 주입
   const effectivePlayOnMount = delay > 0 ? false : playOnMount;
 
   const { ref: scrambleRef, replay } = useScramble({
-    // scrambleOnUpdate=false: 고정된 초기 텍스트 전달 → text 변경 시 use-scramble 재트리거 방지
-    text: scrambleOnUpdate ? text : frozenTextRef.current,
+    // delay 중이거나 animateTextLength가 true일 때는 초기 텍스트를 빈 문자열로 제어하여 전체 텍스트가 미리 렌더링되는 것을 방지
+    text: isDelaying ? '' : (scrambleOnUpdate ? text : frozenTextRef.current),
     speed,
     scramble,
     step,
     range: [48, 102], // 0-9, A-Z (Hex 느낌)
     overdrive: false,
-    playOnMount: effectivePlayOnMount,
+    playOnMount: true, // text props 변경 시 자동 재생되도록 항상 true로 설정 (지연 후 text가 주입되면 자동 재생됨)
     overflow: animateTextLength, // 빈 문자열부터 길이가 늘어나는 애니메이션 (타자기 효과)
     onAnimationEnd: () => {
       if (!scrambleOnUpdate) {
@@ -104,11 +107,12 @@ const DecodeText = memo(function DecodeText({
     },
   });
 
-  // delay 구현: 마운트 시 1회, delay ms 후 replay()
+  // delay 구현: 마운트 시 1회, delay ms 후 isDelaying 해제
   useEffect(() => {
     if (delay <= 0) return;
     const timer = setTimeout(() => {
-      if (!animationSettledRef.current) replay();
+      setIsDelaying(false);
+      // isDelaying이 풀리면서 text prop이 업데이트되면 useScramble이 자동으로 재생합니다.
     }, delay);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -116,7 +120,7 @@ const DecodeText = memo(function DecodeText({
 
   // animateTextLength + delay: use-scramble이 playOnMount=false일 때 전체 텍스트를
   // DOM에 즉시 써버리는 것을 방지. replay() 이전까지 빈 상태 유지.
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!animateTextLength || delay <= 0) return;
     if (measureRef.current) {
       measureRef.current.innerHTML = '';

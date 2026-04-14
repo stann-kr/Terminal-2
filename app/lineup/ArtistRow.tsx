@@ -1,11 +1,10 @@
 'use client';
 import { useState } from 'react';
 import type { Artist } from '@/lib/eventData';
-import { LabelText, MetaText } from '@/components/ui/TerminalText';
+import { LabelText, MetaText, BodyText } from '@/components/ui/TerminalText';
 import { useLang } from '@/lib/langContext';
 import { lineupKo } from '@/lib/i18n';
 import AnimatedHeight from '@/components/ui/AnimatedHeight';
-import DecodeText from '@/components/DecodeText';
 
 const statusClassMap: Record<string, string> = {
   CONFIRMED: 'text-terminal-accent-primary',
@@ -33,7 +32,7 @@ export default function ArtistRow({ artist: a }: Props) {
     ? (lang === 'ko' ? a.description.ko : a.description.en)
     : (a.description || '');
   
-  const descriptionText = Array.isArray(currentDesc) ? currentDesc.join('\n') : currentDesc;
+  const descLines: string[] = Array.isArray(currentDesc) ? currentDesc : (typeof currentDesc === 'string' && currentDesc ? currentDesc.split('\n') : []);
 
   const handleToggle = () => {
     if (hasDescription) {
@@ -102,8 +101,16 @@ export default function ArtistRow({ artist: a }: Props) {
         <AnimatedHeight show={isOpen}>
           <div className="px-4 py-5 border border-terminal-accent-primary/20 bg-terminal-bg-panel/50">
             {isOpen && (
-              <div className="text-xs font-mono text-terminal-muted leading-relaxed whitespace-pre-wrap">
-                <DecodeText text={descriptionText || ''} speed={0.4} />
+              <div className="text-xs font-mono text-terminal-muted leading-relaxed space-y-0.5">
+                {descLines.map((line, i) => (
+                  <div key={i} className="min-h-[1.25rem]">
+                    {line.trim() === '' ? (
+                      <span>&nbsp;</span>
+                    ) : (
+                      <BodyText text={line} delay={i * 30} className="text-terminal-muted" />
+                    )}
+                  </div>
+                ))}
               </div>
             )}
           </div>
