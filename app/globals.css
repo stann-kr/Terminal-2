@@ -30,6 +30,7 @@
     --color-bg-base: 5 6 10;
     --color-bg-panel: 10 13 20;
     --color-bg-panel-border: 31 38 51;
+    --color-bg-overlay: 12 12 16; /* #0c0c10 */
 
     --color-text-primary: 214 229 237;
     --color-text-subdued: 140 155 165;

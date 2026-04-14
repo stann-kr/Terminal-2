@@ -28,7 +28,7 @@ export default function CRTWrapper({ children }: { children: React.ReactNode }) 
 
       {/* Moving scanline beam */}
       <motion.div
-        className="pointer-events-none fixed left-0 right-0 z-40 h-[15vh] bg-gradient-to-b from-transparent via-terminal-accent-primary/[0.06] to-transparent"
+        className="pointer-events-none fixed left-0 right-0 z-40 h-[15vh] bg-gradient-to-b from-transparent via-terminal-bg-base/30 to-transparent mix-blend-multiply"
         animate={{
           top: ['-20%', '120%'],
         }}
