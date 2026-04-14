@@ -1,5 +1,28 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-14] CRT 스캔라인 및 텍스트 디코딩 애니메이션 최적화
+
+* **CRT 스캔라인 이펙트 개선 (`components/CRTWrapper.tsx`):**
+    * 기존 Icy Blue 색상으로 하얗게 내려오던 `Moving scanline beam`을 검은색 그림자가 지나가는 듯한 어두운 띠(`via-black/30`)로 변경.
+    * `mix-blend-multiply` 속성을 추가하여 아래에 깔린 화면 요소들의 밝기를 자연스럽게 누르면서, 낡은 모니터의 묵직한 흑백 CRT 스캔 효과를 연출하도록 모노크롬 테마와 일치시킴.
+* **디코딩 애니메이션 깜빡임 현상 제거 (`components/DecodeText.tsx`):**
+    * `delay` 속성이 부여되었을 때 대기 시간 동안 원본 텍스트가 DOM에 미리 렌더링되어 번쩍이는(Flash) 버그 해결.
+    * `isDelaying` 상태 변수를 도입하여, 지연 시간 중에는 `useScramble` 모듈에 빈 문자열(`''`)을 강제로 전달해 사전 노출을 완벽히 차단.
+    * 지연 종료 후 실제 텍스트가 주입되면서 빈 문자열부터 글자가 하나씩 늘어나는 타자기(Typewriter) + 복호화 효과가 자연스럽게 동작하도록 수정.
+* **아티스트 라인업 폭포수 디코딩 적용 (`app/lineup/ArtistRow.tsx`):**
+    * 단일 텍스트 덩어리로 디코딩되던 아코디언 본문 렌더링을 배열 순회(`descLines.map`) 방식으로 변경.
+    * 각 줄마다 미세한 `delay` 격차(`i * 30`)를 주어 여러 줄의 텍스트가 위에서부터 아래로 동시에 폭포수처럼 쏟아지며 빠르게 디코딩되도록 속도감 개선.
+
+## [2026-04-14] ACCESS.REQUEST 초대 메시지(INVITATION_BRIEF) DB 이관 및 다국어 지원
+
+* **데이터 모델 확장 (`lib/eventData.ts`):** `TerminalEvent` 인터페이스의 `invitationLines` 속성을 `{ en: string[], ko: string[] }` 구조의 다국어 객체로 변경. 이를 통해 이벤트별로 서로 다른 초대 메시지를 DB에서 관리할 수 있도록 개선.
+* **UI 데이터 연동 고도화 (`app/gate/request/page.tsx`):**
+    * 전역 언어 설정(`lang`)에 따라 `event.invitationLines.ko` 또는 `event.invitationLines.en`을 동적으로 선택하여 렌더링하도록 로직 수정.
+    * DB에 데이터가 없을 경우 기존의 기본값(`DEFAULT_INVITATION_LINES`, `requestKo.invitationLines`)으로 안전하게 Fallback 처리하는 로직 유지.
+* **D1 데이터베이스 마이그레이션 (`migrations/0004_event_invitation_lines.sql`):**
+    * SQLite의 `json_set` 함수를 활용하여 기존 `TRM-02` 이벤트의 JSON 데이터(`data` 컬럼) 내부에 한/영 초대 메시지 객체를 주입.
+    * 하드코딩된 메시지를 DB 데이터로 점진적으로 대체하기 위한 기반 마련.
+
 ## [2026-04-14] 라인업 페이지 아티스트 소개글 아코디언 기능 추가
 
 * **데이터 모델 확장 (`lib/eventData.ts`):** `Artist` 인터페이스에 선택적 필드 `description` 추가. 기존 단일 문자열 외에 `{ en: string | string[], ko: string | string[] }` 형태의 이중 언어(Bilingual) 객체 구조를 지원하도록 설계 변경.
