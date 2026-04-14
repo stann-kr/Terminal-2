@@ -57,7 +57,7 @@ export const gateKo = {
   tabUpcoming: "▶ 예정",
   tabArchive: "◼ 아카이브",
   loading: "▸ 게이트 데이터 로딩 중...",
-  requestBtn: "▶ 입장 신청",
+  requestBtn: "▶ 입장 게스트 신청",
   archivedLabel: "◼ 아카이브됨",
   locationWarning: "⚠ 세션 참가를 위한 상세 위치 및 게이트 정보입니다.",
   /** `◼ 세션 종료 — ${date}` */

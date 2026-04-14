@@ -1,21 +1,52 @@
 -- Update TRM-02 with invitationLines in JSON data
 UPDATE events
-SET data = json_set(data, '$.invitationLines', json('{
+SET
+    data = json_set(
+        data,
+        '$.invitationLines',
+        json (
+            '{
   "en": [
-    "YOU HAVE BEEN GRANTED ACCESS TO THIS CHANNEL.",
-    "THIS INVITATION IS PERSONAL AND NON-TRANSFERABLE.",
-    "TERMINAL IS A PRIVATE EVENT — ENTRY BY AUTHORIZATION ONLY.",
-    "SUBMIT YOUR REQUEST BELOW TO BE CONSIDERED FOR ADMISSION.",
-    "AN ACCESS CODE IS REQUIRED. IF YOU DO NOT HAVE ONE,",
-    "PLEASE CONTACT TERMINAL HUB FOR COORDINATES."
+    "GREETINGS. THIS IS STANN LUMO.",
+    "THIS IS THE SECOND OPERATION OF MY PLATFORM, TERMINAL.",
+    "",
+    "BEYOND THE INITIAL BOOT SEQUENCE, THE SYSTEM NOW ENTERS",
+    "THE HELIOPAUSE OUTSKIRTS — THE ABYSS AT THE SOLAR SYSTEM''S EDGE.",
+    "",
+    "I LOOK FORWARD TO MEETING YOU AT THE JUNCTION WHERE",
+    "PURE SIGNALS CROSS INTO UNCHARTED TERRITORY.",
+    "",
+    "[ NOTICE ]",
+    "* GUESTS REGISTERED VIA THIS FORM ARE GRANTED FREE ENTRY",
+    "  BEFORE 00:00 (MIDNIGHT) ON THE DAY OF THE EVENT.",
+    "",
+    "┌───────────────────────────────────┐",
+    " TERMINAL [02] : HELIOPAUSE OUTSKIRTS",
+    "└───────────────────────────────────┘",
+    "▪ DATE : 26_05-08 (FRI)",
+    "▪ LOCATION : FAUST, SEOUL"
   ],
   "ko": [
-    "이 채널에 대한 접근 권한이 부여되었습니다.",
-    "이 초대는 개인적이며 양도 불가합니다.",
-    "TERMINAL은 RSVP 기반 이벤트입니다 — 신청 절차를 완료해주세요.",
-    "입장 심사를 위해 아래 양식을 작성해 제출하세요.",
-    "인증 코드가 필요합니다. 없는 경우,",
-    "접근 좌표 확인을 위해 터미널 허브로 문의 바랍니다."
+    "안녕하세요. STANN LUMO입니다.",
+    "저의 플랫폼 TERMINAL의 두 번째 이벤트입니다.",
+    "",
+    "첫 번째 부트 시퀀스를 넘어, 시스템은 태양계 최외곽의",
+    "심연인 HELIOPAUSE OUTSKIRTS로 진입합니다.",
+    "",
+    "순수한 신호와 미지의 구역이 교차하는 정거장에서 뵙겠습니다.",
+    "",
+    "[ NOTICE ]",
+    "* 본 설문을 통해 등록하신 게스트는 이벤트 당일",
+    "  00시(자정) 이전까지 무료 입장이 가능합니다.",
+    "",
+    "┌───────────────────────────────────┐",
+    " TERMINAL [02] : HELIOPAUSE OUTSKIRTS",
+    "└───────────────────────────────────┘",
+    "▪ DATE : 26_05-08 (FRI)",
+    "▪ LOCATION : FAUST, SEOUL"
   ]
-}'))
-WHERE id = 'TRM-02';
+}'
+        )
+    )
+WHERE
+    id = 'TRM-02';
