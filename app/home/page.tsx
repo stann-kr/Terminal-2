@@ -219,7 +219,7 @@ export default function HomePage() {
         variants={itemVariants}
         className="border border-terminal-accent-primary/20 bg-terminal-bg-panel"
       >
-        <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-primary/15 bg-[#0c0c10]/40">
+        <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-primary/15 bg-terminal-bg-overlay/40">
           <span className="text-[10px] sm:text-xs tracking-widest text-terminal-accent-primary">
             <LabelText
               text={

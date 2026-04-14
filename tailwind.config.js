@@ -13,6 +13,7 @@ module.exports = {
           'bg-base': 'rgb(var(--color-bg-base) / <alpha-value>)',
           'bg-panel': 'rgb(var(--color-bg-panel) / <alpha-value>)',
           'bg-panel-border': 'rgb(var(--color-bg-panel-border) / <alpha-value>)',
+          'bg-overlay': 'rgb(var(--color-bg-overlay) / <alpha-value>)',
           'primary': 'rgb(var(--color-text-primary) / <alpha-value>)',
           'subdued': 'rgb(var(--color-text-subdued) / <alpha-value>)',
           'muted': 'rgb(var(--color-text-muted) / <alpha-value>)',

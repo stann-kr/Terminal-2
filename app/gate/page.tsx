@@ -51,7 +51,7 @@ export default function GatePage() {
 
       {/* Tab switcher */}
       <motion.div variants={itemVariants} className="mb-6">
-        <div className="inline-flex p-1 gap-1 bg-[#0c0c10]/50 border border-terminal-accent-primary/15">
+        <div className="inline-flex p-1 gap-1 bg-terminal-bg-overlay/50 border border-terminal-accent-primary/15">
           {(["upcoming", "archive"] as const).map((t) => (
             <TerminalButton
               key={t}

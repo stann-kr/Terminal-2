@@ -18,7 +18,7 @@ const accentClassMap = {
   amber: 'border-terminal-accent-primary/25 text-terminal-accent-primary drop-shadow-[0_0_12px_rgb(var(--color-accent-primary)/0.4)]',
   cyan:  'border-terminal-accent-secondary/25 text-terminal-accent-secondary drop-shadow-[0_0_12px_rgb(var(--color-accent-secondary)/0.4)]',
   hot:   'border-terminal-accent-alert/25 text-terminal-accent-alert drop-shadow-[0_0_12px_rgb(var(--color-accent-alert)/0.4)]',
-  green: 'border-terminal-accent-secondary/25 text-terminal-accent-secondary drop-shadow-[0_0_12px_rgb(var(--color-accent-secondary)/0.4)]',
+  green: 'border-terminal-accent-primary/25 text-terminal-accent-primary drop-shadow-[0_0_12px_rgb(var(--color-accent-primary)/0.4)]',
   gold:  'border-terminal-accent-warn/25 text-terminal-accent-warn drop-shadow-[0_0_12px_rgb(var(--color-accent-warn)/0.4)]',
 };
 
@@ -32,7 +32,7 @@ const labelColorMap = {
   amber: 'text-terminal-accent-primary/50',
   cyan:  'text-terminal-accent-secondary/50',
   hot:   'text-terminal-accent-alert/50',
-  green: 'text-terminal-accent-secondary/50',
+  green: 'text-terminal-accent-primary/50',
   gold:  'text-terminal-accent-warn/50',
 };
 
