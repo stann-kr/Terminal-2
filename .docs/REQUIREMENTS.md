@@ -17,4 +17,9 @@
 * (추후 기능 명세 업데이트)
 
 ## 4. 데이터베이스 구조 (Schema)
-* (추후 Drizzle D1 스키마 업데이트)
+* **Flexible JSON Model:** `events`, `artists` 테이블은 고정 컬럼 대신 `data` JSON 컬럼을 활용하여 데이터 속성 변경에 유연하게 대응함.
+* **Core Tables:**
+    * `events`: 이벤트 정보 (세션, 일정, 장소, 다국어 초대 메시지 등).
+    * `artists`: 출연진 정보 (프로필, 소개글 등).
+    * `access_requests`: 입장 신청 내역 (개인정보, 인스타그램 ID 등).
+    * `transmit_logs`: 메시지 전송 로그 (핸들러, 메시지, 디바이스 ID 등).

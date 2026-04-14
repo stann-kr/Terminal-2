@@ -66,7 +66,26 @@
 - 모든 페이지는 `<PageLayout>`을 최상위 랩퍼로 사용하며, 내부 요소는 `<motion.div variants={itemVariants}>`를 사용하여 스태거 애니메이션을 일관되게 적용함.
 - 공통 UI 요소(`ReturnLink`, `PageHeader`, `TerminalPanel`, `TerminalButton`)를 적극 활용하여 인라인 스타일 및 중복 마크업을 최소화함.
 
-## 5. 알려진 미해결 과제
+## 5. 데이터 모델 및 DB 아키텍처 (Flexible JSON Schema)
+
+Cloudflare D1의 제약 사항과 개발 생산성을 고려하여, 핵심 비즈니스 로직이 담긴 테이블(`events`, `artists`)은 고정된 컬럼 대신 유연한 JSON 구조를 채택함.
+
+### 5.1 `events` 테이블 설계
+- **`id` (PK):** 이벤트 식별자 (예: `TRM-02`)
+- **`data` (JSON):** 이벤트의 모든 메타데이터를 포함하는 JSON 문자열.
+  - 주요 필드: `session`, `subtitle`, `date`, `time`, `venue`, `status`, `invitationLines` (다국어 지원 객체) 등.
+  - 장점: 새로운 속성 추가 시 DDL 마이그레이션 없이 애플리케이션 레벨의 타입 업데이트만으로 대응 가능.
+
+### 5.2 `artists` 테이블 설계
+- **`id` (PK):** 아티스트 식별자 (예: `02-A`)
+- **`event_id` (FK):** `events.id` 참조 (Cascade On Delete)
+- **`data` (JSON):** 아티스트 정보.
+  - 주요 필드: `name`, `origin`, `status`, `description` (다국어 지원 객체) 등.
+
+### 5.3 `access_requests` 및 `transmit_logs`
+- 이들은 트랜잭션 성격이 강하므로 전통적인 관계형 컬럼 구조를 유지하여 쿼리 성능과 데이터 무결성을 확보함.
+
+## 6. 알려진 미해결 과제
 
 - **Next.js 15 빌드 경고:** `NODE_ENV` 관련 비표준 값 경고 및 `output: "export"` 환경에서의 정적 생성 경로 이슈.
 - **TypeScript 타입 무결성:** `framer-motion` 및 `@react-three/fiber` 환경에서의 전역 타입 선언 미흡으로 인한 `JSX.IntrinsicElements` 에러. (런타임 영향은 없으나 빌드 시 CI 환경 검증 필요)
