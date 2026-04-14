@@ -44,7 +44,7 @@ export default function GatePage() {
       <ReturnLink variants={itemVariants} />
       <PageHeader
         path="/terminal/gate"
-        title="GATE"
+        title="GATE.SEC"
         accent={tab === "upcoming" ? "cyan" : "amber"}
         variants={itemVariants}
       />
@@ -93,27 +93,27 @@ export default function GatePage() {
             >
               {upcomingEvent && (
                 <>
-                  {/* Event header */}
+                  {/* Event header - 정보 가독성 유지 */}
                   <div className="border border-terminal-accent-secondary/30 px-4 py-4 bg-terminal-bg-panel">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <div className="text-xs tracking-widest mb-1 font-mono text-terminal-muted">
+                        <div className="tracking-widest mb-1 font-mono text-terminal-muted">
                           <MetaText text={`${upcomingEvent.date.replace(/-/g, ".")} · ${upcomingEvent.time}`} />
                         </div>
                         <div className="drop-shadow-[0_0_12px_rgb(var(--color-accent-secondary)/0.4)]">
                           <HeadingText
                             text={upcomingEvent.session}
                             as="span"
-                            className="text-xl font-bold tracking-[0.15em] text-terminal-accent-secondary"
+                            className="tracking-[0.15em] text-terminal-accent-secondary"
                           />
                         </div>
                         <SubtitleText
                           autoHeight
                           text={upcomingEvent.subtitle}
-                          className="text-xs mt-1 text-terminal-subdued tracking-[0.1em]"
+                          className="mt-1 text-terminal-subdued tracking-[0.1em]"
                         />
                       </div>
-                      <div className="text-xs font-bold tracking-wider shrink-0 text-terminal-accent-secondary font-mono">
+                      <div className="font-bold tracking-wider shrink-0 text-terminal-accent-secondary font-mono">
                         <span className="status-pulse mr-1">●</span>
                         <LabelText text="UPCOMING" className="inline" />
                       </div>

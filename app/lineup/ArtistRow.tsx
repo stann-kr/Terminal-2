@@ -54,20 +54,20 @@ export default function ArtistRow({ artist: a }: Props) {
         {/* Mobile */}
         <div className={`md:hidden px-4 py-4 border transition-all duration-200 space-y-2 ${borderClass} ${hoverClass}`}>
           <div className="flex items-start justify-between gap-2">
-            <span className={`text-sm font-bold tracking-wider leading-tight font-mono ${nameColorClass} ${nameGlowClass}`}>
+            <span className={`font-bold tracking-wider leading-tight font-mono ${nameColorClass} ${nameGlowClass}`}>
               <LabelText text={a.name} />
             </span>
-            <span className={`text-xs font-bold tracking-wider whitespace-nowrap shrink-0 font-mono ${statusColorClass}`}>
+            <span className={`font-bold tracking-wider whitespace-nowrap shrink-0 font-mono ${statusColorClass}`}>
               <span className="status-pulse mr-1">●</span>
               <LabelText text={a.status} className="inline" />
             </span>
           </div>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs font-mono">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono">
             <span className="text-terminal-muted"><MetaText text={a.id} /></span>
             <span className="text-terminal-subdued"><MetaText text={a.origin} /></span>
             <span className="text-terminal-accent-warn"><MetaText text={a.time} /></span>
           </div>
-          <div className="flex items-center justify-between text-xs text-terminal-subdued font-mono">
+          <div className="flex items-center justify-between text-terminal-subdued font-mono">
             <MetaText text={lang === 'ko' ? lineupKo.dock(a.dock) : `DOCK ${a.dock}`} />
             {hasDescription && (
               <span className="text-terminal-accent-primary/50">{isOpen ? '[-]' : '[+]'}</span>
@@ -77,15 +77,15 @@ export default function ArtistRow({ artist: a }: Props) {
 
         {/* Desktop */}
         <div className={`hidden md:grid grid-cols-12 gap-2 px-4 py-4 border transition-all duration-200 ${borderClass} ${hoverClass} items-center`}>
-          <span className="col-span-1 text-xs text-terminal-muted font-mono"><MetaText text={a.id} /></span>
-          <span className={`col-span-3 text-sm font-bold tracking-wider font-mono ${nameColorClass} ${nameGlowClass}`}>
+          <span className="col-span-1 font-mono text-terminal-muted"><MetaText text={a.id} /></span>
+          <span className={`col-span-3 font-bold tracking-wider font-mono ${nameColorClass} ${nameGlowClass}`}>
             <LabelText text={a.name} />
           </span>
-          <span className="col-span-1 text-xs text-terminal-subdued font-mono"><MetaText text={a.origin} /></span>
-          <span className="col-span-3 text-xs text-terminal-subdued font-mono"><MetaText text={lang === 'ko' ? lineupKo.dock(a.dock) : `DOCK ${a.dock}`} /></span>
-          <span className="col-span-2 text-xs text-terminal-accent-warn font-mono"><MetaText text={a.time} /></span>
-          <span className={`col-span-2 text-xs font-bold tracking-wider font-mono flex items-center justify-between ${statusColorClass}`}>
-            <span>
+          <span className="col-span-1 font-mono text-terminal-subdued"><MetaText text={a.origin} /></span>
+          <span className="col-span-3 font-mono text-terminal-subdued"><MetaText text={lang === 'ko' ? lineupKo.dock(a.dock) : `DOCK ${a.dock}`} /></span>
+          <span className="col-span-2 font-mono text-terminal-accent-warn"><MetaText text={a.time} /></span>
+          <span className={`col-span-2 font-bold tracking-wider font-mono flex items-center justify-between ${statusColorClass}`}>
+            <span className="flex items-center">
               <span className="status-pulse mr-1">●</span>
               <LabelText text={a.status} className="inline" />
             </span>
@@ -101,13 +101,13 @@ export default function ArtistRow({ artist: a }: Props) {
         <AnimatedHeight show={isOpen}>
           <div className="px-4 py-5 border border-terminal-accent-primary/20 bg-terminal-bg-panel/50">
             {isOpen && (
-              <div className="text-xs font-mono text-terminal-muted leading-relaxed space-y-0.5">
+              <div className="font-mono text-terminal-muted leading-relaxed space-y-0.5">
                 {descLines.map((line, i) => (
                   <div key={i} className="min-h-[1.25rem]">
                     {line.trim() === '' ? (
                       <span>&nbsp;</span>
                     ) : (
-                      <BodyText text={line} delay={i * 30} className="text-terminal-muted" />
+                      <BodyText autoHeight text={line} delay={i * 30} className="text-terminal-muted" />
                     )}
                   </div>
                 ))}

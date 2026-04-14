@@ -56,9 +56,9 @@ export default function AboutPage() {
           <TerminalPanel title="MANIFESTO_v1.txt" accent="green">
             <div className="space-y-1">
               {manifesto.map((line, i) => (
-                <div key={i} className="text-xs leading-6">
+                <div key={i}>
                   {line === '' ? (
-                    <span>&nbsp;</span>
+                    <span className="block h-4">&nbsp;</span>
                   ) : (
                     <BodyText
                       text={line}
@@ -77,7 +77,7 @@ export default function AboutPage() {
           <TerminalPanel title="SYSINFO.DAT" accent="secondary">
             <div className="space-y-2">
               {SYSTEM_INFO.map((item, i) => (
-                <div key={item.key} className="flex items-start gap-2 sm:gap-3 text-xs font-mono">
+                <div key={item.key} className="flex items-start gap-2 sm:gap-3 font-mono">
                   <span className="w-24 sm:w-36 shrink-0 text-terminal-subdued">
                     <LabelText text={item.key} delay={i * 30} />
                   </span>

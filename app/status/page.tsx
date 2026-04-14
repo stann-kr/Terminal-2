@@ -60,15 +60,15 @@ export default function StatusPage() {
                     {/* Mobile */}
                     <div className="md:hidden space-y-1.5 font-mono">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-terminal-primary">
+                        <span className="text-terminal-primary">
                           <LabelText text={s.name} delay={i * 20} />
                         </span>
-                        <span className={`text-xs font-bold tracking-wider ${statusColorClass}`}>
+                        <span className={`tracking-wider ${statusColorClass}`}>
                           <span className="status-pulse mr-1">●</span>
                           <LabelText text={s.status} className="inline" delay={i * 20} />
                         </span>
                       </div>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1">
                         <span className="text-terminal-subdued">
                           <SubtitleText text={s.sector} delay={i * 20} />
                         </span>
@@ -87,7 +87,7 @@ export default function StatusPage() {
                     </div>
 
                     {/* Desktop */}
-                    <div className="hidden md:grid grid-cols-12 gap-2 items-center text-xs font-mono">
+                    <div className="hidden md:grid grid-cols-12 gap-2 items-center font-mono">
                       <span className="col-span-2 font-bold text-terminal-primary">
                         <LabelText text={s.name} delay={i * 20} />
                       </span>

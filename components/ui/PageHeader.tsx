@@ -37,7 +37,7 @@ export default function PageHeader({ path, title, accent = 'primary', variants =
       </div>
       <HeadingText
         text={title}
-        className={`text-3xl font-bold tracking-[0.2em] ${accentClass}`}
+        className={`text-xl md:text-2xl font-bold tracking-[0.2em] ${accentClass}`}
       />
     </motion.div>
   );

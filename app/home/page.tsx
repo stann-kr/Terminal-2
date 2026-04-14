@@ -135,20 +135,20 @@ export default function HomePage() {
 
         <motion.h1
           variants={itemVariants}
-          className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-[0.15em] sm:tracking-[0.3em] mb-2 drop-shadow-[0_0_30px_rgb(var(--color-accent-primary)/0.5)] font-pixie"
+          className="font-bold tracking-[0.15em] sm:tracking-[0.2em] mb-2 drop-shadow-[0_0_30px_rgb(var(--color-accent-primary)/0.5)] font-pixie"
         >
           <TitleText
             text="TERMINAL"
             as="span"
-            className="text-terminal-accent-primary"
+            className="text-3xl sm:text-5xl md:text-6xl text-terminal-accent-primary"
           />
         </motion.h1>
 
-        <motion.div variants={itemVariants} className="text-[10px] sm:text-xs">
+        <motion.div variants={itemVariants}>
           <SubtitleText
             text="A VOYAGE TO THE UNKNOWN SECTOR"
             delay={100}
-            className="text-terminal-subdued text-center tracking-[0.1em]"
+            className="text-[4px] sm:text-[6px] text-terminal-subdued text-center tracking-[0.3em] opacity-40"
           />
         </motion.div>
 

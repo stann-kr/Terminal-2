@@ -110,7 +110,7 @@ export default function TransmitPage() {
         <TerminalPanel title="VISITOR_LOG — NODE_SYNC" accent="alert">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <div className="w-full text-xs mb-1.5 tracking-widest font-mono text-terminal-muted">
+              <div className="w-full mb-1.5 tracking-widest font-mono text-terminal-muted">
                 <LabelText text={lang === 'ko' ? transmitKo.labelAlias : 'ALIAS:'} />
               </div>
               <input
@@ -122,7 +122,7 @@ export default function TransmitPage() {
               />
             </div>
             <div>
-              <div className="flex justify-between items-center w-full text-xs mb-1.5 tracking-widest font-mono text-terminal-muted">
+              <div className="flex justify-between items-center w-full mb-1.5 tracking-widest font-mono text-terminal-muted">
                 <span className="flex-1 min-w-0">
                   <LabelText text={lang === 'ko' ? transmitKo.labelMessage : 'MESSAGE:'} />
                 </span>
@@ -139,12 +139,12 @@ export default function TransmitPage() {
             </div>
             <AnimatePresence mode="wait">
               {error && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs font-mono text-terminal-accent-alert">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="font-mono text-terminal-accent-alert">
                   <LabelText text={`⚠ ERROR: ${error}`} />
                 </motion.div>
               )}
               {sent && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-xs font-mono text-terminal-accent-primary">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="font-mono text-terminal-accent-primary">
                   <LabelText text={lang === 'ko' ? transmitKo.committed : '✓ SIGNAL COMMITTED TO DATABASE'} />
                 </motion.div>
               )}
@@ -207,14 +207,14 @@ export default function TransmitPage() {
                     {logs.map((entry, i) => (
                       <div key={entry.id} className="border-b border-terminal-accent-secondary/10 pb-4 last:border-0 last:pb-0">
                         <div className="flex items-baseline gap-2 mb-1.5 overflow-hidden">
-                          <span className="text-xs font-bold tracking-wider font-mono text-terminal-accent-tertiary shrink-0">
+                          <span className="font-bold tracking-wider font-mono text-terminal-accent-tertiary shrink-0">
                             <SubtitleText autoHeight text={entry.handle} delay={i * 40} />
                           </span>
-                          <span className="text-xs font-mono text-terminal-muted/50 shrink-0">
+                          <span className="font-mono text-terminal-muted/50 shrink-0">
                             <MetaText autoHeight text={entry.ts} delay={i * 40} />
                           </span>
                         </div>
-                        <div className="text-xs leading-relaxed font-mono text-terminal-subdued">
+                        <div className="font-mono text-terminal-subdued">
                           <SubtitleText autoHeight text={`> ${entry.message}`} delay={i * 40} />
                         </div>
                       </div>
