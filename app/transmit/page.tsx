@@ -206,16 +206,16 @@ export default function TransmitPage() {
                   >
                     {logs.map((entry, i) => (
                       <div key={entry.id} className="border-b border-terminal-accent-secondary/10 pb-4 last:border-0 last:pb-0">
-                        <div className="flex items-center gap-3 mb-1.5">
-                          <span className="text-xs font-bold tracking-wider font-mono text-terminal-accent-tertiary">
-                            <SubtitleText text={entry.handle} delay={i * 40} />
+                        <div className="flex items-baseline gap-2 mb-1.5 overflow-hidden">
+                          <span className="text-xs font-bold tracking-wider font-mono text-terminal-accent-tertiary shrink-0">
+                            <SubtitleText autoHeight text={entry.handle} delay={i * 40} />
                           </span>
-                          <span className="text-xs font-mono text-terminal-muted">
-                            <MetaText text={entry.ts} delay={i * 40} />
+                          <span className="text-xs font-mono text-terminal-muted/50 shrink-0">
+                            <MetaText autoHeight text={entry.ts} delay={i * 40} />
                           </span>
                         </div>
                         <div className="text-xs leading-relaxed font-mono text-terminal-subdued">
-                          <SubtitleText text={`> ${entry.message}`} delay={i * 40} />
+                          <SubtitleText autoHeight text={`> ${entry.message}`} delay={i * 40} />
                         </div>
                       </div>
                     ))}

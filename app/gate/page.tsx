@@ -108,6 +108,7 @@ export default function GatePage() {
                           />
                         </div>
                         <SubtitleText
+                          autoHeight
                           text={upcomingEvent.subtitle}
                           className="text-xs mt-1 text-terminal-subdued tracking-[0.1em]"
                         />
@@ -155,7 +156,7 @@ export default function GatePage() {
                     <div className="flex items-center justify-between gap-4">
                       <div>
                         <div className={`text-sm font-bold tracking-wider ${selectedArchive === ev.id ? "text-terminal-accent-alert" : "text-terminal-primary"}`}>
-                          <SubtitleText text={ev.session} />
+                          <SubtitleText autoHeight text={ev.session} />
                         </div>
                         <div className="text-xs mt-0.5 text-terminal-subdued">
                           <MetaText text={`${ev.subtitle} · ${ev.date.replace(/-/g, ".")}`} />

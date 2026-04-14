@@ -50,6 +50,7 @@ export default function EventDetail({ event, showCountdown = false }: Props) {
           {event.status === 'UPCOMING' && (
             <div className="text-xs font-mono text-terminal-subdued">
               <SubtitleText
+                autoHeight
                 text={lang === 'ko' ? gateKo.locationWarning : '⚠ DETAILED LOCATION & GATE INFORMATION FOR THE SESSION.'}
                 className="text-terminal-accent-primary font-mono text-[10px] sm:text-xs"
               />
@@ -62,7 +63,7 @@ export default function EventDetail({ event, showCountdown = false }: Props) {
                   <LabelText text={item.k} delay={i * 30} />
                 </div>
                 <div className="text-xs font-bold font-mono text-terminal-accent-primary">
-                  <SubtitleText text={item.v} delay={i * 30} />
+                  <SubtitleText autoHeight text={item.v} delay={i * 30} />
                 </div>
               </div>
             ))}
