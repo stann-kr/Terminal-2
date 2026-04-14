@@ -35,7 +35,10 @@ export interface TerminalEvent {
   status: EventStatus;
   artists: Artist[];
   accessCode?: string;
-  invitationLines?: string[];
+  invitationLines?: {
+    en: string[];
+    ko: string[];
+  };
 }
 
 export const EVENTS: TerminalEvent[] = [

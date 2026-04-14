@@ -121,8 +121,8 @@ export default function RequestAccessPage() {
   };
 
   const invitationLines = lang === 'ko'
-    ? (event?.invitationLines ?? requestKo.invitationLines)
-    : (event?.invitationLines ?? DEFAULT_INVITATION_LINES);
+    ? (event?.invitationLines?.ko ?? requestKo.invitationLines)
+    : (event?.invitationLines?.en ?? DEFAULT_INVITATION_LINES);
 
   const inputClass =
     'w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-secondary/30 focus:border-terminal-accent-secondary/70 transition-colors font-mono text-terminal-accent-secondary caret-terminal-accent-secondary placeholder:text-terminal-muted/40';
