@@ -6,6 +6,11 @@ export type ArtistStatus =
   | "ARCHIVED"
   | "AWAITING DECRYPTION";
 
+export interface ArtistDescription {
+  en: string | string[];
+  ko: string | string[];
+}
+
 export interface Artist {
   id: string;
   name: string;
@@ -13,6 +18,7 @@ export interface Artist {
   dock: string;
   time: string;
   status: ArtistStatus;
+  description?: ArtistDescription | string | string[];
 }
 
 export interface TerminalEvent {
@@ -53,6 +59,18 @@ export const EVENTS: TerminalEvent[] = [
         dock: "1",
         time: "TBA",
         status: "CONFIRMED",
+        description: [
+          "TERMINAL RESIDENT // SEOUL",
+          "SONIC ARCHITECT SPECIALIZING IN HIGH-DENSITY, INDUSTRIAL TEXTURES",
+          "BLENDING RAW ANALOG HARDWARE WITH PRECISION DIGITAL PROCESSING.",
+          "",
+          "> RECENT ACTIVITY:",
+          "  - 'OBSIDIAN CORE' EP [TERMINAL RECORDS, 2025]",
+          "  - FAUST SEOUL RESIDENCY [2024-PRESENT]",
+          "",
+          "KNOWN FOR RELENTLESS KICK DRUMS AND HYPNOTIC, METALLIC PERCUSSION",
+          "THAT DISORIENTS AND RECONSTRUCTS THE DANCEFLOOR DYNAMICS."
+        ],
       },
       {
         id: "02-B",
