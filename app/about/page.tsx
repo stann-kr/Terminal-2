@@ -49,7 +49,7 @@ export default function AboutPage() {
   return (
     <PageLayout>
       <ReturnLink variants={itemVariants} />
-      <PageHeader path="/terminal/about" title="ABOUT.SYS" accent="amber" variants={itemVariants} />
+      <PageHeader path="/terminal/about" title="ABOUT.SYS" accent="primary" variants={itemVariants} />
 
         {/* Manifesto */}
         <motion.div variants={itemVariants} className="mb-6">
@@ -74,7 +74,7 @@ export default function AboutPage() {
 
         {/* System Info */}
         <motion.div variants={itemVariants}>
-          <TerminalPanel title="SYSINFO.DAT" accent="cyan">
+          <TerminalPanel title="SYSINFO.DAT" accent="secondary">
             <div className="space-y-2">
               {SYSTEM_INFO.map((item, i) => (
                 <div key={item.key} className="flex items-start gap-2 sm:gap-3 text-xs font-mono">
@@ -85,7 +85,7 @@ export default function AboutPage() {
                   <SubtitleText
                     text={item.val}
                     delay={i * 30}
-                    className={item.key === 'STATUS' ? 'text-terminal-accent-amber' : 'text-terminal-accent-cyan'}
+                    className={item.key === 'STATUS' ? 'text-terminal-accent-primary' : 'text-terminal-accent-secondary'}
                   />
                 </div>
               ))}

@@ -35,15 +35,15 @@ export default function LineupPage() {
   return (
     <PageLayout>
       <ReturnLink variants={itemVariants} />
-      <PageHeader path="/terminal/lineup" title="LINEUP.DAT" accent="gold" variants={itemVariants} />
+      <PageHeader path="/terminal/lineup" title="LINEUP.DAT" accent="warn" variants={itemVariants} />
 
       {loading ? (
         <motion.div variants={itemVariants} className="text-xs font-mono text-terminal-muted text-center py-8">
           <LabelText text={lang === 'ko' ? lineupKo.loading : '▸ LOADING LINEUP DATA...'} />
         </motion.div>
       ) : error ? (
-        <motion.div variants={itemVariants} className="border border-terminal-accent-hot/25 bg-terminal-bg-panel px-4 py-8 text-center space-y-2">
-          <div className="text-xs font-bold tracking-widest text-terminal-accent-hot font-mono">
+        <motion.div variants={itemVariants} className="border border-terminal-accent-alert/25 bg-terminal-bg-panel px-4 py-8 text-center space-y-2">
+          <div className="text-xs font-bold tracking-widest text-terminal-accent-alert font-mono">
             <LabelText text={lang === 'ko' ? commonKo.signalUnstable : '⚠ SIGNAL LINK UNSTABLE'} />
           </div>
           <div className="text-xs text-terminal-muted font-mono">
@@ -62,21 +62,21 @@ export default function LineupPage() {
               let textClasses = 'text-terminal-primary';
               if (isSelected) {
                 if (isUpcoming) {
-                  baseColorClasses = 'border-terminal-accent-cyan/80 bg-terminal-accent-cyan/10';
-                  textClasses = 'text-terminal-accent-cyan';
+                  baseColorClasses = 'border-terminal-accent-secondary/80 bg-terminal-accent-secondary/10';
+                  textClasses = 'text-terminal-accent-secondary';
                 } else {
-                  baseColorClasses = 'border-terminal-accent-hot/80 bg-terminal-accent-hot/10';
-                  textClasses = 'text-terminal-accent-hot';
+                  baseColorClasses = 'border-terminal-accent-alert/80 bg-terminal-accent-alert/10';
+                  textClasses = 'text-terminal-accent-alert';
                 }
               } else {
-                baseColorClasses = 'border-terminal-accent-amber/12 bg-terminal-bg-panel hover:bg-terminal-accent-amber/5 text-terminal-primary';
+                baseColorClasses = 'border-terminal-accent-primary/12 bg-terminal-bg-panel hover:bg-terminal-accent-primary/5 text-terminal-primary';
               }
 
               return (
                 <button
                   key={ev.id}
                   onClick={() => setSelectedId(ev.id)}
-                  className={`w-full text-left px-4 py-3 border border-terminal-accent-amber/20 cursor-pointer transition-all duration-200 font-mono ${baseColorClasses}`}
+                  className={`w-full text-left px-4 py-3 border border-terminal-accent-primary/20 cursor-pointer transition-all duration-200 font-mono ${baseColorClasses}`}
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div>
@@ -85,7 +85,7 @@ export default function LineupPage() {
                           <LabelText text={ev.session} />
                         </span>
                         {isUpcoming && (
-                          <span className="text-xs px-1.5 py-0.5 tracking-widest text-terminal-accent-cyan border border-terminal-accent-cyan/40 bg-terminal-accent-cyan/10">
+                          <span className="text-xs px-1.5 py-0.5 tracking-widest text-terminal-accent-secondary border border-terminal-accent-secondary/40 bg-terminal-accent-secondary/10">
                             <LabelText text={lang === 'ko' ? lineupKo.upcomingTag : 'UPCOMING'} />
                           </span>
                         )}
@@ -117,7 +117,7 @@ export default function LineupPage() {
               {selectedEvent && (
                 <>
                   {/* Header */}
-                  <div className="px-4 py-2 border-b hidden md:block border-terminal-accent-gold/30">
+                  <div className="px-4 py-2 border-b hidden md:block border-terminal-accent-warn/30">
                     <div className="grid grid-cols-12 gap-2 text-xs tracking-widest text-terminal-muted font-mono">
                       <span className="col-span-1"><MetaText text="ID" /></span>
                       <span className="col-span-3"><MetaText text={lang === 'ko' ? lineupKo.colArtist : 'ARTIST'} /></span>

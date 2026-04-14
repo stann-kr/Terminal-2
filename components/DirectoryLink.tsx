@@ -4,35 +4,41 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { LabelText, HeadingText, SubtitleText } from '@/components/ui/TerminalText';
 
-type AccentColor = 'amber' | 'cyan' | 'gold' | 'hot' | 'purple';
+type AccentColor = 'primary' | 'secondary' | 'warn' | 'alert' | 'tertiary';
 
 interface DirectoryLinkProps {
   href: string;
   label: string;
   description: string;
   index: number;
-  accent?: AccentColor;
+  accent?: AccentColor | 'amber' | 'cyan' | 'gold' | 'hot' | 'purple';
   external?: boolean;
 }
 
-const accentClassMap: Record<AccentColor, { hover: string; text: string; glow: string }> = {
-  amber:  { hover: 'group-hover:border-terminal-accent-amber group-hover:bg-terminal-accent-amber/5 group-hover:shadow-[0_0_20px_rgba(212,146,10,0.07)]', text: 'text-terminal-accent-amber', glow: 'group-hover:drop-shadow-[0_0_8px_rgba(212,146,10,0.6)]' },
-  cyan:   { hover: 'group-hover:border-terminal-accent-cyan group-hover:bg-terminal-accent-cyan/5 group-hover:shadow-[0_0_20px_rgba(58,152,128,0.07)]', text: 'text-terminal-accent-cyan', glow: 'group-hover:drop-shadow-[0_0_8px_rgba(58,152,128,0.6)]' },
-  gold:   { hover: 'group-hover:border-terminal-accent-gold group-hover:bg-terminal-accent-gold/5 group-hover:shadow-[0_0_20px_rgba(200,160,48,0.07)]', text: 'text-terminal-accent-gold', glow: 'group-hover:drop-shadow-[0_0_8px_rgba(200,160,48,0.6)]' },
-  hot:    { hover: 'group-hover:border-terminal-accent-hot group-hover:bg-terminal-accent-hot/5 group-hover:shadow-[0_0_20px_rgba(200,80,32,0.07)]', text: 'text-terminal-accent-hot', glow: 'group-hover:drop-shadow-[0_0_8px_rgba(200,80,32,0.6)]' },
-  purple: { hover: 'group-hover:border-terminal-accent-purple group-hover:bg-terminal-accent-purple/5 group-hover:shadow-[0_0_20px_rgba(136,104,168,0.07)]', text: 'text-terminal-accent-purple', glow: 'group-hover:drop-shadow-[0_0_8px_rgba(136,104,168,0.6)]' },
+const accentClassMap: Record<string, { hover: string; text: string; glow: string }> = {
+  primary:   { hover: 'group-hover:border-terminal-accent-primary group-hover:bg-terminal-accent-primary/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-primary)/0.07)]', text: 'text-terminal-accent-primary', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-primary)/0.6)]' },
+  secondary: { hover: 'group-hover:border-terminal-accent-secondary group-hover:bg-terminal-accent-secondary/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-secondary)/0.07)]', text: 'text-terminal-accent-secondary', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-secondary)/0.6)]' },
+  warn:      { hover: 'group-hover:border-terminal-accent-warn group-hover:bg-terminal-accent-warn/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-warn)/0.07)]', text: 'text-terminal-accent-warn', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-warn)/0.6)]' },
+  alert:     { hover: 'group-hover:border-terminal-accent-alert group-hover:bg-terminal-accent-alert/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-alert)/0.07)]', text: 'text-terminal-accent-alert', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-alert)/0.6)]' },
+  tertiary:  { hover: 'group-hover:border-terminal-accent-tertiary group-hover:bg-terminal-accent-tertiary/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-tertiary)/0.07)]', text: 'text-terminal-accent-tertiary', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-tertiary)/0.6)]' },
+  /* Legacy mapping */
+  amber:     { hover: 'group-hover:border-terminal-accent-primary group-hover:bg-terminal-accent-primary/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-primary)/0.07)]', text: 'text-terminal-accent-primary', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-primary)/0.6)]' },
+  cyan:      { hover: 'group-hover:border-terminal-accent-secondary group-hover:bg-terminal-accent-secondary/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-secondary)/0.07)]', text: 'text-terminal-accent-secondary', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-secondary)/0.6)]' },
+  gold:      { hover: 'group-hover:border-terminal-accent-warn group-hover:bg-terminal-accent-warn/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-warn)/0.07)]', text: 'text-terminal-accent-warn', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-warn)/0.6)]' },
+  hot:       { hover: 'group-hover:border-terminal-accent-alert group-hover:bg-terminal-accent-alert/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-alert)/0.07)]', text: 'text-terminal-accent-alert', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-alert)/0.6)]' },
+  purple:    { hover: 'group-hover:border-terminal-accent-tertiary group-hover:bg-terminal-accent-tertiary/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-tertiary)/0.07)]', text: 'text-terminal-accent-tertiary', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-tertiary)/0.6)]' },
 };
 
-export default function DirectoryLink({ href, label, description, index, accent = 'amber', external = false }: DirectoryLinkProps) {
+export default function DirectoryLink({ href, label, description, index, accent = 'primary', external = false }: DirectoryLinkProps) {
   const [hovered, setHovered] = useState(false);
-  const v = accentClassMap[accent];
+  const v = accentClassMap[accent] || accentClassMap.primary;
 
   const inner = (
     <motion.div
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
       whileHover={{ z: 8, scale: 1.005 }}
-      className={`flex items-start gap-4 py-3 px-4 border-b border-terminal-accent-amber/10 bg-transparent transition-all duration-200 ${v.hover}`}
+      className={`flex items-start gap-4 py-3 px-4 border-b border-terminal-accent-primary/10 bg-transparent transition-all duration-200 ${v.hover}`}
     >
       <span className={`text-xs pt-0.5 w-6 shrink-0 transition-colors ${hovered ? v.text : 'text-terminal-muted'}`}>
         <LabelText text={String(index).padStart(2, '0')} />

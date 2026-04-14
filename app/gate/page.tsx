@@ -51,7 +51,7 @@ export default function GatePage() {
 
       {/* Tab switcher */}
       <motion.div variants={itemVariants} className="mb-6">
-        <div className="inline-flex p-1 gap-1 bg-black/50 border border-terminal-accent-amber/15">
+        <div className="inline-flex p-1 gap-1 bg-[#0c0c10]/50 border border-terminal-accent-primary/15">
           {(["upcoming", "archive"] as const).map((t) => (
             <TerminalButton
               key={t}
@@ -72,8 +72,8 @@ export default function GatePage() {
           <LabelText text={lang === 'ko' ? gateKo.loading : '▸ LOADING GATE DATA...'} />
         </motion.div>
       ) : error ? (
-        <motion.div variants={itemVariants} className="border border-terminal-accent-hot/25 bg-terminal-bg-panel px-4 py-8 text-center space-y-2">
-          <div className="text-xs font-bold tracking-widest text-terminal-accent-hot font-mono">
+        <motion.div variants={itemVariants} className="border border-terminal-accent-alert/25 bg-terminal-bg-panel px-4 py-8 text-center space-y-2">
+          <div className="text-xs font-bold tracking-widest text-terminal-accent-alert font-mono">
             <LabelText text={lang === 'ko' ? commonKo.signalUnstable : '⚠ SIGNAL LINK UNSTABLE'} />
           </div>
           <div className="text-xs text-terminal-muted font-mono">
@@ -94,17 +94,17 @@ export default function GatePage() {
               {upcomingEvent && (
                 <>
                   {/* Event header */}
-                  <div className="border border-terminal-accent-cyan/30 px-4 py-4 bg-terminal-bg-panel">
+                  <div className="border border-terminal-accent-secondary/30 px-4 py-4 bg-terminal-bg-panel">
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <div className="text-xs tracking-widest mb-1 font-mono text-terminal-muted">
                           <MetaText text={`${upcomingEvent.date.replace(/-/g, ".")} · ${upcomingEvent.time}`} />
                         </div>
-                        <div className="drop-shadow-[0_0_12px_rgba(58,152,128,0.4)]">
+                        <div className="drop-shadow-[0_0_12px_rgb(var(--color-accent-secondary)/0.4)]">
                           <HeadingText
                             text={upcomingEvent.session}
                             as="span"
-                            className="text-xl font-bold tracking-[0.15em] text-terminal-accent-cyan"
+                            className="text-xl font-bold tracking-[0.15em] text-terminal-accent-secondary"
                           />
                         </div>
                         <SubtitleText
@@ -112,7 +112,7 @@ export default function GatePage() {
                           className="text-xs mt-1 text-terminal-subdued tracking-[0.1em]"
                         />
                       </div>
-                      <div className="text-xs font-bold tracking-wider shrink-0 text-terminal-accent-cyan font-mono">
+                      <div className="text-xs font-bold tracking-wider shrink-0 text-terminal-accent-secondary font-mono">
                         <span className="status-pulse mr-1">●</span>
                         <LabelText text="UPCOMING" className="inline" />
                       </div>
@@ -148,13 +148,13 @@ export default function GatePage() {
                     onClick={() => setSelectedArchive(ev.id)}
                     className={`w-full text-left px-4 py-3 border cursor-pointer transition-all duration-200 font-mono ${
                       selectedArchive === ev.id
-                        ? "border-terminal-accent-hot/50 bg-terminal-accent-hot/10"
-                        : "border-terminal-accent-amber/15 bg-terminal-bg-panel hover:bg-terminal-accent-amber/5"
+                        ? "border-terminal-accent-alert/50 bg-terminal-accent-alert/10"
+                        : "border-terminal-accent-primary/15 bg-terminal-bg-panel hover:bg-terminal-accent-primary/5"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-4">
                       <div>
-                        <div className={`text-sm font-bold tracking-wider ${selectedArchive === ev.id ? "text-terminal-accent-hot" : "text-terminal-primary"}`}>
+                        <div className={`text-sm font-bold tracking-wider ${selectedArchive === ev.id ? "text-terminal-accent-alert" : "text-terminal-primary"}`}>
                           <SubtitleText text={ev.session} />
                         </div>
                         <div className="text-xs mt-0.5 text-terminal-subdued">

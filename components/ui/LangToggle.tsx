@@ -15,7 +15,7 @@ export default function LangToggle({ className = '' }: LangToggleProps) {
         onClick={() => setLang(target)}
         className={`px-1.5 py-0.5 border font-mono text-[10px] sm:text-xs tracking-widest transition-colors cursor-pointer ${
           active
-            ? 'border-terminal-accent-amber/60 text-terminal-accent-amber bg-terminal-accent-amber/10'
+            ? 'border-terminal-accent-primary/60 text-terminal-accent-primary bg-terminal-accent-primary/10'
             : 'border-terminal-muted/20 text-terminal-muted/40 hover:text-terminal-muted/60 hover:border-terminal-muted/40'
         }`}
       >

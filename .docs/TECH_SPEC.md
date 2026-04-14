@@ -6,7 +6,7 @@
 
 - **프레임워크:** Next.js 15 (App Router 기반), React 19
 - **런타임 및 개발 환경:** Docker 호스트 컨테이너 내 구동됨 (Apple Silicon 환경의 `linux/arm64` 기반)
-- **UI/UX 미학(Aesthetics):** 레트로 퓨처리즘 및 터미널 미학 수립 (CSS 폰트, `textShadow`, `blur` 효과 등을 적극 도입하여 동적인 인터페이스 구현)
+- **UI/UX 미학(Aesthetics):** 심우주(Deep Space) 및 모노크롬 블루프린트(Monochrome Blueprint) 테마 수립. 차갑고 건조한 단색(Icy Blue, `#D6E5ED`) 기반의 시맨틱 색상 체계를 사용하며, 색수차를 배제하고 빛 번짐(Bloom)과 주사선(Scanline) 텍스처를 활용해 몰입감을 극대화함.
 - **명명 규칙 및 코드 스타일:** 명확한 시맨틱 네이밍, 하드 코딩 지양. CSS 스타일링 시 Tailwind를 기본으로 하되, 복잡한 인라인 동적 속성은 `style` 객체로 관리함.
 
 ## 2. Page Transition 및 `DecodeText` 렌더링 (Cipher Decode 시스템)

@@ -45,7 +45,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col justify-center items-center px-8 md:px-16 select-none bg-black font-mono"
+      className="fixed inset-0 z-50 flex flex-col justify-center items-center px-8 md:px-16 select-none bg-terminal-bg-base font-mono"
       animate={waking ? { opacity: 0, filter: 'brightness(3) blur(4px)' } : { opacity: 1 }}
       transition={{ duration: 0.5 }}
       exit={{ opacity: 0 }}
@@ -57,7 +57,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
 
       <div className="relative z-10 w-full max-w-3xl flex flex-col items-center text-center">
         {/* Clock */}
-        <div className="text-5xl md:text-7xl font-bold mb-8 phosphor-text tracking-[0.1em] text-terminal-accent-amber drop-shadow-[0_0_20px_rgba(212,146,10,0.5)]" suppressHydrationWarning={true}>
+        <div className="text-5xl md:text-7xl font-bold mb-8 phosphor-primary tracking-[0.1em] text-terminal-accent-primary drop-shadow-[0_0_20px_rgb(var(--color-accent-primary)/0.5)]" suppressHydrationWarning={true}>
           {time}
         </div>
 
@@ -85,7 +85,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
             </TerminalButton>
           </motion.div>
         ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs tracking-widest text-terminal-accent-amber drop-shadow-[0_0_8px_rgba(212,146,10,0.6)]">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs tracking-widest text-terminal-accent-primary drop-shadow-[0_0_8px_rgb(var(--color-accent-primary)/0.6)]">
             RESUMING SESSION...
           </motion.div>
         )}

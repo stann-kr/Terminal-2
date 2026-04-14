@@ -1,5 +1,27 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-14] 라인업 페이지 아티스트 소개글 아코디언 기능 추가
+
+* **데이터 모델 확장 (`lib/eventData.ts`):** `Artist` 인터페이스에 선택적 필드 `description` 추가. 기존 단일 문자열 외에 `{ en: string | string[], ko: string | string[] }` 형태의 이중 언어(Bilingual) 객체 구조를 지원하도록 설계 변경.
+* **아코디언 UI 적용 (`app/lineup/ArtistRow.tsx`):**
+    * 아티스트 행(Row) 클릭 이벤트를 감지하여 아코디언 형태로 열리고 닫히는 `isOpen` 상태 추가.
+    * 기존 `AnimatedHeight` 컴포넌트를 활용하여 부드러운 전개 애니메이션 구현.
+    * `DecodeText` 컴포넌트를 사용하여 소개글 텍스트 출력 시 터미널 타이핑 이펙트 적용.
+    * 전역 언어 설정(`useLang` Context)에 따라 `description.ko` 또는 `description.en`을 동적으로 렌더링. (단일 문자열 데이터와도 하위 호환 유지)
+    * `hasDescription` 여부에 따라 Hover 스타일(cursor-pointer 및 배경색) 및 토글 지시자(`[+]`/`[-]`) 조건부 렌더링을 추가하여 시각적 인지성(Discoverability) 강화.
+* **로컬 DB 시딩 스크립트 작성 (`migrations/seed_artist_description_bilingual.sql`):** 테스트를 위해 로컬 D1 데이터베이스의 아티스트 테이블에 한/영 분리형 더미 데이터를 주입.
+
+## [2026-04-13] 심우주 모노크롬 블루프린트 테마(Deep Space Monochrome Blueprint) 리팩토링
+
+* **전역 테마 색상 재설계 (`app/globals.css`, `tailwind.config.js`):** 기존의 다채로운 레트로 터미널 색상(amber, cyan, hot, gold, purple)을 폐기하고, 포스터 미감에 맞춘 극도로 절제된 단색 쿨톤(Icy Blue: `#D6E5ED`) 기반의 시맨틱 색상 체계(`primary`, `secondary`, `tertiary`, `alert`, `warn`)로 전면 개편함.
+* **UI/UX 일관성 및 몰입감 강화:**
+    * 전체 화면을 덮는 강제 `bg-black` 오버레이를 제거하고, 테마 베이스 컬러인 딥 네이비 블랙(`bg-terminal-bg-base`, `#05060A`)으로 통일하여 화면 전환 시의 색상 이질감을 해결함.
+    * 투명도 오버레이를 `bg-black/40`에서 약간 푸른빛이 도는 `bg-[#0c0c10]/40` 계열로 미세 조정하여 자연스러운 그림자와 톤 앤 매너를 유지함.
+    * 메인 네비게이션(홈 메뉴, 외부 링크) 항목들의 강조 색상을 모두 `primary`로 통일하여 시각적 정돈감을 높임.
+* **3D 파티클 및 WebGL 그래픽 동기화 (`GlobeMap.tsx`, `ParticleField.tsx`):**
+    * 하드코딩된 무작위 RGB 혼합 로직을 수정하여, 은하의 소용돌이(Galaxy Disk)와 별빛(Starfield), 배경 파티클들이 모두 메인 톤(Icy Blue) 안에서 명도와 투명도 차이만 갖도록 모노크롬 렌더링 수식을 재작성함.
+    * `ParticleField.tsx`에서 이질감을 주던 색수차(`ChromaticAberration`) 후처리 효과를 제거하고, 대신 `Bloom` 강도 증가 및 `Scanline` 텍스처를 강화하여 색상 번짐 없이 몽환적이고 건조한 공간감을 극대화함.
+
 ## [2026-04-13] 전송 로그 페이지네이션 UX 개선
 
 * **로딩 상태 분리 (`isInitialLoad`, `isFetching`):** 최초 화면 진입 시의 전체 로딩 상태와 페이지 이동 시의 데이터 패칭 상태를 분리하여 UX를 개선함.

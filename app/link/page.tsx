@@ -13,19 +13,19 @@ const LINKS_EN = [
     href: 'https://lumo.stann.kr',
     label: 'Stann Lumo Web',
     description: 'OFFICIAL WEBSITE / VISUAL ARCHIVE',
-    accent: 'gold' as const,
+    accent: 'primary' as const,
   },
   {
     href: 'https://www.instagram.com/stannlumo/',
     label: 'Stann Lumo Instagram',
     description: 'SOCIAL CHANNEL / UPDATES',
-    accent: 'cyan' as const,
+    accent: 'primary' as const,
   },
   {
     href: 'https://www.instagram.com/terminal_hub/',
     label: 'Terminal Instagram',
     description: 'EVENT FEED / SIGNAL BROADCAST',
-    accent: 'hot' as const,
+    accent: 'primary' as const,
   },
 ];
 
@@ -41,14 +41,14 @@ export default function LinkPage() {
   return (
     <PageLayout>
       <ReturnLink variants={itemVariants} />
-      <PageHeader path="/terminal/link" title="LINK.DAT" accent="amber" variants={itemVariants} />
+      <PageHeader path="/terminal/link" title="LINK.DAT" accent="primary" variants={itemVariants} />
 
       <motion.div
         variants={itemVariants}
-        className="border border-terminal-accent-amber/20 bg-terminal-bg-panel"
+        className="border border-terminal-accent-primary/20 bg-terminal-bg-panel"
       >
-        <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-amber/15 bg-black/40">
-          <span className="text-[10px] sm:text-xs tracking-widest text-terminal-accent-amber font-mono">
+        <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-primary/15 bg-[#0c0c10]/40">
+          <span className="text-[10px] sm:text-xs tracking-widest text-terminal-accent-primary font-mono">
             <LabelText text={lang === 'ko' ? linkKo.externalChannels : '▶ EXTERNAL CHANNELS — /terminal/link/'} />
           </span>
           <span className="text-[10px] sm:text-xs text-terminal-muted font-mono">
