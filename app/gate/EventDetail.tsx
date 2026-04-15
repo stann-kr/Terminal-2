@@ -14,7 +14,7 @@ interface Props {
 
 export default function EventDetail({ event, showCountdown = false }: Props) {
   const { lang } = useLang();
-  const eventDate = new Date(`${event.date}T${event.time.replace(' KST', '')}:00`);
+  const eventDate = new Date(`${event.date}T${event.time.replace(' KST', '')}:00+09:00`);
 
   const eventDateLabel = new Date(event.date)
     .toLocaleDateString("en-US", {

@@ -91,7 +91,7 @@ export default function HomePage() {
           // T- 카운트다운: UPCOMING 이벤트 날짜까지
           setCountdownTarget(
             new Date(
-              `${upcoming.date}T${upcoming.time.replace(" KST", "")}:00`,
+              `${upcoming.date}T${upcoming.time.replace(" KST", "")}:00+09:00`,
             ),
           );
         } else {
@@ -102,7 +102,7 @@ export default function HomePage() {
               b.date.localeCompare(a.date),
             )[0];
             setCountdownTarget(
-              new Date(`${latest.date}T${latest.time.replace(" KST", "")}:00`),
+              new Date(`${latest.date}T${latest.time.replace(" KST", "")}:00+09:00`),
             );
           }
         }

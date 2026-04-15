@@ -100,7 +100,7 @@ const DecodeText = memo(function DecodeText({
         (scrambleRef as any).current = null; // eslint-disable-line @typescript-eslint/no-explicit-any
         // 현재 실제 텍스트로 즉시 업데이트 (frozenText와 다를 수 있음)
         if (measureRef.current) {
-          measureRef.current.innerHTML = text;
+          measureRef.current.textContent = text;
         }
       }
       onComplete?.();
@@ -123,7 +123,7 @@ const DecodeText = memo(function DecodeText({
   useLayoutEffect(() => {
     if (!animateTextLength || delay <= 0) return;
     if (measureRef.current) {
-      measureRef.current.innerHTML = '';
+      measureRef.current.textContent = '';
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -133,7 +133,7 @@ const DecodeText = memo(function DecodeText({
     if (scrambleOnUpdate || !animationSettledRef.current) return;
     const node = measureRef.current;
     if (!node) return;
-    node.innerHTML = text;
+    node.textContent = text;
   }, [text, scrambleOnUpdate]);
 
   // pretext 레이아웃 측정: measureRef 사용 (scrambleRef 독립)

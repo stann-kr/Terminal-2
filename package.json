@@ -40,7 +40,7 @@
   "name": "next-app",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "cross-env NODE_ENV=production next build",
     "build:worker": "opennextjs-cloudflare build",
     "deploy": "opennextjs-cloudflare deploy",
     "cf:preview": "opennextjs-cloudflare preview",

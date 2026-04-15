@@ -1,5 +1,46 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-15] 코드 검증 — 보안·버그·타입 안전성·접근성·성능 개선 및 빌드 오류 수정
+
+### 보안 (P0)
+* **XSS 취약점 수정 (`components/DecodeText.tsx`):**
+    * `measureRef.current.innerHTML = text` → `textContent` 3개소 교체.
+    * DB 로드 아티스트 description 등 외부 문자열이 `text`로 유입될 때 HTML 삽입 공격 차단.
+
+### 버그 수정 (P0)
+* **SleepScreen 하이드레이션 불일치 수정 (`components/SleepScreen.tsx`):**
+    * 모듈 레벨의 `new Date()` 호출 → `useState` + `useEffect`로 이전하여 SSR/CSR 날짜 불일치 제거.
+* **SleepScreen `setTimeout` 메모리 누수 수정:**
+    * `wakeTimerRef`로 타이머 ID를 보존하고, 언마운트 cleanup `useEffect`에서 `clearTimeout` 처리.
+
+### 타입 안전성 (P1)
+* **CountdownBlock `any` 타입 제거 (`components/ui/CountdownBlock.tsx`):**
+    * `Record<string, any>` → `AccentStyle` 인터페이스 정의. `amber`/`cyan` 레거시 별칭을 참조 방식으로 통합, 코드 중복 제거.
+* **PageHeader `accentClassMap` 타입 강화 (`components/ui/PageHeader.tsx`):**
+    * `Record<string, string>` → `Record<NonNullable<PageHeaderProps['accent']>, string>` — 누락 키를 컴파일 타임에 감지 가능.
+
+### 날짜 처리 (P2)
+* **KST 타임존 오프셋 명시 (`app/home/page.tsx`, `app/gate/EventDetail.tsx`):**
+    * 날짜 문자열 파싱 시 `+09:00` 오프셋 미지정으로 인한 해외 사용자 카운트다운 오류 수정 (3개소).
+
+### 접근성 (P2)
+* **ArtistRow 아코디언 키보드 접근성 (`app/lineup/ArtistRow.tsx`):**
+    * `role="button"`, `aria-expanded`, `tabIndex`, `onKeyDown` (Enter/Space) 추가.
+
+### 성능 (P2)
+* **CRTWrapper 스캔라인 CSS 전환 (`components/CRTWrapper.tsx`, `app/crt.css`):**
+    * framer-motion 무한 루프 JS 애니메이션 → CSS `@keyframes scanline-beam` + `will-change: transform`으로 교체, GPU 오프로드.
+    * 장식용 div 5개에 `aria-hidden="true"` 추가.
+
+### 빌드 오류 수정
+* **`_global-error` / `_not-found` SSG 프리렌더링 실패 수정:**
+    * **근본 원인:** `docker-compose.yml`에 `NODE_ENV=development`가 설정된 상태로 `next build` 실행 시, Next.js + React 19가 개발 빌드의 dispatcher 초기화 코드를 사용하여 특수 페이지(`_global-error`, `_not-found`) SSG prerendering 실패.
+    * **수정:** `package.json`의 `build` 스크립트를 `cross-env NODE_ENV=production next build`로 변경하여 빌드 환경을 항상 production으로 강제.
+    * **`global-error.tsx` 보강:** `<head>` 내 `<title>/<style>` JSX 자식 렌더 시 React 19 metadata hoisting context 경유로 인한 이차 실패 방지 — `<head dangerouslySetInnerHTML>` 방식으로 교체.
+    * **`not-found.tsx` 보강:** `dynamic = 'force-dynamic'` 적용 및 외부 컴포넌트 의존성 완전 제거 (self-contained 구현).
+
+---
+
 ## [2026-04-15] 전역 타이포그래피 시스템 구축 및 반응형 레이아웃 최적화
 
 * **시맨틱 타이포그래피 스케일 표준화 (`components/ui/TerminalText.tsx`):**

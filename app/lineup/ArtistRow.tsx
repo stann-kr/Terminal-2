@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import type { Artist } from '@/lib/eventData';
 import { LabelText, MetaText, BodyText } from '@/components/ui/TerminalText';
 import { useLang } from '@/lib/langContext';
@@ -50,7 +50,18 @@ export default function ArtistRow({ artist: a }: Props) {
   return (
     <div className="group flex flex-col gap-1">
       {/* Row Toggle Area */}
-      <div onClick={handleToggle}>
+      <div
+        onClick={handleToggle}
+        role={hasDescription ? 'button' : undefined}
+        aria-expanded={hasDescription ? isOpen : undefined}
+        tabIndex={hasDescription ? 0 : undefined}
+        onKeyDown={hasDescription ? (e: React.KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleToggle();
+          }
+        } : undefined}
+      >
         {/* Mobile */}
         <div className={`md:hidden px-4 py-4 border transition-all duration-200 space-y-2 ${borderClass} ${hoverClass}`}>
           <div className="flex items-start justify-between gap-2">

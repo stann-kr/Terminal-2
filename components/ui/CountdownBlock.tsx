@@ -29,52 +29,47 @@ function getTimeDelta(target: Date): TimeDelta {
   };
 }
 
-const accentStyles: Record<string, any> = {
-  primary: {
-    border: 'border-terminal-accent-primary/25',
-    value: 'text-terminal-accent-primary',
-    glow: 'drop-shadow-[0_0_24px_rgb(var(--color-accent-primary)/0.6)]',
-    label: 'text-terminal-muted',
-    wrapperClass: 'grid grid-cols-4 gap-2 sm:gap-4',
-    cellClass: 'text-center border py-3 sm:py-4 bg-terminal-bg-overlay/50',
-    valueSize: 'text-4xl md:text-5xl lg:text-6xl font-bold font-mono flex items-center justify-center',
-    labelClass: 'text-xs mt-2 tracking-widest font-mono',
-    modeLabel: 'text-terminal-accent-primary/60',
-  },
-  secondary: {
-    border: 'border-terminal-accent-secondary/20',
-    value: 'text-terminal-accent-secondary text-shadow-glow-secondary',
-    glow: '',
-    label: 'text-terminal-accent-secondary/50',
-    wrapperClass: 'grid grid-cols-4 gap-3 font-mono',
-    cellClass: 'text-center border bg-terminal-bg-overlay/40 py-4',
-    valueSize: 'text-3xl sm:text-4xl md:text-5xl font-bold flex items-center justify-center',
-    labelClass: 'text-xs mt-1 tracking-widest',
-    modeLabel: 'text-terminal-accent-secondary/60',
-  },
-  /* Legacy mapping */
-  amber: {
-    border: 'border-terminal-accent-primary/25',
-    value: 'text-terminal-accent-primary',
-    glow: 'drop-shadow-[0_0_24px_rgb(var(--color-accent-primary)/0.6)]',
-    label: 'text-terminal-muted',
-    wrapperClass: 'grid grid-cols-4 gap-2 sm:gap-4',
-    cellClass: 'text-center border py-3 sm:py-4 bg-terminal-bg-overlay/50',
-    valueSize: 'text-4xl md:text-5xl lg:text-6xl font-bold font-mono flex items-center justify-center',
-    labelClass: 'text-xs mt-2 tracking-widest font-mono',
-    modeLabel: 'text-terminal-accent-primary/60',
-  },
-  cyan: {
-    border: 'border-terminal-accent-secondary/20',
-    value: 'text-terminal-accent-secondary text-shadow-glow-secondary',
-    glow: '',
-    label: 'text-terminal-accent-secondary/50',
-    wrapperClass: 'grid grid-cols-4 gap-3 font-mono',
-    cellClass: 'text-center border bg-terminal-bg-overlay/40 py-4',
-    valueSize: 'text-3xl sm:text-4xl md:text-5xl font-bold flex items-center justify-center',
-    labelClass: 'text-xs mt-1 tracking-widest',
-    modeLabel: 'text-terminal-accent-secondary/60',
-  },
+interface AccentStyle {
+  border: string;
+  value: string;
+  glow: string;
+  label: string;
+  wrapperClass: string;
+  cellClass: string;
+  valueSize: string;
+  labelClass: string;
+  modeLabel: string;
+}
+
+const primaryStyle: AccentStyle = {
+  border: 'border-terminal-accent-primary/25',
+  value: 'text-terminal-accent-primary',
+  glow: 'drop-shadow-[0_0_24px_rgb(var(--color-accent-primary)/0.6)]',
+  label: 'text-terminal-muted',
+  wrapperClass: 'grid grid-cols-4 gap-2 sm:gap-4',
+  cellClass: 'text-center border py-3 sm:py-4 bg-terminal-bg-overlay/50',
+  valueSize: 'text-4xl md:text-5xl lg:text-6xl font-bold font-mono flex items-center justify-center',
+  labelClass: 'text-xs mt-2 tracking-widest font-mono',
+  modeLabel: 'text-terminal-accent-primary/60',
+};
+
+const secondaryStyle: AccentStyle = {
+  border: 'border-terminal-accent-secondary/20',
+  value: 'text-terminal-accent-secondary text-shadow-glow-secondary',
+  glow: '',
+  label: 'text-terminal-accent-secondary/50',
+  wrapperClass: 'grid grid-cols-4 gap-3 font-mono',
+  cellClass: 'text-center border bg-terminal-bg-overlay/40 py-4',
+  valueSize: 'text-3xl sm:text-4xl md:text-5xl font-bold flex items-center justify-center',
+  labelClass: 'text-xs mt-1 tracking-widest',
+  modeLabel: 'text-terminal-accent-secondary/60',
+};
+
+const accentStyles: Record<string, AccentStyle> = {
+  primary: primaryStyle,
+  secondary: secondaryStyle,
+  amber: primaryStyle,    // Legacy alias
+  cyan: secondaryStyle,   // Legacy alias
 };
 
 export default function CountdownBlock({ targetDate, accent = 'primary' }: Props) {

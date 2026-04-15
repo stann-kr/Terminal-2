@@ -45,6 +45,31 @@
 
 ---
 
+### [2026-04-15] `_global-error` / `_not-found` SSG 프리렌더링 실패 (React dispatcher null)
+
+* **발생 상황:**
+    * `npm run build` 시 `_global-error`, `_not-found` 특수 페이지에서 다음 오류 발생:
+        * `_global-error`: `TypeError: Cannot read properties of null (reading 'useContext')` (digest: `3333581645`)
+        * `_not-found`: `TypeError: Cannot read properties of null (reading 'useState')` (Turbopack SSR bundle 내부)
+    * `dynamic = 'force-dynamic'` 설정 및 외부 컴포넌트 제거 후에도 실패.
+* **원인 분석:**
+    * **근본 원인:** `docker-compose.yml`에 `NODE_ENV=development`가 컨테이너 환경 변수로 설정된 상태로 `next build` 실행.
+    * Next.js가 이미 설정된 `NODE_ENV`를 재정의하지 못하고 경고(`non-standard NODE_ENV`)만 출력.
+    * React 개발 빌드는 SSG 프리렌더링 시 dispatcher 초기화 코드 경로가 production과 달라 — 특수 페이지(`_global-error`, `_not-found`)의 SSG 진입 시 `ReactCurrentDispatcher.current`가 null인 상태로 렌더 실행 → hook 호출 시 TypeError.
+    * `_global-error`: Next.js 내부의 metadata/router context 설정 과정에서 `useContext` 호출 → dispatcher null로 실패.
+    * `_not-found`: 루트 레이아웃이 함께 렌더되며 `LangProvider`의 `useState` 호출 → dispatcher null로 실패.
+* **해결 방법:**
+    1. **`package.json` build 스크립트 수정 (영구 고정):**
+        * `"build": "next build"` → `"build": "cross-env NODE_ENV=production next build"`
+        * 컨테이너 환경 변수 설정과 무관하게 빌드 시 항상 production 환경 강제.
+    2. **`global-error.tsx` 보강:**
+        * React 19는 `<style>{children}</style>` JSX 패턴을 metadata hoisting context를 통해 처리 → `useContext` 호출 경로 추가.
+        * `<head>` 내 `<title>`, `<style>`을 `<head dangerouslySetInnerHTML={{ __html: headHtml }}>` 방식으로 교체하여 React 19 metadata 처리 경로 우회.
+    3. **`not-found.tsx` 보강:**
+        * `export const dynamic = 'force-dynamic'` 적용 + 모든 외부 컴포넌트 의존성 제거 (self-contained).
+
+---
+
 ### [2026-04-09] Next.js 15 빌드 시 ESLint 순환 참조 및 <Html> 프리렌더링 에러
 
 * **발생 상황:**

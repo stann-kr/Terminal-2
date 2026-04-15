@@ -23,7 +23,7 @@ const SYSTEM_STATUS: StatusItem[] = [
   { type: 'progress', label: 'SIGNAL STRENGTH', delay: 500 },
   { type: 'progress', label: 'DSP ENGINE LOAD', delay: 800 },
   { type: 'text', label: 'NETWORK STATUS', value: 'STABLE / ENCRYPTED', cyan: true },
-  { type: 'text', label: 'LAST ACCESS', value: new Date().toISOString().split('T')[0], delay: 1200 },
+  { type: 'text', label: 'LAST ACCESS', value: '', delay: 1200 },
 ];
 
 function StatusLine({ label, value, accent, warn, cyan }: Partial<StatusItem>) {
@@ -78,7 +78,13 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
   const [waking, setWaking] = useState(false);
   const [time, setTime] = useState('');
   const [visibleItems, setVisibleItems] = useState<number[]>([]);
+  const [lastAccess, setLastAccess] = useState('');
   const wakeTriggered = useRef(false);
+  const wakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    setLastAccess(new Date().toISOString().split('T')[0]);
+  }, []);
 
   useEffect(() => {
     const update = () => {
@@ -101,8 +107,14 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
     if (wakeTriggered.current) return;
     wakeTriggered.current = true;
     setWaking(true);
-    setTimeout(onWake, 1500);
+    wakeTimerRef.current = setTimeout(onWake, 1500);
   }, [onWake]);
+
+  useEffect(() => {
+    return () => {
+      if (wakeTimerRef.current) clearTimeout(wakeTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     const handleKey = () => wake();
@@ -147,7 +159,10 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
                   {item.type === 'progress' ? (
                     <ProgressLine label={item.label} />
                   ) : (
-                    <StatusLine {...item} />
+                    <StatusLine
+                      {...item}
+                      value={item.label === 'LAST ACCESS' ? (lastAccess || '---') : item.value}
+                    />
                   )}
                 </motion.div>
               )}

@@ -45,6 +45,17 @@ body {
   100% { transform: translateY(100vh); }
 }
 
+@keyframes scanline-beam {
+  0%   { transform: translateY(-20vh); }
+  100% { transform: translateY(120vh); }
+}
+
+.animate-scanline-beam {
+  top: 0;
+  animation: scanline-beam 8s linear infinite;
+  will-change: transform;
+}
+
 @keyframes cursor-blink {
   0%, 50%  { opacity: 1; }
   51%, 100% { opacity: 0; }

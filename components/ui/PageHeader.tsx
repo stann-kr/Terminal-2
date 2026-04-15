@@ -14,7 +14,7 @@ const defaultVariants = {
   visible: {},
 };
 
-const accentClassMap: Record<string, string> = {
+const accentClassMap: Record<NonNullable<PageHeaderProps['accent']>, string> = {
   primary:   'text-terminal-accent-primary text-shadow-glow-primary',
   secondary: 'text-terminal-accent-secondary text-shadow-glow-secondary',
   alert:     'text-terminal-accent-alert text-shadow-glow-alert',
