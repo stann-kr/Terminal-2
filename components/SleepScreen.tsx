@@ -124,7 +124,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col justify-center items-center px-8 md:px-16 select-none bg-terminal-bg-base font-mono overflow-hidden"
+      className="fixed inset-0 z-50 flex flex-col justify-center items-center px-4 sm:px-6 select-none bg-terminal-bg-base font-mono overflow-hidden"
       initial={{ opacity: 0 }}
       animate={waking ? { opacity: 0, filter: 'brightness(3) blur(12px)' } : { opacity: 1 }}
       transition={{ duration: 0.8, ease: 'easeInOut' }}
@@ -135,10 +135,10 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
         background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.5) 2px, rgba(0,0,0,0.5) 4px)',
       }} />
 
-      <div className="relative z-10 w-full max-w-xl flex flex-col items-center">
+      <div className="relative z-10 w-full sm:w-[700px] md:w-[800px] flex flex-col items-center">
         {/* Clock - 메인 시각 요소 */}
         <motion.div 
-          className="text-6xl md:text-8xl font-bold mb-12 tracking-[0.15em] text-terminal-accent-primary/80 drop-shadow-[0_0_30px_rgb(var(--color-accent-primary)/0.3)]" 
+          className="text-5xl sm:text-6xl md:text-8xl font-bold mb-12 tracking-[0.15em] text-terminal-accent-primary/80 drop-shadow-[0_0_30px_rgb(var(--color-accent-primary)/0.3)]"
           suppressHydrationWarning
           animate={{ opacity: [0.6, 0.8, 0.6] }}
           transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}

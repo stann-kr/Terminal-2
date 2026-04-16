@@ -95,7 +95,7 @@ export default function GatePage() {
                 <>
                   {/* Event header - 정보 가독성 유지 */}
                   <div className="border border-terminal-accent-secondary/30 px-4 py-4 bg-terminal-bg-panel">
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start justify-between gap-2 sm:gap-4">
                       <div>
                         <div className="tracking-widest mb-1 font-mono text-terminal-muted">
                           <MetaText text={`${upcomingEvent.date.replace(/-/g, ".")} · ${upcomingEvent.time}`} />
@@ -113,7 +113,7 @@ export default function GatePage() {
                           className="mt-1 text-terminal-subdued tracking-[0.1em]"
                         />
                       </div>
-                      <div className="font-bold tracking-wider shrink-0 text-terminal-accent-secondary font-mono">
+                      <div className="font-bold tracking-wider shrink-0 text-terminal-accent-secondary font-mono text-[10px] sm:text-xs">
                         <span className="status-pulse mr-1">●</span>
                         <LabelText text="UPCOMING" className="inline" />
                       </div>

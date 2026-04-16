@@ -49,7 +49,7 @@ const primaryStyle: AccentStyle = {
   wrapperClass: 'grid grid-cols-4 gap-2 sm:gap-4',
   cellClass: 'text-center border py-3 sm:py-4 bg-terminal-bg-overlay/50',
   valueSize: 'text-4xl md:text-5xl lg:text-6xl font-bold font-mono flex items-center justify-center',
-  labelClass: 'text-xs mt-2 tracking-widest font-mono',
+  labelClass: 'text-[9px] sm:text-xs mt-2 tracking-wider sm:tracking-widest font-mono',
   modeLabel: 'text-terminal-accent-primary/60',
 };
 
@@ -61,7 +61,7 @@ const secondaryStyle: AccentStyle = {
   wrapperClass: 'grid grid-cols-4 gap-3 font-mono',
   cellClass: 'text-center border bg-terminal-bg-overlay/40 py-4',
   valueSize: 'text-3xl sm:text-4xl md:text-5xl font-bold flex items-center justify-center',
-  labelClass: 'text-xs mt-1 tracking-widest',
+  labelClass: 'text-[9px] sm:text-xs mt-1 tracking-wider sm:tracking-widest',
   modeLabel: 'text-terminal-accent-secondary/60',
 };
 

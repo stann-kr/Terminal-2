@@ -128,18 +128,19 @@ export default function HomePage() {
       <div className="mb-6 text-center">
         <motion.div
           variants={itemVariants}
-          className="text-[8px] sm:text-xs tracking-widest mb-3 text-terminal-muted"
+          className="text-[8px] sm:text-xs tracking-widest mb-1 sm:mb-3 text-terminal-muted"
         >
-          <LabelText text="╔══════════════════════════════════════════╗" />
+          <LabelText text="╔══════════════════════════════════════════╗" autoHeight />
         </motion.div>
 
         <motion.h1
           variants={itemVariants}
-          className="font-bold tracking-[0.15em] sm:tracking-[0.25em] mb-2 drop-shadow-[0_0_30px_rgb(var(--color-accent-primary)/0.5)] font-pixie"
+          className="font-bold tracking-[0.15em] sm:tracking-[0.25em] mb-1 sm:mb-2 leading-none drop-shadow-[0_0_30px_rgb(var(--color-accent-primary)/0.5)] font-pixie"
         >
           <TitleText
             text="TERMINAL"
             as="span"
+            autoHeight
             className="text-5xl sm:text-7xl md:text-8xl text-terminal-accent-primary"
           />
         </motion.h1>
@@ -154,9 +155,9 @@ export default function HomePage() {
 
         <motion.div
           variants={itemVariants}
-          className="text-[8px] sm:text-xs tracking-widest mt-3 text-terminal-muted"
+          className="text-[8px] sm:text-xs tracking-widest mt-1 sm:mt-3 text-terminal-muted"
         >
-          <LabelText text="╚══════════════════════════════════════════╝" />
+          <LabelText text="╚══════════════════════════════════════════╝" autoHeight />
         </motion.div>
       </div>
 

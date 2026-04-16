@@ -64,22 +64,22 @@ export default function ArtistRow({ artist: a }: Props) {
       >
         {/* Mobile */}
         <div className={`md:hidden px-4 py-4 border transition-all duration-200 space-y-2 ${borderClass} ${hoverClass}`}>
-          <div className="flex items-start justify-between gap-2">
-            <span className={`font-bold tracking-wider leading-tight font-mono ${nameColorClass} ${nameGlowClass}`}>
-              <LabelText text={a.name} />
+          <div className="flex items-baseline justify-between gap-2">
+            <span className={`font-bold tracking-wider leading-tight font-mono min-w-0 ${nameColorClass} ${nameGlowClass}`}>
+              <LabelText text={a.name} autoHeight className="text-xs md:text-sm" />
             </span>
             <span className={`font-bold tracking-wider whitespace-nowrap shrink-0 font-mono ${statusColorClass}`}>
               <span className="status-pulse mr-1">●</span>
-              <LabelText text={a.status} className="inline" />
+              <LabelText text={a.status} className="inline text-[11px] md:text-xs" autoHeight />
             </span>
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono">
-            <span className="text-terminal-muted"><MetaText text={a.id} /></span>
-            <span className="text-terminal-subdued"><MetaText text={a.origin} /></span>
-            <span className="text-terminal-accent-warn"><MetaText text={a.time} /></span>
+            <span className="text-terminal-muted"><MetaText text={a.id} autoHeight className="text-[11px] md:text-xs" /></span>
+            <span className="text-terminal-subdued"><MetaText text={a.origin} autoHeight className="text-[11px] md:text-xs" /></span>
+            <span className="text-terminal-accent-warn"><MetaText text={a.time} autoHeight className="text-[11px] md:text-xs" /></span>
           </div>
           <div className="flex items-center justify-between text-terminal-subdued font-mono">
-            <MetaText text={lang === 'ko' ? lineupKo.dock(a.dock) : `DOCK ${a.dock}`} />
+            <MetaText text={lang === 'ko' ? lineupKo.dock(a.dock) : `DOCK ${a.dock}`} autoHeight className="text-[11px] md:text-xs" />
             {hasDescription && (
               <span className="text-terminal-accent-primary/50">{isOpen ? '[-]' : '[+]'}</span>
             )}

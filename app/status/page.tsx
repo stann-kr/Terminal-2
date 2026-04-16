@@ -59,24 +59,24 @@ export default function StatusPage() {
                   <div key={s.name} className="group">
                     {/* Mobile */}
                     <div className="md:hidden space-y-1.5 font-mono">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-baseline justify-between gap-2">
                         <span className="text-terminal-primary">
-                          <LabelText text={s.name} delay={i * 20} />
+                          <LabelText text={s.name} delay={i * 20} autoHeight />
                         </span>
-                        <span className={`tracking-wider ${statusColorClass}`}>
+                        <span className={`tracking-wider whitespace-nowrap shrink-0 ${statusColorClass}`}>
                           <span className="status-pulse mr-1">●</span>
-                          <LabelText text={s.status} className="inline" delay={i * 20} />
+                          <LabelText text={s.status} className="inline" delay={i * 20} autoHeight />
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-x-4 gap-y-1">
                         <span className="text-terminal-subdued">
-                          <SubtitleText text={s.sector} delay={i * 20} />
+                          <MetaText text={s.sector} delay={i * 20} autoHeight />
                         </span>
                         <span className="text-terminal-accent-secondary">
-                          <MetaText text={s.lag === 0 ? '—' : `${s.lag} ly`} delay={i * 20} />
+                          <MetaText text={s.lag === 0 ? '—' : `${s.lag} ly`} delay={i * 20} autoHeight />
                         </span>
                         <span className="text-terminal-subdued">
-                          <MetaText text={lang === 'ko' ? statusKo.load(s.load) : `LOAD: ${s.load}%`} delay={i * 20} />
+                          <MetaText text={lang === 'ko' ? statusKo.load(s.load) : `LOAD: ${s.load}%`} delay={i * 20} autoHeight />
                         </span>
                       </div>
                       {s.load > 0 && (

@@ -1,5 +1,65 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-17] BootSequence · SleepScreen 레이아웃 정렬 수정
+
+### 이중 CRTWrapper 제거
+* **`app/page.tsx`:**
+    * `EntryController`에서 불필요하게 감싸던 `CRTWrapper` 제거.
+    * `app/layout.tsx`의 전역 CRTWrapper로 통합되어 CRT 이펙트(스캔라인·비네팅)가 이중으로 렌더링되던 성능 오버헤드 해소.
+
+### 컨테이너 폭 및 패딩 PageLayout 기준 통일
+* **`components/BootSequence.tsx`:**
+    * 외부 패딩 `px-4 sm:px-8 md:px-16` → `px-4 sm:px-6` (md 과도한 여백 제거).
+    * 내부 컨테이너 `w-full max-w-3xl` → `w-full sm:w-[700px] md:w-[800px]` — PageLayout 컨테이너 폭과 통일.
+* **`components/SleepScreen.tsx`:**
+    * 외부 패딩 동일하게 `px-4 sm:px-6`으로 조정.
+    * 내부 컨테이너 `w-full max-w-xl` → `w-full sm:w-[700px] md:w-[800px]` — PageLayout 컨테이너 폭과 통일.
+
+### 결과
+* 부트·슬립 화면의 콘텐츠 폭이 `/home` 등 실제 페이지들과 동일하게 중앙 정렬되어 레이아웃 일관성 확보.
+
+---
+
+## [2026-04-17] 모바일(iOS) 레이아웃 최적화 — 전 페이지 반응형 개선
+
+### 정렬 불일치 수정
+* **ArtistRow 모바일 정렬 (`app/lineup/ArtistRow.tsx`):**
+    * `flex items-start` → `items-baseline`: 이름과 status 텍스트 기준선 정렬.
+    * 좌측 span에 `min-w-0` 추가하여 flex 과도 압축 방지.
+    * `LabelText`/`MetaText` 전체에 `autoHeight` 적용 — 높이 측정 컨테이너가 flex 내 좌/우 정렬 경합하던 근본 원인 해소.
+* **Status 릴레이 행 정렬 (`app/status/page.tsx`):**
+    * 동일 패턴 적용(`items-baseline` + `autoHeight`).
+    * `SubtitleText`(12px) → `MetaText`(10px) 교체로 동일 행 내 폰트 크기 혼용 제거.
+    * 우측 status span에 `whitespace-nowrap shrink-0` 추가.
+
+### Lineup 텍스트 크기 상향
+* **ArtistRow 폰트 크기 (`app/lineup/ArtistRow.tsx`):**
+    * 아티스트 이름: `text-[10px]` → `text-xs`(12px), 타 페이지와 통일.
+    * status/id/origin/time/dock: `text-[10px]` → `text-[11px]`(모바일), 데스크톱 기존 유지.
+
+### HOME 타이틀-ASCII 박스 여백
+* **TERMINAL 타이틀 여백 (`app/home/page.tsx`):**
+    * `leading-none` 추가: font-pixie의 line-height가 만들던 과도한 불가시 여백 제거.
+    * 상단 ASCII 박스 `mb-3` → `mb-1 sm:mb-3`, 하단 `mt-3` → `mt-1 sm:mt-3`.
+    * `TitleText` 및 ASCII 박스 `LabelText`에 `autoHeight` 적용 — 단일 라인 요소의 불필요한 측정 컨테이너 제거.
+
+### 추가 최적화
+* **CountdownBlock 라벨 (`components/ui/CountdownBlock.tsx`):**
+    * `text-xs` → `text-[9px] sm:text-xs`, `tracking-widest` → `tracking-wider sm:tracking-widest`.
+    * 좁은 모바일 셀에서 "MINUTES"/"SECONDS" 라벨이 잘리던 위험 해소.
+* **Gate 이벤트 헤더 (`app/gate/page.tsx`):**
+    * gap `gap-4` → `gap-2 sm:gap-4`.
+    * UPCOMING 배지 `text-[10px] sm:text-xs` 반응형 크기 적용.
+* **SleepScreen 시계 오버플로우 (`components/SleepScreen.tsx`):**
+    * 패딩 `px-8 md:px-16` → `px-4 sm:px-8 md:px-16`.
+    * 시계 크기 `text-6xl md:text-8xl` → `text-5xl sm:text-6xl md:text-8xl`.
+    * 320px 기기에서 "00:00:00" 시계(~293px)가 가용 너비(256px)를 초과하던 오버플로우 수정.
+* **BootSequence 여백 (`components/BootSequence.tsx`):**
+    * 패딩 `px-8 md:px-16` → `px-4 sm:px-8 md:px-16`.
+    * em-dash 분리선이 좁은 화면에서 줄바꿈되어 깨지던 현상 개선.
+
+---
+
 ## [2026-04-15] 코드 검증 — 보안·버그·타입 안전성·접근성·성능 개선 및 빌드 오류 수정
 
 ### 보안 (P0)

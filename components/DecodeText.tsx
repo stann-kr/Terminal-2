@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useLayoutEffect, useCallback, memo, useState, type CSSProperties } from "react";
 import { useScramble } from "use-scramble";
-import { prepare, layout } from "@chenglou/pretext";
+import { prepare, prepareWithSegments, layout, walkLineRanges } from "@chenglou/pretext";
 
 interface DecodeTextProps {
   /** 표시할 텍스트 */
@@ -40,6 +40,12 @@ interface DecodeTextProps {
    * 높이가 고정되거나 부모가 레이아웃을 제어하는 경우 사용 (카운트다운 숫자 등).
    */
   autoHeight?: boolean;
+  /**
+   * 줄 너비를 균등하게 분배하여 orphan 줄 방지 (기본값: true).
+   * walkLineRanges 이진 탐색으로 줄 수를 유지하는 최소 너비를 탐색.
+   * 한 줄 텍스트에서는 자동 건너뜀. autoHeight=true일 때 자동 무시됨.
+   */
+  balanced?: boolean;
 }
 
 /**
@@ -64,13 +70,16 @@ const DecodeText = memo(function DecodeText({
   scrambleOnUpdate = true,
   animateTextLength = false,
   autoHeight = false,
+  balanced = true,
 }: DecodeTextProps) {
   // 외부 div: minHeight 측정/적용 전용
   const containerRef = useRef<HTMLDivElement>(null);
   // measureRef: 항상 Tag에 연결 — 폰트 측정 및 DOM 업데이트용
   const measureRef = useRef<HTMLElement | null>(null);
   const preparedRef = useRef<ReturnType<typeof prepare> | null>(null);
+  const preparedSegRef = useRef<ReturnType<typeof prepareWithSegments> | null>(null);
   const lastFontRef = useRef<string | null>(null);
+  const lastSegFontRef = useRef<string | null>(null);
 
   // scrambleOnUpdate=false: 초기 애니메이션 완료 후 settled 상태
   const animationSettledRef = useRef(false);
@@ -183,6 +192,36 @@ const DecodeText = memo(function DecodeText({
         lastFontRef.current = cacheKey;
       }
 
+      // ── balanced 모드: 이진 탐색으로 orphan 줄 방지 ──
+      // walkLineRanges로 줄 수를 유지하는 최소 너비를 탐색하여 줄 길이를 균등 분배.
+      // 한 줄 텍스트에서는 자동 건너뜀.
+      if (balanced) {
+        if (lastSegFontRef.current !== cacheKey || !preparedSegRef.current) {
+          preparedSegRef.current = prepareWithSegments(text, activeFont, { whiteSpace: "pre-wrap" });
+          lastSegFontRef.current = cacheKey;
+        }
+
+        const preparedSeg = preparedSegRef.current;
+        let baseLineCount = 0;
+        walkLineRanges(preparedSeg, width, () => { baseLineCount++; });
+
+        if (baseLineCount >= 2) {
+          let lo = 0, hi = width;
+          while (hi - lo > 1) {
+            const mid = (lo + hi) / 2;
+            let count = 0;
+            walkLineRanges(preparedSeg, mid, () => { count++; });
+            if (count <= baseLineCount) hi = mid;
+            else lo = mid;
+          }
+          width = hi;
+        }
+      }
+
+      if (balanced && textNode) {
+        textNode.style.maxWidth = width < (container.offsetWidth - 1) ? `${width}px` : '';
+      }
+
       const { height } = layout(preparedRef.current, width, activeLineHeight);
       container.style.height = `${height}px`;
       container.style.minHeight = `${height}px`;
@@ -209,7 +248,7 @@ const DecodeText = memo(function DecodeText({
       resizeObserver.disconnect();
       cancelAnimationFrame(animationFrameId);
     };
-  }, [text, explicitFont, explicitLineHeight, autoHeight]);
+  }, [text, explicitFont, explicitLineHeight, autoHeight, balanced]);
 
   /**
    * 안정적인 callback ref: useCallback([])으로 마운트 시 1회만 생성.

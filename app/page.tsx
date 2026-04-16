@@ -5,7 +5,6 @@ import { AnimatePresence } from 'framer-motion';
 import { hasVisited, markVisited } from '@/lib/visitState';
 import BootSequence from '@/components/BootSequence';
 import SleepScreen from '@/components/SleepScreen';
-import CRTWrapper from '@/components/CRTWrapper';
 
 type Phase = 'loading' | 'boot' | 'sleep' | 'done';
 
@@ -34,11 +33,9 @@ export default function EntryController() {
   }
 
   return (
-    <CRTWrapper>
-      <AnimatePresence mode="wait">
-        {phase === 'boot' && <BootSequence key="boot" onComplete={handleBootComplete} />}
-        {phase === 'sleep' && <SleepScreen key="sleep" onWake={handleWake} />}
-      </AnimatePresence>
-    </CRTWrapper>
+    <AnimatePresence mode="wait">
+      {phase === 'boot' && <BootSequence key="boot" onComplete={handleBootComplete} />}
+      {phase === 'sleep' && <SleepScreen key="sleep" onWake={handleWake} />}
+    </AnimatePresence>
   );
 }

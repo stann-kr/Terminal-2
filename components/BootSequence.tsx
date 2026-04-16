@@ -197,12 +197,12 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col justify-center items-center px-8 md:px-16 overflow-hidden bg-terminal-bg-base font-mono"
+      className="fixed inset-0 z-50 flex flex-col justify-center items-center px-4 sm:px-6 overflow-hidden bg-terminal-bg-base font-mono"
       animate={powering ? { scaleY: 0.001, filter: 'brightness(0)' } : { scaleY: 1, filter: 'brightness(1)' }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
       exit={{ opacity: 0, filter: 'brightness(3) blur(8px)', transition: { duration: 0.5 } }}
     >
-      <div className="w-full max-w-3xl">
+      <div className="w-full sm:w-[700px] md:w-[800px]">
         {/* Phase 1 */}
         {PHASE_1.map((item, i) =>
           visiblePhase1.includes(i) ? (
