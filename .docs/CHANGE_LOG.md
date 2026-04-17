@@ -1,5 +1,21 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-17] use-scramble innerHTML → textContent 패치 (프로덕션 렌더링 버그 수정)
+
+### 문제
+* `use-scramble` 라이브러리가 내부적으로 `nodeRef.current.innerHTML = result` 사용.
+* 스크램블 문자 범위 `[48, 102]`에 ASCII `<`(60), `>`(62) 포함 → innerHTML이 이를 HTML 태그로 파싱.
+* 결과: 프로덕션 빌드에서 텍스트(예: `KERNEL 2.2.0-heliopause_build`)가 이중으로 나타나거나 누락되는 DOM 오염 현상.
+
+### 수정
+* **`node_modules/use-scramble/dist/use-scramble.esm.js` L175:** `innerHTML` → `textContent`
+* **`node_modules/use-scramble/dist/use-scramble.cjs.development.js` L179:** `innerHTML` → `textContent`
+* **`node_modules/use-scramble/dist/use-scramble.cjs.production.min.js`:** `O.current.innerHTML=r` → `O.current.textContent=r`
+* **`patches/use-scramble+2.2.15.patch`:** 위 변경을 patch-package 형식으로 저장 — `npm install` 후 자동 재적용.
+* **`package.json`:** `scripts.postinstall: "patch-package"` 추가 — 의존성 재설치 시 패치 자동 적용 보장.
+
+---
+
 ## [2026-04-17] BootSequence · SleepScreen 레이아웃 정렬 수정
 
 ### 이중 CRTWrapper 제거
