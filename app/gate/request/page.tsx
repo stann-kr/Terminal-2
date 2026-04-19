@@ -43,7 +43,7 @@ export default function RequestAccessPage() {
   const [form, setForm] = useState<FormState>({
     name: '',
     email: '',
-    instagram: '@',
+    instagram: '',
     invitedBy: '',
     accessCode: '',
     privacyConsent: false,
@@ -72,12 +72,6 @@ export default function RequestAccessPage() {
   const handleChange = (field: keyof Omit<FormState, 'privacyConsent'>) =>
     (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm(prev => ({ ...prev, [field]: e.target.value }));
-
-  const handleInstagramChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    const value = raw.startsWith('@') ? raw : '@' + raw.replace(/^@*/, '');
-    setForm(prev => ({ ...prev, instagram: value }));
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -242,13 +236,21 @@ export default function RequestAccessPage() {
 
                 {/* 인스타그램 */}
                 <FormField label={lang === 'ko' ? requestKo.labelInstagram : 'INSTAGRAM_ID:'}>
-                  <input
-                    type="text"
-                    value={form.instagram}
-                    onChange={handleInstagramChange}
-                    placeholder={lang === 'ko' ? requestKo.placeholderInstagram : '@USERNAME'}
-                    className={`${inputClassBase} ${inputAccentClass.secondary}`}
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none select-none font-mono text-small md:text-body text-terminal-accent-secondary">
+                      @
+                    </span>
+                    <input
+                      type="text"
+                      value={form.instagram.replace(/^@/, '')}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/^@+/, '');
+                        setForm(prev => ({ ...prev, instagram: raw ? '@' + raw : '' }));
+                      }}
+                      placeholder="USERNAME"
+                      className={`${inputClassBase} ${inputAccentClass.secondary} pl-6`}
+                    />
+                  </div>
                 </FormField>
 
                 {/* 초대인 */}
