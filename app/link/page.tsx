@@ -48,10 +48,10 @@ export default function LinkPage() {
         className="border border-terminal-accent-primary/20 bg-terminal-bg-panel"
       >
         <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-primary/15 bg-terminal-bg-overlay/40">
-          <span className="text-[10px] sm:text-xs tracking-widest text-terminal-accent-primary font-mono">
+          <span className="text-micro sm:text-small tracking-widest text-terminal-accent-primary font-mono">
             <LabelText text={lang === 'ko' ? linkKo.externalChannels : '▶ EXTERNAL CHANNELS — /terminal/link/'} />
           </span>
-          <span className="text-[10px] sm:text-xs text-terminal-muted font-mono">
+          <span className="text-micro sm:text-small text-terminal-muted font-mono">
             <LabelText text={lang === 'ko' ? linkKo.nodeCount : '3 NODE(S)'} />
           </span>
         </div>
