@@ -56,7 +56,7 @@ export default function GatePage() {
             <TerminalButton
               key={t}
               variant={tab === t ? "primary" : "ghost"}
-              className="px-4 py-1.5 text-[10px]"
+              className="px-4 py-1.5 text-micro"
               onClick={() => setTab(t)}
             >
               {t === "upcoming"
@@ -113,7 +113,7 @@ export default function GatePage() {
                           className="mt-1 text-terminal-subdued tracking-[0.1em]"
                         />
                       </div>
-                      <div className="font-bold tracking-wider shrink-0 text-terminal-accent-secondary font-mono text-[10px] sm:text-xs">
+                      <div className="font-bold tracking-wider shrink-0 text-terminal-accent-secondary font-mono text-micro sm:text-small">
                         <span className="status-pulse mr-1">●</span>
                         <LabelText text="UPCOMING" className="inline" />
                       </div>
@@ -155,7 +155,7 @@ export default function GatePage() {
                   >
                     <div className="flex items-center justify-between gap-4">
                       <div>
-                        <div className={`text-sm font-bold tracking-wider ${selectedArchive === ev.id ? "text-terminal-accent-alert" : "text-terminal-primary"}`}>
+                        <div className={`font-bold tracking-wider ${selectedArchive === ev.id ? "text-terminal-accent-alert" : "text-terminal-primary"}`}>
                           <SubtitleText autoHeight text={ev.session} />
                         </div>
                         <div className="text-xs mt-0.5 text-terminal-subdued">

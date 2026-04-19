@@ -43,7 +43,7 @@ function StatusLine({ label, value, accent, warn, cyan }: Partial<StatusItem>) {
   else if (warn) colorClass = 'text-terminal-accent-warn font-normal';
 
   return (
-    <div ref={ref} className={`text-xs md:text-sm leading-6 font-mono whitespace-pre-wrap ${colorClass}`} />
+    <div ref={ref} className={`text-small md:text-body leading-6 font-mono whitespace-pre-wrap ${colorClass}`} />
   );
 }
 
@@ -67,7 +67,7 @@ function ProgressLine({ label }: { label: string }) {
   const empty = BARS - filled;
 
   return (
-    <div className="text-xs md:text-sm leading-6 font-mono text-terminal-subdued">
+    <div className="text-small md:text-body leading-6 font-mono text-terminal-subdued">
       <span>{label} </span>
       <span className="text-terminal-accent-primary">{'█'.repeat(filled)}</span>
       <span className="text-terminal-muted/30">{'░'.repeat(empty)}</span>
@@ -173,7 +173,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
           
           {/* 하단 점멸 커서 */}
           {!waking && (
-            <span className="cursor-blink text-xs text-terminal-accent-primary">█</span>
+            <span className="cursor-blink text-small text-terminal-accent-primary">█</span>
           )}
         </div>
 
@@ -191,7 +191,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
           </motion.div>
         ) : (
           <div className="mt-6 flex flex-col gap-2">
-            <div className="text-xs md:text-sm leading-6 font-mono text-terminal-subdued">
+            <div className="text-small md:text-body leading-6 font-mono text-terminal-subdued">
               RESTORING CORE MODULES...
             </div>
             <div className="w-48 h-[1px] bg-terminal-accent-primary/20 relative overflow-hidden">

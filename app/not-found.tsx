@@ -22,14 +22,14 @@ export default function NotFound() {
         {/* Page header */}
         <div className="mb-8 font-mono">
           <div className="text-xs tracking-widest mb-1 text-terminal-muted">/404</div>
-          <h1 className="text-xl md:text-2xl font-bold tracking-[0.2em] text-terminal-accent-alert text-shadow-glow-alert">
+          <h1 className="text-h2 md:text-h1 font-bold tracking-[0.2em] text-terminal-accent-alert text-shadow-glow-alert">
             ERROR: 404
           </h1>
         </div>
 
         {/* Error content */}
         <div className="mt-8 text-center space-y-4">
-          <p className="text-terminal-accent-alert text-shadow-glow-alert text-sm font-mono block tracking-wider">
+          <p className="text-terminal-accent-alert text-shadow-glow-alert text-body font-mono block tracking-wider">
             REQUESTED SIGNAL NOT FOUND IN LOCAL NODE
           </p>
           <p className="text-terminal-muted text-xs block max-w-md mx-auto leading-relaxed">
