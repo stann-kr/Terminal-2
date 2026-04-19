@@ -44,6 +44,22 @@
     /* Status Colors - Muted & Desaturated */
     --color-accent-alert: 179 71 71;       /* Muted Red (채도 빠진 건조한 빨강) */
     --color-accent-warn: 179 152 71;       /* Muted Gold (채도 빠진 건조한 노랑) */
+
+    /* ─── Typography Scale ──────────────────────────────────────────────────── */
+    /* mobile base — 장식용(home ASCII, 카운트다운) */
+    --text-pico:    0.5rem;      /* 8px  */
+    --text-nano:    0.5625rem;   /* 9px  */
+    /* content scale */
+    --text-micro:   0.625rem;    /* 10px - LabelText/MetaText 모바일, 뱃지 */
+    --text-caption: 0.6875rem;   /* 11px - ArtistRow meta 등 */
+    --text-small:   0.75rem;     /* 12px - body 모바일, label 데스크톱, input */
+    --text-body:    0.875rem;    /* 14px - body 데스크톱, heading 모바일 */
+    --text-heading: 1rem;        /* 16px - HeadingText 데스크톱 */
+    --text-h2:      1.25rem;     /* 20px - PageHeader 모바일 */
+    --text-h1:      1.5rem;      /* 24px - TitleText 모바일, PageHeader 데스크톱 */
+    --text-title:   1.875rem;    /* 30px - TitleText 데스크톱 */
+    --text-hero:    3rem;        /* 48px - home TERMINAL 모바일 */
+    --text-display: 6rem;        /* 96px - home TERMINAL 데스크톱 */
   }
 }
 
