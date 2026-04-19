@@ -128,7 +128,7 @@ export default function HomePage() {
       <div className="mb-6 text-center">
         <motion.div
           variants={itemVariants}
-          className="text-[8px] sm:text-xs tracking-widest mb-1 sm:mb-3 text-terminal-muted"
+          className="text-pico sm:text-xs tracking-widest mb-1 sm:mb-3 text-terminal-muted"
         >
           <LabelText text="╔══════════════════════════════════════════╗" autoHeight />
         </motion.div>
@@ -141,7 +141,7 @@ export default function HomePage() {
             text="TERMINAL"
             as="span"
             autoHeight
-            className="text-5xl sm:text-7xl md:text-8xl text-terminal-accent-primary"
+            className="text-hero sm:text-title md:text-display text-terminal-accent-primary"
           />
         </motion.h1>
 
@@ -149,13 +149,13 @@ export default function HomePage() {
           <SubtitleText
             text="A VOYAGE TO THE UNKNOWN SECTOR"
             delay={100}
-            className="text-[9px] sm:text-[11px] md:text-[11px] text-terminal-subdued text-center tracking-[0.2em] opacity-70"
+            className="text-nano sm:text-caption md:text-caption text-terminal-subdued text-center tracking-[0.2em] opacity-70"
           />
         </motion.div>
 
         <motion.div
           variants={itemVariants}
-          className="text-[8px] sm:text-xs tracking-widest mt-1 sm:mt-3 text-terminal-muted"
+          className="text-pico sm:text-xs tracking-widest mt-1 sm:mt-3 text-terminal-muted"
         >
           <LabelText text="╚══════════════════════════════════════════╝" autoHeight />
         </motion.div>
@@ -192,19 +192,19 @@ export default function HomePage() {
             <div className="text-center mb-4">
               <div className="mb-1 tracking-[0.1em]">
                 <BodyText
-                  className="text-[10px] sm:text-xs text-terminal-muted"
+                  className="text-micro sm:text-xs text-terminal-muted"
                   text={`${lang === "ko" ? homeKo.nextEntry : "NEXT LAUNCH —"} ${eventDateLabel}`}
                 />
               </div>
               <div className="drop-shadow-[0_0_16px_rgb(var(--color-accent-primary)/0.4)]">
                 <HeadingText 
-                  className="text-xl sm:text-2xl font-bold text-terminal-accent-primary tracking-[0.2em]"
+                  className="text-h2 sm:text-h1 font-bold text-terminal-accent-primary tracking-[0.2em]"
                   text={upcomingEvent?.session ?? "—"} as="span" 
                 />
               </div>
               <div className="mt-1 tracking-[0.1em]">
                 <MetaText
-                  className="text-[10px] sm:text-xs text-terminal-subdued"
+                  className="text-micro sm:text-xs text-terminal-subdued"
                   text={
                     upcomingEvent
                       ? `${upcomingEvent.subtitle} // ${upcomingEvent.venue}`
@@ -226,14 +226,14 @@ export default function HomePage() {
         className="border border-terminal-accent-primary/20 bg-terminal-bg-panel"
       >
         <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-primary/15 bg-terminal-bg-overlay/40">
-          <span className="text-[10px] sm:text-xs tracking-widest text-terminal-accent-primary">
+          <span className="text-micro sm:text-xs tracking-widest text-terminal-accent-primary">
             <LabelText
               text={
                 lang === "ko" ? homeKo.rootDir : "▶ ROOT DIRECTORY — /terminal/"
               }
             />
           </span>
-          <span className="text-[10px] sm:text-xs text-terminal-muted">
+          <span className="text-micro sm:text-xs text-terminal-muted">
             <LabelText
               text={lang === "ko" ? homeKo.moduleCount : "6 MODULE(S)"}
             />
@@ -250,7 +250,7 @@ export default function HomePage() {
       {/* Footer */}
       <motion.div
         variants={itemVariants}
-        className="mt-6 flex items-center justify-between text-[10px] sm:text-xs text-terminal-muted font-mono"
+        className="mt-6 flex items-center justify-between text-micro sm:text-xs text-terminal-muted font-mono"
       >
         <span>
           <MetaText text="KERNEL 2.2.0-heliopause_build" />
