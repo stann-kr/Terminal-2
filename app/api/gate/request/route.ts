@@ -29,6 +29,7 @@ export async function POST(request: Request) {
     const invitedBy = (body?.invitedBy as string | undefined)?.trim() ?? "";
     const accessCode = (body?.accessCode as string | undefined)?.trim() ?? "";
     const privacyConsent = Boolean(body?.privacyConsent);
+    const marketingConsent = Boolean(body?.marketingConsent);
 
     // 1. 필수 필드 검증
     if (!name || !email || !instagram || !invitedBy || !accessCode) {
@@ -97,6 +98,7 @@ export async function POST(request: Request) {
       instagram,
       invitedBy,
       privacyConsent,
+      marketingConsent,
       createdAt,
     });
 

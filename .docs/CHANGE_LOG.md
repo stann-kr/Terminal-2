@@ -1,5 +1,20 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-20] feat: 마케팅 수신 동의 체크박스 추가 (선택)
+
+### 변경 개요
+- `migrations/0005_marketing_consent.sql` — `access_requests` 테이블에 `marketing_consent` 컬럼 추가 (NOT NULL DEFAULT 0)
+- `lib/db/schema.ts` — `marketingConsent` 필드 추가
+- `app/api/gate/request/route.ts` — `marketingConsent` 수신 및 DB INSERT 포함
+- `app/gate/request/page.tsx` — 기존 필수 동의 아래 선택 동의 체크박스 추가
+- `lib/i18n.ts` — `marketingConsent` 한국어 텍스트 추가
+
+### 핵심 효과
+- 개인정보보호법 준수: 마케팅 목적 동의를 이벤트 신청 동의와 분리, 선택 사항으로 구성
+- 미체크 시에도 정상 신청 가능
+
+---
+
 ## [2026-04-20] feat: 게스트 신청 폼 초대인 셀렉트 및 코드 사전입력 URL 지원
 
 ### 변경 개요
