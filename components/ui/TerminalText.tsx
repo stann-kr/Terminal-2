@@ -32,7 +32,7 @@ export function TitleText({
     <DecodeText
       {...decode.title}
       as={as}
-      className={cn("text-2xl md:text-3xl", className)}
+      className={cn("text-h1 md:text-title", className)}
       {...props}
     />
   );
@@ -48,7 +48,7 @@ export function HeadingText({
     <DecodeText
       {...decode.heading}
       as={as}
-      className={cn("text-sm md:text-base", className)}
+      className={cn("text-body md:text-heading", className)}
       {...props}
     />
   );
@@ -59,7 +59,7 @@ export function SubtitleText({ className = "", ...props }: TextProps) {
   return (
     <DecodeText
       {...decode.subtitle}
-      className={cn("text-xs md:text-sm", className)}
+      className={cn("text-small md:text-body", className)}
       {...props}
     />
   );
@@ -70,7 +70,7 @@ export function BodyText({ className = "", ...props }: TextProps) {
   return (
     <DecodeText
       {...decode.body}
-      className={cn("text-xs md:text-sm leading-relaxed", className)}
+      className={cn("text-small md:text-body leading-relaxed", className)}
       {...props}
     />
   );
@@ -81,7 +81,7 @@ export function LabelText({ className = "", ...props }: TextProps) {
   return (
     <DecodeText
       {...decode.label}
-      className={cn("text-[10px] md:text-xs", className)}
+      className={cn("text-micro md:text-small", className)}
       {...props}
     />
   );
@@ -92,7 +92,7 @@ export function MetaText({ className = "", ...props }: TextProps) {
   return (
     <DecodeText
       {...decode.meta}
-      className={cn("text-[10px] md:text-xs", className)}
+      className={cn("text-micro md:text-small", className)}
       {...props}
     />
   );
@@ -103,7 +103,7 @@ export function DataText({ className = "", ...props }: TextProps) {
   return (
     <DecodeText
       {...decode.data}
-      className={cn("text-xs md:text-sm", className)}
+      className={cn("text-small md:text-body", className)}
       {...props}
     />
   );
