@@ -1,5 +1,25 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-20] refactor: 폰트 사이즈 토큰 시스템 도입 및 전 페이지 일관화
+
+### 변경 개요
+- `app/globals.css` `:root`에 `--text-*` CSS 변수 12단계 정의
+- `tailwind.config.js`에 `theme.extend.fontSize` 토큰 추가 (pico/nano/micro/caption/small/body/heading/h2/h1/title/hero/display)
+- `components/ui/TerminalText.tsx` 7개 semantic 컴포넌트를 신규 토큰 기반으로 재구성
+- `components/ui/FormField.tsx` 신설 — 폼 라벨+입력 공통 컴포넌트, inputClassBase/inputAccentClass export
+- `app/gate/request/page.tsx` — FormField로 이전, 이중 지정 제거
+- `app/transmit/page.tsx` — FormField로 이전
+- `app/lineup/page.tsx`, `app/lineup/ArtistRow.tsx` — 데스크톱 그리드 사이즈 일관화, 세션 셀렉터 semantic 승격
+- 공통 컴포넌트(TerminalButton·TerminalPanel·PageHeader·ReturnLink·LangToggle·CountdownBlock) 토큰 정비
+- `app/gate/page.tsx`, `app/home/page.tsx`, `app/not-found.tsx`, `components/SleepScreen.tsx`, `components/BootSequence.tsx` 임의 픽셀값 토큰화
+
+### 핵심 효과
+- `text-[8px]/[9px]/[10px]/[11px]` 임의값 전면 제거 → 토큰 단일 출처
+- Request 폼/Brief 사이즈 계층 일관화 (폼 input text-small md:text-body)
+- Lineup 데스크톱 row가 모바일 이상 크기로 통일
+
+---
+
 ## [2026-04-17] DecodeText ResizeObserver 피드백 루프 제거 (텍스트 깜빡임 근본 수정)
 
 ### 문제
