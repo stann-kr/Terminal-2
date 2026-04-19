@@ -34,6 +34,7 @@ export default function TerminalPanel({ children, className = '', title, accent 
           <span className={`text-small ${classes.title}`}>▶</span>
           <LabelText
             text={title}
+            autoHeight
             className={`text-small font-bold tracking-widest uppercase ${classes.title}`}
           />
         </div>

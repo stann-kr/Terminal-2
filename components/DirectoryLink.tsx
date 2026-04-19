@@ -41,14 +41,14 @@ export default function DirectoryLink({ href, label, description, index, accent 
       className={`flex items-start gap-4 py-3 px-4 border-b border-terminal-accent-primary/10 bg-transparent transition-all duration-200 ${v.hover}`}
     >
       <span className={`text-xs pt-0.5 w-6 shrink-0 transition-colors ${hovered ? v.text : 'text-terminal-muted'}`}>
-        <LabelText text={String(index).padStart(2, '0')} />
+        <LabelText text={String(index).padStart(2, '0')} autoHeight />
       </span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-3 mb-0.5">
           <span
             className={`text-sm font-bold tracking-widest uppercase transition-all duration-150 ${hovered ? `${v.text} ${v.glow}` : 'text-terminal-primary'}`}
           >
-            <HeadingText text={`[${label}]`} as="span" className="text-inherit drop-shadow-inherit" />
+            <HeadingText text={`[${label}]`} as="span" autoHeight className="text-inherit drop-shadow-inherit" />
           </span>
           {hovered && (
             <motion.span initial={{ opacity: 0, x: -4 }} animate={{ opacity: 1, x: 0 }} className={`text-xs ${v.text}`}>

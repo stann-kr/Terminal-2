@@ -99,7 +99,7 @@ export default function CountdownBlock({ targetDate, accent = 'primary' }: Props
     >
       {/* T+/T- 모드 레이블 */}
       <div className={`text-center mb-2 text-micro tracking-[0.2em] font-mono font-bold ${s.modeLabel}`}>
-        <MetaText text={delta.elapsed ? 'T+ ELAPSED' : 'T- COUNTDOWN'} />
+        <MetaText text={delta.elapsed ? 'T+ ELAPSED' : 'T- COUNTDOWN'} autoHeight />
       </div>
 
       <div className={s.wrapperClass}>
