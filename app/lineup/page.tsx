@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedHeight from '@/components/ui/AnimatedHeight';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
-import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
+import { LabelText, SubtitleText, MetaText, HeadingText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
 import ArtistRow from './ArtistRow';
@@ -39,15 +39,15 @@ export default function LineupPage() {
 
       {loading ? (
         <motion.div variants={itemVariants} className="font-mono text-terminal-muted text-center py-8">
-          <LabelText autoHeight text={lang === 'ko' ? lineupKo.loading : '▸ LOADING LINEUP DATA...'} className="text-xs" />
+          <LabelText autoHeight text={lang === 'ko' ? lineupKo.loading : '▸ LOADING LINEUP DATA...'} />
         </motion.div>
       ) : error ? (
         <motion.div variants={itemVariants} className="border border-terminal-accent-alert/25 bg-terminal-bg-panel px-4 py-8 text-center space-y-2">
           <div className="font-bold tracking-widest text-terminal-accent-alert font-mono">
-            <LabelText autoHeight text={lang === 'ko' ? commonKo.signalUnstable : '⚠ SIGNAL LINK UNSTABLE'} className="text-xs" />
+            <LabelText autoHeight text={lang === 'ko' ? commonKo.signalUnstable : '⚠ SIGNAL LINK UNSTABLE'} />
           </div>
           <div className="text-terminal-muted font-mono">
-            <MetaText autoHeight text={lang === 'ko' ? commonKo.dbUnreachable : 'DATABASE UNREACHABLE — RETRY LATER'} className="text-xs" />
+            <MetaText autoHeight text={lang === 'ko' ? commonKo.dbUnreachable : 'DATABASE UNREACHABLE — RETRY LATER'} />
           </div>
         </motion.div>
       ) : (
@@ -82,7 +82,7 @@ export default function LineupPage() {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className={`tracking-wider ${textClasses}`}>
-                          <LabelText text={ev.session} />
+                          <HeadingText as="span" text={ev.session} />
                         </span>
                         {isUpcoming && (
                           <span className="px-1.5 py-0.5 tracking-widest text-terminal-accent-secondary border border-terminal-accent-secondary/40 bg-terminal-accent-secondary/10">
@@ -91,11 +91,11 @@ export default function LineupPage() {
                         )}
                       </div>
                       <div className="mt-0.5 text-terminal-subdued">
-                        <MetaText text={`${ev.subtitle} · ${ev.date.replace(/-/g, '.')}`} />
+                        <MetaText text={`${ev.subtitle} · ${ev.date.replace(/-/g, '.')}`} className="text-small md:text-body" />
                       </div>
                     </div>
                     <div className="shrink-0 text-terminal-muted">
-                      <MetaText text={lang === 'ko' ? lineupKo.actCount(ev.artists.length) : `${ev.artists.length} ACTS`} />
+                      <MetaText text={lang === 'ko' ? lineupKo.actCount(ev.artists.length) : `${ev.artists.length} ACTS`} className="text-small md:text-body" />
                     </div>
                   </div>
                 </button>
@@ -118,7 +118,7 @@ export default function LineupPage() {
                 <>
                   {/* Header */}
                   <div className="px-4 py-2 border-b hidden md:block border-terminal-accent-warn/30">
-                    <div className="grid grid-cols-12 gap-2 text-xs tracking-widest text-terminal-muted font-mono">
+                    <div className="grid grid-cols-12 gap-2 text-micro md:text-small tracking-widest text-terminal-muted font-mono">
                       <span className="col-span-1"><MetaText text="ID" /></span>
                       <span className="col-span-3"><MetaText text={lang === 'ko' ? lineupKo.colArtist : 'ARTIST'} /></span>
                       <span className="col-span-1"><MetaText text="ORG" /></span>

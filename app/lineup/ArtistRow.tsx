@@ -66,20 +66,20 @@ export default function ArtistRow({ artist: a }: Props) {
         <div className={`md:hidden px-4 py-4 border transition-all duration-200 space-y-2 ${borderClass} ${hoverClass}`}>
           <div className="flex items-baseline justify-between gap-2">
             <span className={`font-bold tracking-wider leading-tight font-mono min-w-0 ${nameColorClass} ${nameGlowClass}`}>
-              <LabelText text={a.name} autoHeight className="text-xs md:text-sm" />
+              <LabelText text={a.name} autoHeight className="text-small md:text-body" />
             </span>
             <span className={`font-bold tracking-wider whitespace-nowrap shrink-0 font-mono ${statusColorClass}`}>
               <span className="status-pulse mr-1">●</span>
-              <LabelText text={a.status} className="inline text-[11px] md:text-xs" autoHeight />
+              <LabelText text={a.status} className="inline text-caption md:text-small" autoHeight />
             </span>
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono">
-            <span className="text-terminal-muted"><MetaText text={a.id} autoHeight className="text-[11px] md:text-xs" /></span>
-            <span className="text-terminal-subdued"><MetaText text={a.origin} autoHeight className="text-[11px] md:text-xs" /></span>
-            <span className="text-terminal-accent-warn"><MetaText text={a.time} autoHeight className="text-[11px] md:text-xs" /></span>
+            <span className="text-terminal-muted"><MetaText text={a.id} autoHeight className="text-caption md:text-small" /></span>
+            <span className="text-terminal-subdued"><MetaText text={a.origin} autoHeight className="text-caption md:text-small" /></span>
+            <span className="text-terminal-accent-warn"><MetaText text={a.time} autoHeight className="text-caption md:text-small" /></span>
           </div>
           <div className="flex items-center justify-between text-terminal-subdued font-mono">
-            <MetaText text={lang === 'ko' ? lineupKo.dock(a.dock) : `DOCK ${a.dock}`} autoHeight className="text-[11px] md:text-xs" />
+            <MetaText text={lang === 'ko' ? lineupKo.dock(a.dock) : `DOCK ${a.dock}`} autoHeight className="text-caption md:text-small" />
             {hasDescription && (
               <span className="text-terminal-accent-primary/50">{isOpen ? '[-]' : '[+]'}</span>
             )}
@@ -88,17 +88,17 @@ export default function ArtistRow({ artist: a }: Props) {
 
         {/* Desktop */}
         <div className={`hidden md:grid grid-cols-12 gap-2 px-4 py-4 border transition-all duration-200 ${borderClass} ${hoverClass} items-center`}>
-          <span className="col-span-1 font-mono text-terminal-muted"><MetaText text={a.id} /></span>
+          <span className="col-span-1 font-mono text-terminal-muted"><MetaText text={a.id} className="text-small md:text-body" /></span>
           <span className={`col-span-3 font-bold tracking-wider font-mono ${nameColorClass} ${nameGlowClass}`}>
-            <LabelText text={a.name} />
+            <LabelText text={a.name} className="text-small md:text-body" />
           </span>
-          <span className="col-span-1 font-mono text-terminal-subdued"><MetaText text={a.origin} /></span>
-          <span className="col-span-3 font-mono text-terminal-subdued"><MetaText text={lang === 'ko' ? lineupKo.dock(a.dock) : `DOCK ${a.dock}`} /></span>
-          <span className="col-span-2 font-mono text-terminal-accent-warn"><MetaText text={a.time} /></span>
+          <span className="col-span-1 font-mono text-terminal-subdued"><MetaText text={a.origin} className="text-small md:text-body" /></span>
+          <span className="col-span-3 font-mono text-terminal-subdued"><MetaText text={lang === 'ko' ? lineupKo.dock(a.dock) : `DOCK ${a.dock}`} className="text-small md:text-body" /></span>
+          <span className="col-span-2 font-mono text-terminal-accent-warn"><MetaText text={a.time} className="text-small md:text-body" /></span>
           <span className={`col-span-2 font-bold tracking-wider font-mono flex items-center justify-between ${statusColorClass}`}>
             <span className="flex items-center">
               <span className="status-pulse mr-1">●</span>
-              <LabelText text={a.status} className="inline" />
+              <LabelText text={a.status} className="inline text-small md:text-body" />
             </span>
             {hasDescription && (
               <span className="text-terminal-accent-primary/50 ml-2">{isOpen ? '[-]' : '[+]'}</span>
