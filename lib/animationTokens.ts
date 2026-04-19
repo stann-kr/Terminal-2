@@ -28,7 +28,7 @@ export const decode = {
   /** 페이지/섹션 제목 — PageHeader, 이벤트명 등 */
   heading: { speed: 0.65, scramble: 8, animateTextLength: true },
   /** 부제목/설명 — 이벤트 부제, 설명 텍스트 */
-  subtitle: { speed: 0.5, scramble: 8, animateTextLength: true },
+  subtitle: { speed: 0.5, scramble: 8, animateTextLength: true, balanced: false as const },
   /** 본문 텍스트 — Manifesto 등 긴 문단 */
   body: { speed: 0.8, scramble: 4, animateTextLength: true },
   /** 라벨/경로/코드 — 메뉴명, 경로, 짧은 식별자 */

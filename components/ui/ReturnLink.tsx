@@ -21,7 +21,7 @@ export default function ReturnLink({ href = '/home', text = '◀ RETURN /home', 
         href={href}
         className="text-small tracking-widest cursor-pointer hover-glow inline-block px-3 py-1.5 border transition-colors whitespace-nowrap border-terminal-bg-panel-border/40 text-terminal-subdued font-mono hover:bg-terminal-bg-panel-border/20"
       >
-        <LabelText text={text} />
+        <LabelText text={text} autoHeight />
       </Link>
     </motion.div>
   );

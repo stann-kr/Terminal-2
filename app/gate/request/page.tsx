@@ -226,7 +226,7 @@ function RequestAccessContent() {
               <div className="space-y-1.5">
                 {invitationLines.map((line, i) => (
                   <div key={i} className="font-mono text-terminal-subdued tracking-wide">
-                    <SubtitleText text={`> ${line}`} delay={i * 40} />
+                    <SubtitleText text={line} delay={i * 40} />
                   </div>
                 ))}
               </div>
@@ -341,8 +341,8 @@ function RequestAccessContent() {
                         ✓
                       </div>
                     </div>
-                    <span className="font-mono text-terminal-muted leading-relaxed group-hover:text-terminal-subdued transition-colors">
-                      <MetaText text={lang === 'ko' ? requestKo.privacyConsent : 'I CONSENT TO THE COLLECTION AND USE OF MY PERSONAL INFORMATION (NAME, EMAIL, INSTAGRAM ID) FOR THE PURPOSE OF EVENT GUEST MANAGEMENT. DATA WILL NOT BE SHARED WITH THIRD PARTIES.'} />
+                    <span className="font-mono text-terminal-subdued leading-relaxed group-hover:text-terminal-primary transition-colors">
+                      <MetaText autoHeight text={lang === 'ko' ? requestKo.privacyConsent : 'I CONSENT TO THE COLLECTION AND USE OF MY PERSONAL INFORMATION (NAME, EMAIL, INSTAGRAM ID) FOR THE PURPOSE OF EVENT GUEST MANAGEMENT. DATA WILL NOT BE SHARED WITH THIRD PARTIES.'} />
                     </span>
                   </label>
                 </div>
@@ -365,8 +365,8 @@ function RequestAccessContent() {
                         ✓
                       </div>
                     </div>
-                    <span className="font-mono text-terminal-muted leading-relaxed group-hover:text-terminal-subdued transition-colors">
-                      <MetaText text={lang === 'ko' ? requestKo.marketingConsent : '[OPTIONAL] I AGREE TO RECEIVE FUTURE EVENT ANNOUNCEMENTS AND UPDATES VIA EMAIL OR INSTAGRAM DM.'} />
+                    <span className="font-mono text-terminal-subdued leading-relaxed group-hover:text-terminal-primary transition-colors">
+                      <MetaText autoHeight text={lang === 'ko' ? requestKo.marketingConsent : '[OPTIONAL] I AGREE TO RECEIVE FUTURE EVENT ANNOUNCEMENTS AND UPDATES VIA EMAIL OR INSTAGRAM DM.'} />
                     </span>
                   </label>
                 </div>

@@ -11,8 +11,8 @@ interface FormFieldProps {
 export function FormField({ label, children }: FormFieldProps) {
   return (
     <div>
-      <div className="mb-1.5 tracking-widest font-mono text-terminal-muted">
-        <LabelText text={label} />
+      <div className="mb-1.5 tracking-widest font-mono text-terminal-subdued">
+        <LabelText text={label} autoHeight />
       </div>
       {children}
     </div>

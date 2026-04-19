@@ -33,10 +33,11 @@ export default function PageHeader({ path, title, accent = 'primary', variants =
   return (
     <motion.div variants={variants} className="mb-8 font-mono">
       <div className="text-small tracking-widest mb-1 text-terminal-muted">
-        <LabelText text={path} />
+        <LabelText text={path} autoHeight />
       </div>
       <HeadingText
         text={title}
+        autoHeight
         className={`text-h2 md:text-h1 font-bold tracking-[0.2em] ${accentClass}`}
       />
     </motion.div>

@@ -224,7 +224,7 @@ const DecodeText = memo(function DecodeText({
       }
 
       const { height } = layout(preparedRef.current, width, activeLineHeight);
-      const newHeight = `${height}px`;
+      const newHeight = `${Math.ceil(height)}px`;
       if (container.style.height !== newHeight) container.style.height = newHeight;
       if (container.style.minHeight !== newHeight) container.style.minHeight = newHeight;
     };
@@ -232,7 +232,13 @@ const DecodeText = memo(function DecodeText({
     // use-scramble이 타이핑하면서 container(flex item)의 content width가 증가 →
     // ResizeObserver가 매 프레임 firing → measureAndLayout 반복 → maxWidth 진동.
     // window resize 이벤트로 교체: 뷰포트 크기 변경 시에만 재측정.
+    // innerWidth 체크: iOS Safari 스크롤 시 주소창 show/hide로 innerHeight만 변경돼
+    // window.resize가 발화하는 것을 무시 → 스크롤 중 텍스트 jitter 방지.
+    let lastInnerWidth = window.innerWidth;
     const handleResize = () => {
+      const currentWidth = window.innerWidth;
+      if (currentWidth === lastInnerWidth) return;
+      lastInnerWidth = currentWidth;
       cancelAnimationFrame(animationFrameId);
       animationFrameId = requestAnimationFrame(() => {
         document.fonts.ready.then(measureAndLayout);

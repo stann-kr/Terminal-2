@@ -141,7 +141,7 @@ export default function HomePage() {
             text="TERMINAL"
             as="span"
             autoHeight
-            className="text-hero sm:text-title md:text-display text-terminal-accent-primary"
+            className="text-hero sm:text-[4rem] md:text-display text-terminal-accent-primary"
           />
         </motion.h1>
 
@@ -170,6 +170,7 @@ export default function HomePage() {
           <div className="text-center py-4 space-y-2">
             <div className="text-xs font-bold tracking-widest text-terminal-accent-alert font-mono">
               <LabelText
+                autoHeight
                 text={
                   lang === "ko"
                     ? commonKo.signalUnstable
@@ -179,6 +180,7 @@ export default function HomePage() {
             </div>
             <div className="text-xs text-terminal-muted font-mono">
               <MetaText
+                autoHeight
                 text={
                   lang === "ko"
                     ? commonKo.dbUnreachable
@@ -197,14 +199,16 @@ export default function HomePage() {
                 />
               </div>
               <div className="drop-shadow-[0_0_16px_rgb(var(--color-accent-primary)/0.4)]">
-                <HeadingText 
+                <HeadingText
+                  autoHeight
                   className="text-h2 sm:text-h1 font-bold text-terminal-accent-primary tracking-[0.2em]"
-                  text={upcomingEvent?.session ?? "—"} as="span" 
+                  text={upcomingEvent?.session ?? "—"} as="span"
                 />
               </div>
               <div className="mt-1 tracking-[0.1em]">
                 <MetaText
                   className="text-micro sm:text-small text-terminal-subdued"
+                  autoHeight
                   text={
                     upcomingEvent
                       ? `${upcomingEvent.subtitle} // ${upcomingEvent.venue}`
@@ -228,6 +232,7 @@ export default function HomePage() {
         <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-primary/15 bg-terminal-bg-overlay/40">
           <span className="text-micro sm:text-small tracking-widest text-terminal-accent-primary">
             <LabelText
+              autoHeight
               text={
                 lang === "ko" ? homeKo.rootDir : "▶ ROOT DIRECTORY — /terminal/"
               }
@@ -235,6 +240,7 @@ export default function HomePage() {
           </span>
           <span className="text-micro sm:text-small text-terminal-muted">
             <LabelText
+              autoHeight
               text={lang === "ko" ? homeKo.moduleCount : "6 MODULE(S)"}
             />
           </span>
@@ -253,7 +259,7 @@ export default function HomePage() {
         className="mt-6 flex items-center justify-between text-micro sm:text-xs text-terminal-muted font-mono"
       >
         <span>
-          <MetaText text="KERNEL 2.2.0-heliopause_build" />
+          <MetaText text="KERNEL 2.2.0-heliopause_build" autoHeight />
         </span>
         <LangToggle />
       </motion.div>

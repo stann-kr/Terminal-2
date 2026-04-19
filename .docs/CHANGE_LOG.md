@@ -1,5 +1,51 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-20] fix: 모바일·반응형 레이아웃 안정화 및 UI 개선
+
+### 변경 개요
+
+#### DecodeText 모바일 안정화
+- `components/DecodeText.tsx` — `handleResize`에 `window.innerWidth` 변경 체크 추가
+  - iOS Safari 스크롤 시 주소창 show/hide로 발생하는 spurious `window.resize` 이벤트 무시
+  - 스크롤 중 텍스트 jitter 및 height transition 재트리거 방지
+- `components/DecodeText.tsx` — `Math.ceil(height)` 적용으로 서브픽셀 클리핑 방지
+- `lib/animationTokens.ts` — `decode.subtitle`에 `balanced: false` 추가
+  - 터미널 커맨드 스타일 텍스트에서 불필요한 binary search maxWidth 축소 제거
+
+#### cn() 커스텀 폰트 크기 충돌 해결
+- `lib/utils.ts` — `extendTailwindMerge`로 커스텀 fontSize 그룹 등록
+  - `text-pico ~ text-display` 12단계를 font-size 그룹으로 명시하여 tailwind-merge가 충돌 인식 → className override가 의도대로 동작
+
+#### autoHeight 전파 (letter-spacing 오계산 방지)
+- `components/TerminalPanel.tsx` — title LabelText에 `autoHeight` 추가
+- `components/ui/ReturnLink.tsx` — LabelText `autoHeight`
+- `components/ui/PageHeader.tsx` — path LabelText, title HeadingText `autoHeight`
+- `components/ui/FormField.tsx` — label LabelText `autoHeight`
+- `components/DirectoryLink.tsx` — index LabelText, `[label]` HeadingText `autoHeight`
+- `components/ui/CountdownBlock.tsx` — T+/T- 레이블 MetaText `autoHeight`
+- `app/home/page.tsx` — 에러 라벨, 이벤트 세션명, 디렉토리 헤더 등 6개 인스턴스 `autoHeight`
+
+#### 반응형 레이아웃 수정
+- `components/PageLayout.tsx` — `sm:w-[700px] md:w-[800px]` → `sm:max-w-[700px] md:max-w-[800px]`
+  - 640~699px 구간에서 고정폭(700px)이 뷰포트 초과하여 컨텐츠 잘리던 문제 해결
+- `app/home/page.tsx` TERMINAL 타이틀 — `sm:text-title`(30px) → `sm:text-[4rem]`(64px)
+  - 640px에서 48px → 30px 역방향 축소되던 문제 수정, 48 → 64 → 96px 순차 증가
+
+#### GUEST_REQUEST_FORM UI 개선
+- `components/ui/FormField.tsx` — 라벨 색상 `text-terminal-muted` → `text-terminal-subdued` (가독성 향상)
+- `app/gate/request/page.tsx` — 체크박스 텍스트 색상 `text-terminal-muted` → `text-terminal-subdued`, hover `text-terminal-primary`
+- `app/gate/request/page.tsx` — 체크박스 동의 MetaText에 `autoHeight` 추가 (줄 수 불안정 해소)
+- `app/gate/request/page.tsx` — INVITATION_BRIEF `> ` 기호 제거
+- `app/home/page.tsx` — 이벤트 subtitle/venue MetaText에 `autoHeight` 추가 (텍스트 클리핑 수정)
+
+### 핵심 효과
+- iOS Safari 스크롤 중 전체 페이지 텍스트 jitter 해소
+- 640~699px 뷰포트에서 컨텐츠 가로 클리핑 해소
+- 폼 라벨 및 체크박스 텍스트 가독성 개선
+- 체크박스 동의 텍스트 줄 수 안정화
+
+---
+
 ## [2026-04-20] feat: 마케팅 수신 동의 체크박스 추가 (선택)
 
 ### 변경 개요
