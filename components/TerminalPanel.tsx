@@ -31,10 +31,10 @@ export default function TerminalPanel({ children, className = '', title, accent 
         <div
           className={`px-4 py-2 border-b flex items-center gap-2 bg-terminal-bg-overlay/40 ${classes.border}`}
         >
-          <span className={`text-xs ${classes.title}`}>▶</span>
+          <span className={`text-small ${classes.title}`}>▶</span>
           <LabelText
             text={title}
-            className={`text-xs font-bold tracking-widest uppercase ${classes.title}`}
+            className={`text-small font-bold tracking-widest uppercase ${classes.title}`}
           />
         </div>
       )}

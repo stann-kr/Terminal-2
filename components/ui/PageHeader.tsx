@@ -32,12 +32,12 @@ export default function PageHeader({ path, title, accent = 'primary', variants =
   const accentClass = accentClassMap[accent] || accentClassMap.primary;
   return (
     <motion.div variants={variants} className="mb-8 font-mono">
-      <div className="text-xs tracking-widest mb-1 text-terminal-muted">
+      <div className="text-small tracking-widest mb-1 text-terminal-muted">
         <LabelText text={path} />
       </div>
       <HeadingText
         text={title}
-        className={`text-xl md:text-2xl font-bold tracking-[0.2em] ${accentClass}`}
+        className={`text-h2 md:text-h1 font-bold tracking-[0.2em] ${accentClass}`}
       />
     </motion.div>
   );
