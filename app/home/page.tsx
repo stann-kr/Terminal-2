@@ -128,7 +128,7 @@ export default function HomePage() {
       <div className="mb-6 text-center">
         <motion.div
           variants={itemVariants}
-          className="text-pico sm:text-xs tracking-widest mb-1 sm:mb-3 text-terminal-muted"
+          className="text-pico tracking-widest mb-1 sm:mb-3 text-terminal-muted"
         >
           <LabelText text="╔══════════════════════════════════════════╗" autoHeight />
         </motion.div>
@@ -155,7 +155,7 @@ export default function HomePage() {
 
         <motion.div
           variants={itemVariants}
-          className="text-pico sm:text-xs tracking-widest mt-1 sm:mt-3 text-terminal-muted"
+          className="text-pico tracking-widest mt-1 sm:mt-3 text-terminal-muted"
         >
           <LabelText text="╚══════════════════════════════════════════╝" autoHeight />
         </motion.div>
@@ -192,7 +192,7 @@ export default function HomePage() {
             <div className="text-center mb-4">
               <div className="mb-1 tracking-[0.1em]">
                 <BodyText
-                  className="text-micro sm:text-xs text-terminal-muted"
+                  className="text-micro sm:text-small text-terminal-muted"
                   text={`${lang === "ko" ? homeKo.nextEntry : "NEXT LAUNCH —"} ${eventDateLabel}`}
                 />
               </div>
@@ -204,7 +204,7 @@ export default function HomePage() {
               </div>
               <div className="mt-1 tracking-[0.1em]">
                 <MetaText
-                  className="text-micro sm:text-xs text-terminal-subdued"
+                  className="text-micro sm:text-small text-terminal-subdued"
                   text={
                     upcomingEvent
                       ? `${upcomingEvent.subtitle} // ${upcomingEvent.venue}`
@@ -226,14 +226,14 @@ export default function HomePage() {
         className="border border-terminal-accent-primary/20 bg-terminal-bg-panel"
       >
         <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-primary/15 bg-terminal-bg-overlay/40">
-          <span className="text-micro sm:text-xs tracking-widest text-terminal-accent-primary">
+          <span className="text-micro sm:text-small tracking-widest text-terminal-accent-primary">
             <LabelText
               text={
                 lang === "ko" ? homeKo.rootDir : "▶ ROOT DIRECTORY — /terminal/"
               }
             />
           </span>
-          <span className="text-micro sm:text-xs text-terminal-muted">
+          <span className="text-micro sm:text-small text-terminal-muted">
             <LabelText
               text={lang === "ko" ? homeKo.moduleCount : "6 MODULE(S)"}
             />
