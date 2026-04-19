@@ -105,6 +105,8 @@ export const requestKo = {
   // 개인정보 동의
   privacyConsent:
     "이벤트 게스트 관리 목적으로 개인정보(이름, 이메일, 인스타그램 ID)의 수집 및 이용에 동의합니다. 제3자에게 공유되지 않습니다.",
+  marketingConsent:
+    "[선택] 향후 이벤트 공지 및 안내를 이메일 또는 인스타그램 DM으로 수신하는 것에 동의합니다.",
   // 버튼
   submitting: "▸ 전송 중...",
   submitBtn: "▶ 신청 제출",

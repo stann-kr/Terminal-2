@@ -32,6 +32,7 @@ interface FormState {
   invitedBy: string;
   accessCode: string;
   privacyConsent: boolean;
+  marketingConsent: boolean;
 }
 
 function RequestAccessContent() {
@@ -51,6 +52,7 @@ function RequestAccessContent() {
     invitedBy: '',
     accessCode: searchParams.get('code') ?? '',
     privacyConsent: false,
+    marketingConsent: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submittingRef = useRef(false);
@@ -341,6 +343,30 @@ function RequestAccessContent() {
                     </div>
                     <span className="font-mono text-terminal-muted leading-relaxed group-hover:text-terminal-subdued transition-colors">
                       <MetaText text={lang === 'ko' ? requestKo.privacyConsent : 'I CONSENT TO THE COLLECTION AND USE OF MY PERSONAL INFORMATION (NAME, EMAIL, INSTAGRAM ID) FOR THE PURPOSE OF EVENT GUEST MANAGEMENT. DATA WILL NOT BE SHARED WITH THIRD PARTIES.'} />
+                    </span>
+                  </label>
+                </div>
+
+                {/* 마케팅 동의 (선택) */}
+                <div>
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <div className="relative mt-0.5 shrink-0">
+                      <input
+                        type="checkbox"
+                        checked={form.marketingConsent}
+                        onChange={e => setForm(prev => ({ ...prev, marketingConsent: e.target.checked }))}
+                        className="sr-only"
+                      />
+                      <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${
+                        form.marketingConsent
+                          ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
+                          : 'border-terminal-accent-secondary/30 text-transparent'
+                      }`}>
+                        ✓
+                      </div>
+                    </div>
+                    <span className="font-mono text-terminal-muted leading-relaxed group-hover:text-terminal-subdued transition-colors">
+                      <MetaText text={lang === 'ko' ? requestKo.marketingConsent : '[OPTIONAL] I AGREE TO RECEIVE FUTURE EVENT ANNOUNCEMENTS AND UPDATES VIA EMAIL OR INSTAGRAM DM.'} />
                     </span>
                   </label>
                 </div>

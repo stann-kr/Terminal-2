@@ -47,6 +47,7 @@ export const accessRequests = sqliteTable("access_requests", {
   instagram: text("instagram").notNull(),
   invitedBy: text("invited_by").notNull(),
   privacyConsent: integer("privacy_consent", { mode: "boolean" }).notNull(),
+  marketingConsent: integer("marketing_consent", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull(),
 });
 
