@@ -9,6 +9,7 @@ import PageLayout, { itemVariants } from '@/components/PageLayout';
 import { LabelText, SubtitleText, MetaText, DataText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
+import { FormField, inputClassBase, inputAccentClass } from '@/components/ui/FormField';
 import { getNodeId, setNodeId } from '@/lib/nodeId';
 import { useLang } from '@/lib/langContext';
 import { transmitKo } from '@/lib/i18n';
@@ -109,20 +110,17 @@ export default function TransmitPage() {
       <motion.div variants={itemVariants} className="mb-8">
         <TerminalPanel title="VISITOR_LOG — NODE_SYNC" accent="alert">
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <div className="w-full mb-1.5 tracking-widest font-mono text-terminal-muted">
-                <LabelText text={lang === 'ko' ? transmitKo.labelAlias : 'ALIAS:'} />
-              </div>
+            <FormField label={lang === 'ko' ? transmitKo.labelAlias : 'ALIAS:'}>
               <input
                 value={handle}
                 onChange={e => { setHandle(e.target.value); setNodeId(e.target.value); }}
                 placeholder={lang === 'ko' ? transmitKo.placeholderAlias : 'ENTER_ALIAS'}
                 maxLength={24}
-                className="w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-tertiary/30 focus:border-terminal-accent-tertiary/70 transition-colors font-mono text-terminal-accent-tertiary caret-terminal-accent-tertiary"
+                className={`${inputClassBase} ${inputAccentClass.tertiary}`}
               />
-            </div>
+            </FormField>
             <div>
-              <div className="flex justify-between items-center w-full mb-1.5 tracking-widest font-mono text-terminal-muted">
+              <div className="flex justify-between items-center mb-1.5 tracking-widest font-mono text-terminal-muted">
                 <span className="flex-1 min-w-0">
                   <LabelText text={lang === 'ko' ? transmitKo.labelMessage : 'MESSAGE:'} />
                 </span>
@@ -134,7 +132,7 @@ export default function TransmitPage() {
                 placeholder={lang === 'ko' ? transmitKo.placeholderMsg : 'WRITE TO DATABASE...'}
                 maxLength={280}
                 rows={3}
-                className="w-full bg-transparent outline-none px-3 py-2 text-xs border border-terminal-accent-tertiary/30 focus:border-terminal-accent-tertiary/70 resize-none transition-colors font-mono text-terminal-primary caret-terminal-accent-primary"
+                className={`${inputClassBase} ${inputAccentClass.primary} resize-none`}
               />
             </div>
             <AnimatePresence mode="wait">
@@ -229,17 +227,17 @@ export default function TransmitPage() {
               <button
                 onClick={() => fetchPage(currentPage - 1)}
                 disabled={currentPage <= 1 || isFetching || isInitialLoad || isSubmitting}
-                className="text-xs font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="text-small font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {lang === 'ko' ? transmitKo.prevBtn : '◀ PREV'}
               </button>
-              <span className="text-xs font-mono text-terminal-subdued">
+              <span className="text-small font-mono text-terminal-subdued">
                 {currentPage} / {Math.max(1, totalPages)}
               </span>
               <button
                 onClick={() => fetchPage(currentPage + 1)}
                 disabled={currentPage >= totalPages || isFetching || isInitialLoad || isSubmitting}
-                className="text-xs font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="text-small font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {lang === 'ko' ? transmitKo.nextBtn : 'NEXT ▶'}
               </button>
