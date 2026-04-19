@@ -45,3 +45,5 @@ build_log.txt
 
 # private
 .docs/private/
+# git worktrees
+.worktrees/
