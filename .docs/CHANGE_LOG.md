@@ -1,5 +1,21 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-20] feat: 게스트 신청 폼 초대인 셀렉트 및 코드 사전입력 URL 지원
+
+### 변경 개요
+- `app/gate/request/page.tsx` — invitedBy 자유입력 → DJ 셀렉트박스로 전환
+- UPCOMING 이벤트의 `CONFIRMED` 아티스트 목록을 `/api/artists?eventId=` 로 동적 로딩
+- '기타' 선택 시 텍스트 입력칸 조건부 표시, 미입력 시 전용 에러 처리
+- `?code=` 쿼리 파라미터로 인증코드 사전입력 URL 지원 (`/gate/request?code=XXXXX`)
+- `useSearchParams` 사용을 위해 컴포넌트를 `RequestAccessContent` / `RequestAccessPage(Suspense 래퍼)` 로 분리
+- `lib/i18n.ts` — `selectInviter`, `optionOther`, `placeholderOtherInviter`, `INVITER_REQUIRED` 추가
+
+### 핵심 효과
+- 초대인 데이터 품질 향상 (오타·임의 입력 방지)
+- DJ 링크(`/gate/request?code=XXXXX`) 하나로 게스트 신청 편의성 개선
+
+---
+
 ## [2026-04-20] refactor: 폰트 사이즈 토큰 시스템 도입 및 전 페이지 일관화
 
 ### 변경 개요
