@@ -9,11 +9,55 @@
 - **UI/UX 미학(Aesthetics):** 심우주(Deep Space) 및 모노크롬 블루프린트(Monochrome Blueprint) 테마 수립. 차갑고 건조한 단색(Icy Blue, `#D6E5ED`) 기반의 시맨틱 색상 체계를 사용하며, 색수차를 배제하고 빛 번짐(Bloom)과 주사선(Scanline) 텍스처를 활용해 몰입감을 극대화함.
 - **명명 규칙 및 코드 스타일:** 명확한 시맨틱 네이밍, 하드 코딩 지양. CSS 스타일링 시 Tailwind를 기본으로 하되, 복잡한 인라인 동적 속성은 `style` 객체로 관리함.
 
-## 2. Page Transition 및 `DecodeText` 렌더링 (Cipher Decode 시스템)
+## 2. 타이포그래피 시스템
+
+### 폰트 사이즈 토큰 스케일
+
+| 토큰 | CSS 변수 | 값 | 용도 |
+|---|---|---|---|
+| `text-pico` | `--text-pico` | 8px | 홈 ASCII 장식 |
+| `text-nano` | `--text-nano` | 9px | 카운트다운 라벨, ASCII |
+| `text-micro` | `--text-micro` | 10px | LabelText·MetaText 모바일, 배지 |
+| `text-caption` | `--text-caption` | 11px | ArtistRow 메타 |
+| `text-small` | `--text-small` | 12px | body 모바일, label 데스크톱, 입력 모바일 |
+| `text-body` | `--text-body` | 14px | body 데스크톱, heading 모바일, 입력 데스크톱 |
+| `text-heading` | `--text-heading` | 16px | HeadingText 데스크톱 |
+| `text-h2` | `--text-h2` | 20px | PageHeader 모바일 |
+| `text-h1` | `--text-h1` | 24px | TitleText 모바일, PageHeader 데스크톱 |
+| `text-title` | `--text-title` | 30px | TitleText 데스크톱 |
+| `text-hero` | `--text-hero` | 48px | 홈 TERMINAL 모바일 |
+| `text-display` | `--text-display` | 96px | 홈 TERMINAL 데스크톱 |
+
+### TerminalText 컴포넌트 → 토큰 매핑
+
+| 컴포넌트 | 모바일 | 데스크톱(md+) |
+|---|---|---|
+| `TitleText` | text-h1 (24px) | text-title (30px) |
+| `HeadingText` | text-body (14px) | text-heading (16px) |
+| `SubtitleText` | text-small (12px) | text-body (14px) |
+| `BodyText` | text-small (12px) | text-body (14px) |
+| `DataText` | text-small (12px) | text-body (14px) |
+| `LabelText` | text-micro (10px) | text-small (12px) |
+| `MetaText` | text-micro (10px) | text-small (12px) |
+
+### FormField 컴포넌트 API (`components/ui/FormField.tsx`)
+
+```tsx
+// 폼 필드 래퍼
+<FormField label="NAME:">
+  <input className={`${inputClassBase} ${inputAccentClass.secondary}`} />
+</FormField>
+
+// accent 종류: secondary | tertiary | alert | warn | primary
+```
+
+---
+
+## 3. Page Transition 및 `DecodeText` 렌더링 (Cipher Decode 시스템)
 
 이전의 보편적 페이드인/아웃 전환 효과를 버려 완전히 터미널 특화형 텍스트 기반 Cipher(난수 복호화) 아키텍처로 통일됨.
 
-### 2.1 통합 컴포넌트 `<DecodeText>` 및 `<TerminalText>` 분석
+### 3.1 통합 컴포넌트 `<DecodeText>` 및 `<TerminalText>` 분석
 
 - **위치:** `components/DecodeText.tsx`, `components/ui/TerminalText.tsx`
 - **핵심 역할:** 전달받은 단순 문자열(`text` Prop)을 초기 렌더링 시 난수 헥사코드(Hex)로 뒤섞어 보여주다가 본래 문자열 수준으로 디코딩(복호화)됨.
@@ -28,14 +72,14 @@
   - 텍스트 길이가 시시각각 변동하면 줄바꿈이 빈번히 발생하여 브라우저의 전역 레이아웃 점프가 야기됨. 이를 원천 차단하기 위해 `@chenglou/pretext` 라이브러리의 DOM-less 텍스트 사이즈 측정을 `ResizeObserver` 및 `requestAnimationFrame`과 연계해 구동함.
   - 컨테이너에 `overflow: hidden` 및 `height`, `min-height` 트랜지션을 동시 적용하여 텍스트의 동적 줄바꿈이 박스 크기를 급격하게 확장시키는 현상을 마스킹 처리함.
 
-### 2.2 페이지 구조 (PageLayout & Transition)
+### 3.2 페이지 구조 (PageLayout & Transition)
 
 - **페이지 공통 래퍼:** `components/PageLayout.tsx` 및 `components/PageTransition.tsx`
 - **동작 원리:**
   - 페이지 진입(Entry) 시에는 `framer-motion`의 `opacity` 전환 애니메이션을 주지 않음 (모든 진입은 `<DecodeText>`의 각 컴포넌트 스태거링 동작이 독점).
   - 페이지 퇴장(Exit) 시에만 짧은 마이크로 애니메이션(`150ms opacity: 0`)을 통해 화면의 잔상을 즉시 차단함.
 
-## 3. 타 에이전트를 위한 개발 가이드라인
+## 4. 타 에이전트를 위한 개발 가이드라인
 
 1. **신규 페이지 혹은 컴포넌트 개발 시 규칙:**
    - 정적으로 고정되는 텍스트(예: 헤더, 라벨, 탭 이름, 로그 등)는 반드시 `<TerminalText>` 계열 컴포넌트(`TitleText`, `HeadingText` 등)로 감싸서 렌더링할 것. `DecodeText`를 직접 사용하는 것은 지양함.
@@ -46,11 +90,11 @@
 3. **환경 관리 가이드 (Docker):**
    - 로컬 시스템 명령어 제안을 일절 배제함. 모듈 패키지는 `docker compose exec web npm install <패키지>`로 호스트-컨테이너 간 `node_modules` 변이를 제어할 것.
 
-## 4. 통합 디자인 시스템 및 테마 관리
+## 5. 통합 디자인 시스템 및 테마 관리
 
 프로젝트의 시각적 일관성과 유지보수성 확보를 위해 하드코딩된 색상 및 수치를 배제하고 전역 디자인 토큰 시스템으로 전환됨.
 
-### 4.1 Tailwind 테마 확장 (Design Tokens)
+### 5.1 Tailwind 테마 확장 (Design Tokens)
 
 - **위치:** `tailwind.config.js`, `app/globals.css`
 - **핵심 테마 변수:**
@@ -61,31 +105,31 @@
 - **커스텀 유틸리티:**
   - `.text-shadow-glow-*`: 각 테마 강조색에 대응하는 텍스트 글로우 효과 유틸리티 제공.
 
-### 4.2 컴포넌트 표준화 원칙
+### 5.2 컴포넌트 표준화 원칙
 
 - 모든 페이지는 `<PageLayout>`을 최상위 랩퍼로 사용하며, 내부 요소는 `<motion.div variants={itemVariants}>`를 사용하여 스태거 애니메이션을 일관되게 적용함.
 - 공통 UI 요소(`ReturnLink`, `PageHeader`, `TerminalPanel`, `TerminalButton`)를 적극 활용하여 인라인 스타일 및 중복 마크업을 최소화함.
 
-## 5. 데이터 모델 및 DB 아키텍처 (Flexible JSON Schema)
+## 6. 데이터 모델 및 DB 아키텍처 (Flexible JSON Schema)
 
 Cloudflare D1의 제약 사항과 개발 생산성을 고려하여, 핵심 비즈니스 로직이 담긴 테이블(`events`, `artists`)은 고정된 컬럼 대신 유연한 JSON 구조를 채택함.
 
-### 5.1 `events` 테이블 설계
+### 6.1 `events` 테이블 설계
 - **`id` (PK):** 이벤트 식별자 (예: `TRM-02`)
 - **`data` (JSON):** 이벤트의 모든 메타데이터를 포함하는 JSON 문자열.
   - 주요 필드: `session`, `subtitle`, `date`, `time`, `venue`, `status`, `invitationLines` (다국어 지원 객체) 등.
   - 장점: 새로운 속성 추가 시 DDL 마이그레이션 없이 애플리케이션 레벨의 타입 업데이트만으로 대응 가능.
 
-### 5.2 `artists` 테이블 설계
+### 6.2 `artists` 테이블 설계
 - **`id` (PK):** 아티스트 식별자 (예: `02-A`)
 - **`event_id` (FK):** `events.id` 참조 (Cascade On Delete)
 - **`data` (JSON):** 아티스트 정보.
   - 주요 필드: `name`, `origin`, `status`, `description` (다국어 지원 객체) 등.
 
-### 5.3 `access_requests` 및 `transmit_logs`
+### 6.3 `access_requests` 및 `transmit_logs`
 - 이들은 트랜잭션 성격이 강하므로 전통적인 관계형 컬럼 구조를 유지하여 쿼리 성능과 데이터 무결성을 확보함.
 
-## 6. 알려진 미해결 과제
+## 7. 알려진 미해결 과제
 
 - **빌드 시 `NODE_ENV` 주의:** `docker-compose.yml`의 `NODE_ENV=development`가 `next build`에 전파되면 React 개발 빌드 사용으로 인해 `_global-error` / `_not-found` SSG 프리렌더링 실패. `package.json`의 `build` 스크립트(`cross-env NODE_ENV=production next build`)로 해결됨 — 빌드 스크립트를 수정하지 말 것.
 - **TypeScript 타입 무결성:** `framer-motion` 및 `@react-three/fiber` 환경에서의 전역 타입 선언 미흡으로 인한 `JSX.IntrinsicElements` 에러. (런타임 영향은 없으나 빌드 시 CI 환경 검증 필요)
