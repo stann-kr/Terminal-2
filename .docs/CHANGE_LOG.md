@@ -1,5 +1,26 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-21] feat: 게스트 신청 — 인증 코드 기반 초대인 자동 완성 및 폼 순서 개선
+
+### 변경 개요
+
+#### 신규 파일
+- `app/api/gate/code-info/route.ts` — 코드 → 아티스트 이름 반환 엔드포인트 (guestCode 미노출)
+- `migrations/0007_invited_by_nullable.sql` — `invited_by` nullable로 재추가
+
+#### 수정 파일
+- `lib/db/schema.ts` — `invitedBy` nullable로 복원
+- `app/api/gate/request/route.ts` — `invitedBy` INSERT에 포함
+- `app/gate/request/page.tsx` — 폼 순서 변경(인증 코드 → 초대인 → 나머지), 코드 입력 시 500ms 디바운스로 초대인 자동 완성
+- `lib/i18n.ts` — `labelInvitedBy`, `placeholderInvitedBy` 번역 복원
+
+### 핵심 효과
+- 코드 입력 → 해당 DJ(아티스트) 이름 자동 완성 → 폼 진행 흐름 자연화
+- 주최자 코드 사용 시 주최자 이름 자동 완성, 실제 초대인으로 수정 가능
+- `invited_by` + `artist_id` 둘 다 기록 — 초대 경로 완전 추적
+
+---
+
 ## [2026-04-21] feat: 게스트 신청 — DJ별 인증 코드 및 게스트 리밋 시스템 도입
 
 ### 변경 개요

@@ -15,10 +15,11 @@ import type { TerminalEvent } from '@/lib/eventData';
 const ACCESS_WINDOW_DAYS = 30;
 
 interface FormState {
+  accessCode: string;
+  invitedBy: string;
   name: string;
   email: string;
   instagram: string;
-  accessCode: string;
   privacyConsent: boolean;
   marketingConsent: boolean;
 }
@@ -32,18 +33,33 @@ function RequestAccessContent() {
   const [isActive, setIsActive] = useState(false);
   const [daysUntil, setDaysUntil] = useState(0);
 
+  const initialCode = searchParams.get('code') ?? '';
   const [form, setForm] = useState<FormState>({
+    accessCode: initialCode,
+    invitedBy: '',
     name: '',
     email: '',
     instagram: '',
-    accessCode: searchParams.get('code') ?? '',
     privacyConsent: false,
     marketingConsent: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submittingRef = useRef(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+
+  const fetchCodeInfo = (code: string) => {
+    if (!code.trim()) return;
+    fetch(`/api/gate/code-info?code=${encodeURIComponent(code.trim())}`)
+      .then(res => res.json() as Promise<{ name: string | null }>)
+      .then(data => {
+        if (data.name) {
+          setForm(prev => ({ ...prev, invitedBy: data.name! }));
+        }
+      })
+      .catch(() => {});
+  };
 
   useEffect(() => {
     fetch('/api/events?status=UPCOMING')
@@ -59,9 +75,19 @@ function RequestAccessContent() {
       })
       .catch(() => setError(t.common.signalUnstable))
       .finally(() => setLoading(false));
+
+    // URL ?code= 파라미터로 접근 시 초기 자동 완성
+    if (initialCode) fetchCodeInfo(initialCode);
   }, []);
 
-  const handleChange = (field: keyof Omit<FormState, 'privacyConsent' | 'marketingConsent'>) =>
+  const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const code = e.target.value;
+    setForm(prev => ({ ...prev, accessCode: code }));
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchCodeInfo(code), 500);
+  };
+
+  const handleChange = (field: keyof Omit<FormState, 'privacyConsent' | 'marketingConsent' | 'accessCode'>) =>
     (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm(prev => ({ ...prev, [field]: e.target.value }));
 
@@ -116,7 +142,6 @@ function RequestAccessContent() {
           <LabelText text={t.request.loading} />
         </motion.div>
       ) : !isActive ? (
-        /* 비활성 기간 안내 */
         <motion.div variants={itemVariants}>
           <TerminalPanel title="REQUEST_STATUS" accent="alert">
             <div className="space-y-3 text-center py-4">
@@ -126,12 +151,8 @@ function RequestAccessContent() {
               <div className="text-xs font-mono text-terminal-muted space-y-1">
                 {event ? (
                   <>
-                    <div>
-                      <MetaText text={t.request.windowInfo(ACCESS_WINDOW_DAYS)} />
-                    </div>
-                    <div>
-                      <MetaText text={t.request.eventDate(event.date.replace(/-/g, '.'), event.time)} />
-                    </div>
+                    <div><MetaText text={t.request.windowInfo(ACCESS_WINDOW_DAYS)} /></div>
+                    <div><MetaText text={t.request.eventDate(event.date.replace(/-/g, '.'), event.time)} /></div>
                     <div className="pt-1 text-terminal-accent-primary">
                       <MetaText text={t.request.windowCountdown(daysUntil - ACCESS_WINDOW_DAYS)} />
                     </div>
@@ -144,12 +165,7 @@ function RequestAccessContent() {
           </TerminalPanel>
         </motion.div>
       ) : submitted ? (
-        /* 제출 성공 */
-        <motion.div
-          variants={itemVariants}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
+        <motion.div variants={itemVariants} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <TerminalPanel title="REQUEST_COMMITTED" accent="secondary">
             <div className="text-center py-6 space-y-2">
               <div className="text-sm font-bold tracking-widest font-mono text-terminal-accent-secondary">
@@ -162,7 +178,6 @@ function RequestAccessContent() {
           </TerminalPanel>
         </motion.div>
       ) : (
-        /* 활성 폼 */
         <div className="space-y-4">
           {/* 초대 메시지 */}
           <motion.div variants={itemVariants}>
@@ -181,6 +196,28 @@ function RequestAccessContent() {
           <motion.div variants={itemVariants}>
             <TerminalPanel title="GUEST_REQUEST_FORM" accent="secondary">
               <form onSubmit={handleSubmit} className="space-y-4">
+
+                {/* 인증 코드 */}
+                <FormField label={t.request.labelCode}>
+                  <input
+                    type="text"
+                    value={form.accessCode}
+                    onChange={handleCodeChange}
+                    placeholder={t.request.placeholderCode}
+                    className={`${inputClassBase} ${inputAccentClass.secondary}`}
+                  />
+                </FormField>
+
+                {/* 초대인 (코드 입력 시 자동 완성) */}
+                <FormField label={t.request.labelInvitedBy}>
+                  <input
+                    type="text"
+                    value={form.invitedBy}
+                    onChange={handleChange('invitedBy')}
+                    placeholder={t.request.placeholderInvitedBy}
+                    className={`${inputClassBase} ${inputAccentClass.secondary}`}
+                  />
+                </FormField>
 
                 {/* 이름 */}
                 <FormField label={t.request.labelName}>
@@ -223,17 +260,6 @@ function RequestAccessContent() {
                   </div>
                 </FormField>
 
-                {/* 인증 코드 */}
-                <FormField label={t.request.labelCode}>
-                  <input
-                    type="text"
-                    value={form.accessCode}
-                    onChange={handleChange('accessCode')}
-                    placeholder={t.request.placeholderCode}
-                    className={`${inputClassBase} ${inputAccentClass.secondary}`}
-                  />
-                </FormField>
-
                 {/* 개인정보 동의 */}
                 <div>
                   <label className="flex items-start gap-3 cursor-pointer group">
@@ -248,9 +274,7 @@ function RequestAccessContent() {
                         form.privacyConsent
                           ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
                           : 'border-terminal-accent-secondary/30 text-transparent'
-                      }`}>
-                        ✓
-                      </div>
+                      }`}>✓</div>
                     </div>
                     <span className="font-mono text-terminal-subdued leading-relaxed group-hover:text-terminal-primary transition-colors">
                       <MetaText autoHeight text={t.request.privacyConsent} />
@@ -272,9 +296,7 @@ function RequestAccessContent() {
                         form.marketingConsent
                           ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
                           : 'border-terminal-accent-secondary/30 text-transparent'
-                      }`}>
-                        ✓
-                      </div>
+                      }`}>✓</div>
                     </div>
                     <span className="font-mono text-terminal-subdued leading-relaxed group-hover:text-terminal-primary transition-colors">
                       <MetaText autoHeight text={t.request.marketingConsent} />

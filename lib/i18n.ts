@@ -88,15 +88,17 @@ export const requestKo = {
     "인증 코드가 필요합니다. 없는 경우 초대인에게 문의하세요.",
   ],
   // 폼 레이블
+  labelCode: "인증 코드:",
+  labelInvitedBy: "초대인:",
   labelName: "이름:",
   labelEmail: "이메일:",
   labelInstagram: "인스타그램 ID:",
-  labelCode: "인증 코드:",
   // 플레이스홀더
+  placeholderCode: "세션 인증 코드",
+  placeholderInvitedBy: "초대인 이름",
   placeholderName: "전체 이름",
   placeholderEmail: "이메일@주소.COM",
   placeholderInstagram: "@사용자명",
-  placeholderCode: "세션 인증 코드",
   // 개인정보 동의
   privacyConsent:
     "이벤트 게스트 관리 목적으로 개인정보(이름, 이메일, 인스타그램 ID)의 수집 및 이용에 동의합니다. 제3자에게 공유되지 않습니다.",
@@ -269,14 +271,16 @@ export const requestEn = {
     "SUBMIT YOUR REQUEST BELOW TO BE CONSIDERED FOR ADMISSION.",
     "AN ACCESS CODE IS REQUIRED. IF YOU DO NOT HAVE ONE, CONTACT YOUR INVITER.",
   ],
+  labelCode: "ACCESS CODE:",
+  labelInvitedBy: "INVITED BY:",
   labelName: "NAME:",
   labelEmail: "EMAIL:",
   labelInstagram: "INSTAGRAM ID:",
-  labelCode: "ACCESS CODE:",
+  placeholderCode: "SESSION ACCESS CODE",
+  placeholderInvitedBy: "INVITER NAME",
   placeholderName: "FULL NAME",
   placeholderEmail: "EMAIL@ADDRESS.COM",
   placeholderInstagram: "@USERNAME",
-  placeholderCode: "SESSION ACCESS CODE",
   privacyConsent:
     "I consent to the collection and use of personal information (name, email, Instagram ID) for event guest management. It will not be shared with third parties.",
   marketingConsent:

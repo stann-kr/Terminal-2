@@ -26,6 +26,7 @@ export async function POST(request: Request) {
     const email = (body?.email as string | undefined)?.trim().toLowerCase() ?? "";
     const instagram = (body?.instagram as string | undefined)?.trim() ?? "";
     const accessCode = (body?.accessCode as string | undefined)?.trim() ?? "";
+    const invitedBy = (body?.invitedBy as string | undefined)?.trim() || null;
     const privacyConsent = Boolean(body?.privacyConsent);
     const marketingConsent = Boolean(body?.marketingConsent);
 
@@ -122,6 +123,7 @@ export async function POST(request: Request) {
       id,
       eventId: upcomingRow.id,
       artistId: matchedArtist.id,
+      invitedBy,
       name,
       email,
       instagram,
