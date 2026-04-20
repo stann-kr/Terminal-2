@@ -1,5 +1,26 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-21] refactor: Status 페이지 — 실제 이벤트 데이터 기반 대시보드로 전면 교체
+
+### 변경 개요
+
+픽션 릴레이 데이터(우주 중계소, 주파수 수치) 제거 → TERMINAL 실제 운영 현황 표시
+
+#### 수정 파일
+- `app/status/page.tsx` — 전면 교체
+  - 메트릭 3종 (이전 릴레이 지표 → 아카이브 세션 수 / 다음 발사 ID+날짜 / 컨펌 아티스트 수)
+  - `fetchEvents` + `eventKeys.list()` TanStack Query 캐시 연동
+  - RELAY_TELEMETRY 테이블 제거 → SESSION_LOG 이벤트 목록으로 교체
+  - 이벤트 행: ID, 세션명, 서브타이틀, 날짜, 아티스트 수, 상태 (모바일/데스크탑 반응형)
+  - 상태 색상: UPCOMING=secondary, LIVE=primary, ARCHIVED=alert / status-pulse 적용
+  - GlobeMap 패널 유지
+
+- `lib/i18n.ts` — statusKo / statusEn 전면 교체
+  - 제거 키: `labelActiveRelays`, `labelSignalUptime`, `labelCoreFreq`, `unitNodes`, `load`
+  - 추가 키: `labelSessionsRun`, `labelNextLaunch`, `labelArtistNodes`, `unitArchived`, `unitStandby`, `unitConfirmed`, `sessionLogTitle`, `colSession`, `colDate`, `colArtists`, `colStatus`, `loading`, `noSessions`
+
+---
+
 ## [2026-04-21] fix: Transmit 로그 메시지 decode 애니메이션 적용
 
 ### 변경 개요

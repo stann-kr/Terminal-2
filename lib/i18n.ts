@@ -165,12 +165,19 @@ export const lineupKo = {
 // ─────────────────────────────────────────────
 
 export const statusKo = {
-  labelActiveRelays: "활성 릴레이",
-  labelSignalUptime: "신호 가동률",
-  labelCoreFreq: "코어 주파수",
-  unitNodes: "노드",
-  /** `부하: ${n}%` */
-  load: (n: number) => `부하: ${n}%`,
+  labelSessionsRun:  "세션 아카이브",
+  labelNextLaunch:   "다음 발사",
+  labelArtistNodes:  "컨펌 아티스트",
+  unitArchived:      "ARCHIVED",
+  unitStandby:       "STANDBY",
+  unitConfirmed:     "CONFIRMED",
+  sessionLogTitle:   "SESSION_LOG.rec",
+  colSession:        "세션",
+  colDate:           "날짜",
+  colArtists:        "아티스트",
+  colStatus:         "상태",
+  loading:           "▸ 시스템 데이터 로딩 중...",
+  noSessions:        "기록된 세션 없음.",
 };
 
 // ─────────────────────────────────────────────
@@ -355,11 +362,19 @@ export const lineupEn = {
 };
 
 export const statusEn = {
-  labelActiveRelays: "ACTIVE RELAYS",
-  labelSignalUptime: "SIGNAL UPTIME",
-  labelCoreFreq: "CORE FREQUENCY",
-  unitNodes: "NODES",
-  load: (n: number) => `LOAD: ${n}%`,
+  labelSessionsRun:  "SESSIONS ARCHIVED",
+  labelNextLaunch:   "NEXT LAUNCH",
+  labelArtistNodes:  "CONFIRMED ARTISTS",
+  unitArchived:      "ARCHIVED",
+  unitStandby:       "STANDBY",
+  unitConfirmed:     "CONFIRMED",
+  sessionLogTitle:   "SESSION_LOG.rec",
+  colSession:        "SESSION",
+  colDate:           "DATE",
+  colArtists:        "ARTISTS",
+  colStatus:         "STATUS",
+  loading:           "▸ LOADING SYSTEM DATA...",
+  noSessions:        "NO SESSIONS RECORDED.",
 };
 
 export const transmitEn = {
