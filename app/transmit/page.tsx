@@ -163,8 +163,8 @@ export default function TransmitPage() {
                             <MetaText autoHeight text={entry.ts} />
                           </span>
                         </div>
-                        <div className="font-mono text-terminal-subdued text-small md:text-body whitespace-pre-wrap break-words">
-                          {entry.message}
+                        <div className="font-mono whitespace-pre-wrap break-words">
+                          <SubtitleText autoHeight text={entry.message} className="text-terminal-subdued" />
                         </div>
                       </div>
                     ))}

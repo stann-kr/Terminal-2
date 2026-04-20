@@ -1,5 +1,16 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-21] fix: Transmit 로그 메시지 decode 애니메이션 적용
+
+### 변경 개요
+
+#### 수정 파일
+- `app/transmit/page.tsx` — 메시지 렌더링 변경
+  - 기존: raw `{entry.message}` 텍스트
+  - 변경: `SubtitleText autoHeight` — handle과 동일하게 decode 애니메이션 적용
+
+---
+
 ## [2026-04-21] refactor: EventInfoPanel 소개글 — 줄 단위 decode 애니메이션으로 변경
 
 ### 변경 개요
