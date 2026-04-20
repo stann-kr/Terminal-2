@@ -38,7 +38,13 @@ export default function AboutPage() {
                     <BodyText
                       text={line}
                       delay={i * 50}
-                      className={`block ${line.startsWith('TERMINAL') ? 'text-terminal-primary' : 'text-terminal-subdued'}`}
+                      className={`block ${
+                        line === 'TERMINAL' ||
+                        line.startsWith('[ ') ||
+                        line.startsWith('Terminal Architect')
+                          ? 'text-terminal-primary'
+                          : 'text-terminal-subdued'
+                      }`}
                     />
                   )}
                 </div>
