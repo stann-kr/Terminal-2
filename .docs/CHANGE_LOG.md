@@ -1,5 +1,20 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-21] fix: transmit 로그 멀티라인 메시지 클리핑 수정
+
+### 변경 개요
+
+#### 수정 파일
+- `app/transmit/page.tsx` — 메시지 바디 `SubtitleText` → plain text 교체, `>` 프리픽스 제거
+
+### 원인 및 해결
+- `SubtitleText`(`decode.subtitle`)는 `animateTextLength: true`(use-scramble `overflow:true`) 적용 → 텍스트를 0자→전체 길이로 성장시키는 타이핑 효과
+- `autoHeight=true` 시: `AnimatedHeight`의 ResizeObserver가 텍스트 성장 속도를 따라가지 못해 2번째 줄 이상 클리핑
+- `autoHeight=false` 시: `overflow:hidden` 컨테이너가 `height: 0px → measured` CSS transition 구간에서 use-scramble 초기 렌더링을 전부 클리핑 → 텍스트 미표시
+- 사용자 입력 메시지 바디는 스크램블 애니메이션이 불필요한 콘텐츠이므로 plain text로 교체, `whitespace-pre-wrap break-words`로 멀티라인 자연 처리
+
+---
+
 ## [2026-04-20] feat: TanStack Query 도입 — 서버 상태 캐싱 및 모바일 최적화
 
 ### 변경 개요

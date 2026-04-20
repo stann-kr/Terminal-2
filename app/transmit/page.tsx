@@ -148,25 +148,23 @@ export default function TransmitPage() {
                   </motion.div>
                 ) : (
                   <motion.div
-                    key={currentPage}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: isFetching ? 0.5 : 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                    key="content"
+                    animate={{ opacity: isFetching ? 0.4 : 1 }}
+                    transition={{ duration: 0.15 }}
                     className="space-y-4 w-full"
                   >
-                    {logs.map((entry, i) => (
+                    {logs.map((entry) => (
                       <div key={entry.id} className="border-b border-terminal-accent-secondary/10 pb-4 last:border-0 last:pb-0">
                         <div className="flex items-baseline gap-2 mb-1.5 overflow-hidden">
                           <span className="font-bold tracking-wider font-mono text-terminal-accent-tertiary shrink-0">
-                            <SubtitleText autoHeight text={entry.handle} delay={i * 40} />
+                            <SubtitleText autoHeight text={entry.handle} />
                           </span>
                           <span className="font-mono text-terminal-muted/50 shrink-0">
-                            <MetaText autoHeight text={entry.ts} delay={i * 40} />
+                            <MetaText autoHeight text={entry.ts} />
                           </span>
                         </div>
-                        <div className="font-mono text-terminal-subdued">
-                          <SubtitleText autoHeight text={`> ${entry.message}`} delay={i * 40} />
+                        <div className="font-mono text-terminal-subdued text-small md:text-body whitespace-pre-wrap break-words">
+                          {entry.message}
                         </div>
                       </div>
                     ))}
