@@ -59,7 +59,7 @@ export default function TransmitPage() {
   return (
     <PageLayout>
       <ReturnLink variants={itemVariants} />
-      <PageHeader path="/terminal/transmit" title="TRANSMIT.LOG" accent="tertiary" variants={itemVariants} />
+      <PageHeader path="/terminal/transmit" title="TRANSMIT.LOG" accent="primary" variants={itemVariants} />
 
       {/* Input Form */}
       <motion.div variants={itemVariants} className="mb-8">

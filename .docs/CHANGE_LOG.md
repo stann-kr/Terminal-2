@@ -1,5 +1,28 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-21] fix: 페이지 헤더 accent·글로우 효과 통일
+
+### 변경 개요
+
+Gate·Transmit 페이지 헤더가 About 대비 어둡고 글로우 효과 미적용 상태였던 문제 해소.
+
+#### 수정 파일
+- `app/globals.css` — `text-shadow-glow-tertiary` 유틸리티 추가 (accent 전종 글로우 일관화)
+- `components/ui/PageHeader.tsx` — `tertiary` accent에 `text-shadow-glow-tertiary` 클래스 추가
+- `app/gate/page.tsx` — 탭별 조건부 accent(`cyan`/`amber`) → `primary` 고정
+- `app/transmit/page.tsx` — accent `tertiary`(어두운 회청색) → `primary` (밝은 Icy Blue)
+
+#### 결과: 페이지별 헤더 accent 현황
+| 페이지 | accent | 글로우 |
+|---|---|---|
+| About | primary | ✅ |
+| Gate | primary | ✅ (변경) |
+| Transmit | primary | ✅ (변경) |
+| Lineup | warn | ✅ |
+| Status | alert | ✅ |
+
+---
+
 ## [2026-04-21] refactor: 콘텐츠 텍스트 크기·색상 일관성 리팩토링
 
 ### 변경 개요

@@ -36,7 +36,7 @@ export default function GatePage() {
       <PageHeader
         path="/terminal/gate"
         title="GATE.SEC"
-        accent={tab === "upcoming" ? "cyan" : "amber"}
+        accent="primary"
         variants={itemVariants}
       />
 

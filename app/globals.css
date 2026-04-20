@@ -76,4 +76,7 @@
   .text-shadow-glow-warn {
     text-shadow: 0 0 16px rgb(var(--color-accent-warn) / 0.4);
   }
+  .text-shadow-glow-tertiary {
+    text-shadow: 0 0 16px rgb(var(--color-accent-tertiary) / 0.4);
+  }
 }
