@@ -1,5 +1,18 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-21] fix: 모바일 input 포커스 시 화면 확대 방지
+
+### 변경 개요
+
+iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일 input 폰트를 16px로 상향하여 방지.
+
+#### 수정 파일
+- `components/ui/FormField.tsx` — `inputClassBase` 모바일 폰트 변경
+  - `text-small(12px)` → `text-base(16px)` (데스크탑은 기존 `text-body` 유지)
+  - 게스트 신청 / Transmit 페이지 전체 input/textarea 일괄 적용
+
+---
+
 ## [2026-04-21] refactor: Status 메트릭 레이블 및 아티스트 계산 방식 조정
 
 ### 변경 개요
