@@ -21,7 +21,7 @@ export default function StatusPage() {
 
   const archivedCount  = events.filter(e => e.status === 'ARCHIVED').length;
   const upcomingEvent  = events.find(e => e.status === 'UPCOMING');
-  const confirmedCount = events.flatMap(e => e.artists).filter(a => a.status === 'CONFIRMED').length;
+  const confirmedCount = new Set(events.flatMap(e => e.artists).map(a => a.name)).size;
 
   const nextLaunchValue = upcomingEvent ? upcomingEvent.id : '—';
   const nextLaunchUnit  = upcomingEvent

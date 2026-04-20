@@ -165,12 +165,12 @@ export const lineupKo = {
 // ─────────────────────────────────────────────
 
 export const statusKo = {
-  labelSessionsRun:  "세션 아카이브",
+  labelSessionsRun:  "진행 세션",
   labelNextLaunch:   "다음 발사",
-  labelArtistNodes:  "컨펌 아티스트",
-  unitArchived:      "ARCHIVED",
+  labelArtistNodes:  "참여 아티스트",
+  unitArchived:      "SESSIONS",
   unitStandby:       "STANDBY",
-  unitConfirmed:     "CONFIRMED",
+  unitConfirmed:     "ARTISTS",
   sessionLogTitle:   "SESSION_LOG.rec",
   colSession:        "세션",
   colDate:           "날짜",
@@ -362,12 +362,12 @@ export const lineupEn = {
 };
 
 export const statusEn = {
-  labelSessionsRun:  "SESSIONS ARCHIVED",
+  labelSessionsRun:  "SESSIONS RUN",
   labelNextLaunch:   "NEXT LAUNCH",
-  labelArtistNodes:  "CONFIRMED ARTISTS",
-  unitArchived:      "ARCHIVED",
+  labelArtistNodes:  "TOTAL ARTISTS",
+  unitArchived:      "SESSIONS",
   unitStandby:       "STANDBY",
-  unitConfirmed:     "CONFIRMED",
+  unitConfirmed:     "ARTISTS",
   sessionLogTitle:   "SESSION_LOG.rec",
   colSession:        "SESSION",
   colDate:           "DATE",

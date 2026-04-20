@@ -1,5 +1,21 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-21] refactor: Status 메트릭 레이블 및 아티스트 계산 방식 조정
+
+### 변경 개요
+
+#### 수정 파일
+- `lib/i18n.ts` — 메트릭 레이블/유닛 변경
+  - `labelSessionsRun`: "세션 아카이브" → "진행 세션" / "SESSIONS ARCHIVED" → "SESSIONS RUN"
+  - `labelArtistNodes`: "컨펌 아티스트" → "참여 아티스트" / "CONFIRMED ARTISTS" → "TOTAL ARTISTS"
+  - `unitArchived`: "ARCHIVED" → "SESSIONS"
+  - `unitConfirmed`: "CONFIRMED" → "ARTISTS"
+- `app/status/page.tsx` — 아티스트 수 계산 변경
+  - 기존: CONFIRMED 상태 필터링
+  - 변경: 전체 이벤트의 고유 아티스트 수 (이름 기준 중복 제거)
+
+---
+
 ## [2026-04-21] refactor: Status 페이지 — 실제 이벤트 데이터 기반 대시보드로 전면 교체
 
 ### 변경 개요
