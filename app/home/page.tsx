@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import AnimatedHeight from "@/components/ui/AnimatedHeight";
 import DirectoryLink from "@/components/DirectoryLink";
@@ -15,7 +15,7 @@ import {
 import CountdownBlock from "@/components/ui/CountdownBlock";
 import LangToggle from "@/components/ui/LangToggle";
 import { useT } from "@/lib/langContext";
-import type { TerminalEvent } from "@/lib/eventData";
+import { fetchEvents, eventKeys } from "@/lib/queries/events";
 
 export default function HomePage() {
   const t = useT();
@@ -29,44 +29,24 @@ export default function HomePage() {
     { href: "/link",     label: "Link",     description: t.dirDesc.link,     accent: "primary" as const },
   ];
 
-  const [upcomingEvent, setUpcomingEvent] = useState<TerminalEvent | null>(
-    null,
-  );
-  const [countdownTarget, setCountdownTarget] = useState<Date | null>(null);
-  const [eventError, setEventError] = useState(false);
+  const { data: events = [], isError: eventError } = useQuery({
+    queryKey: eventKeys.list(),
+    queryFn: fetchEvents,
+  });
 
-  useEffect(() => {
-    fetch("/api/events")
-      .then((res) => {
-        if (!res.ok) throw new Error();
-        return res.json() as Promise<TerminalEvent[]>;
-      })
-      .then((data) => {
-        const upcoming = data.find((e) => e.status === "UPCOMING") ?? null;
-        setUpcomingEvent(upcoming);
+  const upcomingEvent = events.find((e) => e.status === "UPCOMING") ?? null;
 
-        if (upcoming) {
-          // T- 카운트다운: UPCOMING 이벤트 날짜까지
-          setCountdownTarget(
-            new Date(
-              `${upcoming.date}T${upcoming.time.replace(" KST", "")}:00+09:00`,
-            ),
-          );
-        } else {
-          // T+ 경과: 가장 최근 ARCHIVED 이벤트 날짜 기준
-          const archived = data.filter((e) => e.status === "ARCHIVED");
-          if (archived.length > 0) {
-            const latest = archived.sort((a, b) =>
-              b.date.localeCompare(a.date),
-            )[0];
-            setCountdownTarget(
-              new Date(`${latest.date}T${latest.time.replace(" KST", "")}:00+09:00`),
-            );
-          }
-        }
-      })
-      .catch(() => setEventError(true));
-  }, []);
+  const countdownTarget = (() => {
+    if (upcomingEvent) {
+      return new Date(`${upcomingEvent.date}T${upcomingEvent.time.replace(" KST", "")}:00+09:00`);
+    }
+    const archived = events.filter((e) => e.status === "ARCHIVED");
+    if (archived.length > 0) {
+      const latest = archived.sort((a, b) => b.date.localeCompare(a.date))[0];
+      return new Date(`${latest.date}T${latest.time.replace(" KST", "")}:00+09:00`);
+    }
+    return null;
+  })();
 
   const eventDate = countdownTarget;
 

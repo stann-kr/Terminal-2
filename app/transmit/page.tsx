@@ -1,5 +1,6 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedHeight from '@/components/ui/AnimatedHeight';
 import TerminalPanel from '@/components/TerminalPanel';
@@ -12,93 +13,48 @@ import PageHeader from '@/components/ui/PageHeader';
 import { FormField, inputClassBase, inputAccentClass } from '@/components/ui/FormField';
 import { getNodeId, setNodeId } from '@/lib/nodeId';
 import { useT } from '@/lib/langContext';
-
-interface LogEntry {
-  id: string;
-  handle: string;
-  message: string;
-  ts: string;
-  createdAt?: string;
-  deviceId?: string | null;
-}
-
-interface LogPage {
-  logs: LogEntry[];
-  total: number;
-  page: number;
-  totalPages: number;
-}
+import { fetchTransmitLogs, postTransmitLog, transmitKeys } from '@/lib/queries/transmit';
 
 export default function TransmitPage() {
   const t = useT();
-  const [logPage, setLogPage] = useState<LogPage>({ logs: [], total: 0, page: 1, totalPages: 1 });
+  const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
-  const [handle, setHandle] = useState('');
+  const [handle, setHandle] = useState(() => getNodeId());
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const submittingRef = useRef(false);
 
-  const fetchPage = (page: number) => {
-    setIsFetching(true);
-    fetch(`/api/transmit?page=${page}`)
-      .then(res => { if (!res.ok) throw new Error(); return res.json() as Promise<LogPage>; })
-      .then(data => { setLogPage(data); setCurrentPage(data.page); })
-      .catch(() => setError(t.transmit.errors.linkUnstable))
-      .finally(() => {
-        setIsInitialLoad(false);
-        setIsFetching(false);
-      });
-  };
+  const { data: logPage, isLoading: isInitialLoad, isFetching } = useQuery({
+    queryKey: transmitKeys.list(currentPage),
+    queryFn: () => fetchTransmitLogs(currentPage),
+    placeholderData: keepPreviousData,
+  });
 
-  useEffect(() => {
-    setHandle(getNodeId());
-    fetchPage(1);
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (submittingRef.current) return;
-    if (!handle.trim() || !message.trim()) { setError(t.transmit.errors.required); return; }
-    if (message.length > 280) { setError(t.transmit.errors.tooLong); return; }
-
-    submittingRef.current = true;
-    setIsSubmitting(true);
-    try {
-      const res = await fetch('/api/transmit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          handle: handle.trim(),
-          message: message.trim(),
-          deviceId: getNodeId(),
-        }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json() as { error?: string };
-        setError(t.transmit.errors.failed);
-        return;
-      }
-
-      setHandle(getNodeId());
+  const { mutate: submitLog, isPending: isSubmitting } = useMutation({
+    mutationFn: postTransmitLog,
+    onSuccess: () => {
       setMessage('');
       setError('');
       setSent(true);
+      setCurrentPage(1);
+      queryClient.invalidateQueries({ queryKey: transmitKeys.all });
       setTimeout(() => setSent(false), 2500);
-      fetchPage(1);
-    } catch {
-      setError(t.transmit.errors.connection);
-    } finally {
-      submittingRef.current = false;
-      setIsSubmitting(false);
-    }
+    },
+    onError: () => {
+      setError(t.transmit.errors.failed);
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+    if (!handle.trim() || !message.trim()) { setError(t.transmit.errors.required); return; }
+    if (message.length > 280) { setError(t.transmit.errors.tooLong); return; }
+
+    submitLog({ handle: handle.trim(), message: message.trim(), deviceId: getNodeId() });
   };
 
-  const { logs, total, totalPages } = logPage;
+  const { logs = [], total = 0, totalPages = 1 } = logPage ?? {};
 
   return (
     <PageLayout>
@@ -222,7 +178,7 @@ export default function TransmitPage() {
             {/* 페이지네이션 */}
             <div className="flex items-center justify-between pt-2 border-t border-terminal-accent-secondary/10">
               <button
-                onClick={() => fetchPage(currentPage - 1)}
+                onClick={() => setCurrentPage((p) => p - 1)}
                 disabled={currentPage <= 1 || isFetching || isInitialLoad || isSubmitting}
                 className="text-small font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
@@ -232,7 +188,7 @@ export default function TransmitPage() {
                 {currentPage} / {Math.max(1, totalPages)}
               </span>
               <button
-                onClick={() => fetchPage(currentPage + 1)}
+                onClick={() => setCurrentPage((p) => p + 1)}
                 disabled={currentPage >= totalPages || isFetching || isInitialLoad || isSubmitting}
                 className="text-small font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >

@@ -1,5 +1,6 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedHeight from '@/components/ui/AnimatedHeight';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
@@ -8,28 +9,19 @@ import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
 import ArtistRow from './ArtistRow';
 import { useT } from '@/lib/langContext';
-import type { TerminalEvent } from '@/lib/eventData';
+import { fetchEvents, eventKeys } from '@/lib/queries/events';
 
 export default function LineupPage() {
   const t = useT();
-  const [events, setEvents] = useState<TerminalEvent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [selectedId, setSelectedId] = useState('');
 
-  useEffect(() => {
-    fetch('/api/events')
-      .then((res) => { if (!res.ok) throw new Error(); return res.json() as Promise<TerminalEvent[]>; })
-      .then((data) => {
-        setEvents(data);
-        const upcoming = data.find((e) => e.status === 'UPCOMING');
-        setSelectedId(upcoming?.id ?? data[0]?.id ?? '');
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, []);
+  const { data: events = [], isLoading: loading, isError: error } = useQuery({
+    queryKey: eventKeys.list(),
+    queryFn: fetchEvents,
+  });
 
-  const selectedEvent = events.find((e) => e.id === selectedId) ?? events[0];
+  const effectiveSelectedId = selectedId || events.find((e) => e.status === 'UPCOMING')?.id || events[0]?.id || '';
+  const selectedEvent = events.find((e) => e.id === effectiveSelectedId) ?? events[0];
 
   return (
     <PageLayout>
@@ -54,7 +46,7 @@ export default function LineupPage() {
           {/* Session selector */}
           <motion.div variants={itemVariants} className="mb-6 space-y-2">
             {events.map((ev) => {
-              const isSelected = ev.id === selectedId;
+              const isSelected = ev.id === effectiveSelectedId;
               const isUpcoming = ev.status === 'UPCOMING';
 
               let baseColorClasses = '';

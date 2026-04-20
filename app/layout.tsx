@@ -5,6 +5,7 @@ import CRTWrapper from "@/components/CRTWrapper";
 import PageTransition from "@/components/PageTransition";
 import ParticleFieldDynamic from "@/components/ParticleFieldDynamic";
 import { LangProvider } from "@/lib/langContext";
+import { QueryProvider } from "@/providers/query-provider";
 
 export const metadata: Metadata = {
   title: "TERMINAL",
@@ -25,14 +26,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko" suppressHydrationWarning={true}>
       <body className="font-orbit bg-terminal-bg-base overflow-x-hidden">
-        <LangProvider>
-          <CRTWrapper>
-            <ParticleFieldDynamic />
-            <PageTransition>
-              {children}
-            </PageTransition>
-          </CRTWrapper>
-        </LangProvider>
+        <QueryProvider>
+          <LangProvider>
+            <CRTWrapper>
+              <ParticleFieldDynamic />
+              <PageTransition>
+                {children}
+              </PageTransition>
+            </CRTWrapper>
+          </LangProvider>
+        </QueryProvider>
       </body>
     </html>
   );

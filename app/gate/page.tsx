@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import PageLayout, { itemVariants } from "@/components/PageLayout";
@@ -9,34 +10,25 @@ import PageHeader from "@/components/ui/PageHeader";
 import TerminalButton from "@/components/TerminalButton";
 import EventDetail from "./EventDetail";
 import { useT } from "@/lib/langContext";
-import type { TerminalEvent } from "@/lib/eventData";
+import { fetchEvents, eventKeys } from "@/lib/queries/events";
 
 export default function GatePage() {
   const t = useT();
   const [tab, setTab] = useState<"upcoming" | "archive">("upcoming");
-  const [events, setEvents] = useState<TerminalEvent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [selectedArchive, setSelectedArchive] = useState("");
 
-  useEffect(() => {
-    fetch("/api/events")
-      .then((res) => { if (!res.ok) throw new Error(); return res.json() as Promise<TerminalEvent[]>; })
-      .then((data) => {
-        setEvents(data);
-        const firstArchived = data.find((e) => e.status === "ARCHIVED");
-        if (firstArchived) setSelectedArchive(firstArchived.id);
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, []);
+  const { data: events = [], isLoading: loading, isError: error } = useQuery({
+    queryKey: eventKeys.list(),
+    queryFn: fetchEvents,
+  });
 
   const upcomingEvent = events.find((e) => e.status === "UPCOMING") || events[0] || null;
   const archivedEvents = events.filter((e) => e.status === "ARCHIVED");
+  const effectiveArchiveId = selectedArchive || archivedEvents[0]?.id || "";
   const selectedEvent =
     tab === "upcoming"
       ? upcomingEvent
-      : (events.find((e) => e.id === selectedArchive) || archivedEvents[0] || null);
+      : (events.find((e) => e.id === effectiveArchiveId) || archivedEvents[0] || null);
 
   return (
     <PageLayout>
@@ -145,14 +137,14 @@ export default function GatePage() {
                     key={ev.id}
                     onClick={() => setSelectedArchive(ev.id)}
                     className={`w-full text-left px-4 py-3 border cursor-pointer transition-all duration-200 font-mono ${
-                      selectedArchive === ev.id
+                      effectiveArchiveId === ev.id
                         ? "border-terminal-accent-alert/50 bg-terminal-accent-alert/10"
                         : "border-terminal-accent-primary/15 bg-terminal-bg-panel hover:bg-terminal-accent-primary/5"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-4">
                       <div>
-                        <div className={`font-bold tracking-wider ${selectedArchive === ev.id ? "text-terminal-accent-alert" : "text-terminal-primary"}`}>
+                        <div className={`font-bold tracking-wider ${effectiveArchiveId === ev.id ? "text-terminal-accent-alert" : "text-terminal-primary"}`}>
                           <SubtitleText autoHeight text={ev.session} />
                         </div>
                         <div className="text-xs mt-0.5 text-terminal-subdued">

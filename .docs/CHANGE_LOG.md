@@ -1,5 +1,50 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-20] feat: TanStack Query 도입 — 서버 상태 캐싱 및 모바일 최적화
+
+### 변경 개요
+
+#### 패키지 추가
+- `@tanstack/react-query`, `@tanstack/react-query-devtools` — 서버 상태 캐싱 라이브러리
+
+#### 신규 파일
+- `providers/query-provider.tsx` — QueryClient 전역 설정 (staleTime 5분, gcTime 30분, retry 1)
+- `lib/queries/events.ts` — `eventKeys` 팩토리, `fetchEvents()` 함수
+- `lib/queries/transmit.ts` — `transmitKeys` 팩토리, `fetchTransmitLogs()`, `postTransmitLog()` 함수
+
+#### 수정 파일
+- `app/layout.tsx` — `<QueryProvider>` 최상위 래핑
+- `app/home/page.tsx` — `useEffect + useState` 3개 → `useQuery` 단일 교체
+- `app/lineup/page.tsx` — `useEffect + useState` → `useQuery` (home과 캐시 공유)
+- `app/gate/page.tsx` — `useEffect + useState` → `useQuery` (캐시 공유)
+- `app/transmit/page.tsx` — `useQuery`(페이지네이션) + `useMutation`(폼 제출 후 자동 캐시 무효화)
+
+### 핵심 효과
+- 모바일 스와이프 백으로 홈 복귀 시 로딩 없이 캐시 즉시 반환
+- `/api/events` 호출 home·lineup·gate 3페이지 캐시 공유 → 중복 API 호출 제거
+- 방명록 등록 성공 시 목록 자동 갱신 (수동 `fetchPage` 로직 삭제)
+
+---
+
+## [2026-04-20] feat: 영문 i18n 통합 관리 — useT 훅 기반 번역 구조 도입
+
+### 변경 개요
+
+#### 번역 구조 도입
+- `lib/i18n.ts` — ko/en 번역 쌍 전체 정의 (9개 섹션: common, home, gate, request, lineup, status, transmit, link + 공통 dirDesc/manifesto)
+- `lib/langContext.tsx` — `useT()` 훅 추가: 현재 언어의 번역 객체를 단일 호출로 반환
+
+#### 전 페이지 번역 적용
+- `app/about/page.tsx`, `app/gate/page.tsx`, `app/gate/EventDetail.tsx`
+- `app/gate/request/page.tsx`, `app/home/page.tsx`, `app/lineup/page.tsx`
+- `app/lineup/ArtistRow.tsx`, `app/link/page.tsx`, `app/status/page.tsx`, `app/transmit/page.tsx`
+
+### 핵심 효과
+- 하드코딩 텍스트 전량 제거, 모든 UI 문자열을 `lib/i18n.ts` 단일 소스로 관리
+- LangToggle 클릭 시 전체 앱 즉시 언어 전환
+
+---
+
 ## [2026-04-20] fix: 모바일·반응형 레이아웃 안정화 및 UI 개선
 
 ### 변경 개요
