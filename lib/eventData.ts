@@ -60,8 +60,8 @@ export const EVENTS: TerminalEvent[] = [
     sound: "KIRSCH AUDIO SYSTEM",
     status: "UPCOMING",
     description: {
-      en: "A night where audio signals and data intersect in a station designed for total synchronization. High-density industrial textures, raw analog hardware, and precision digital processing collide in Seoul's most deliberately constructed techno environment.",
-      ko: "오디오 신호와 데이터가 교차하는 정거장, 완전한 동기화를 위해 설계된 밤. 하이 밀도의 인더스트리얼 텍스처, 원초적 아날로그 하드웨어, 정밀한 디지털 프로세싱이 서울에서 가장 의도적으로 구축된 테크노 환경에서 충돌한다.",
+      ko: "항성풍 영향권 이탈.\n헬리오포즈(Heliopause) 돌파.\n\n태양계의 경계를 넘어섬에 따라,\n익숙했던 외부의 간섭 신호는 완벽히 차단됩니다.\n\n이번 정거장부터 우리는 얕은 궤도를 벗어나\n훨씬 깊고 짙어진 사운드 환경으로 진입할 예정입니다.\n\n오직 공간을 채우는 파동에만 의지한 채\n심연으로의 항해를 이어갈\n새로운 주체들을 호출합니다.",
+      en: "Leaving the heliosphere.\nBreaching the Heliopause.\n\nAs we cross the boundary of the solar system,\nfamiliar external interference signals\nwill be completely blocked.\n\nFrom this station onward,\nwe will depart from shallow orbits\nand enter a much deeper, denser sound environment.\n\nWe now call upon entities\nto continue the voyage into the abyss,\nrelying solely on the waves that fill the space.",
     },
     // posterUrl: "https://your-r2-bucket.r2.dev/trm-02-poster.jpg",
     artists: [
@@ -131,6 +131,10 @@ export const EVENTS: TerminalEvent[] = [
     capacity: "200 NODES MAX",
     sound: "KIRSCH AUDIO SYSTEM",
     status: "ARCHIVED",
+    description: {
+      ko: "시스템 초기화 및 코어 가동 완료.\n\n정지해 있던 터미널에 첫 번째 진동이 출력되며,\n흩어져 있던 주체들을 하나의 공간으로 불러 모았습니다.\n\n일상의 좌표를 지우고\n미지의 영역(Unknown Sector)을 향해 이륙했던\n터미널의 첫 번째 비행 로그입니다.",
+      en: "System initialization and core activation complete.\n\nAs the first vibration resonated\nthrough the dormant Terminal,\nscattered entities were brought together\ninto a single space.\n\nThis is the first flight log of the Terminal,\ntaking off toward the Unknown Sector\nwhile erasing everyday coordinates.",
+    },
     artists: [
       {
         id: "01-A",
