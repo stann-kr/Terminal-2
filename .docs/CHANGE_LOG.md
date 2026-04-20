@@ -1,5 +1,22 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-21] fix: Status 모바일 상태 아이콘 중복 표시 수정
+
+### 변경 개요
+
+SESSION_LOG 모바일 뷰에서 UPCOMING 상태 행에 `●`이 두 번 표시되는 버그 수정.
+
+#### 원인
+- `status-pulse ●` 별도 렌더링 + `${symbol} ${event.status}` 텍스트에 심볼 포함 → `● ● UPCOMING`
+
+#### 수정 파일
+- `app/status/page.tsx` — 모바일 상태 셀을 데스크탑 패턴과 동일하게 분리
+  - `isPulsing` 시 `status-pulse ●` 단독 렌더링
+  - `!isPulsing` 시 `{symbol}` 단독 렌더링
+  - `LabelText`는 `event.status` 텍스트만 담당
+
+---
+
 ## [2026-04-21] fix: ReturnLink 접근성 및 가시성 개선
 
 ### 변경 개요
