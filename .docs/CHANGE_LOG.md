@@ -1,5 +1,36 @@
 # 변경 이력 (Change Log)
 
+## [2026-04-22] feat: TRM-02 라인업 DB 등록 및 게스트 신청 시스템 개선
+
+### 변경 개요
+
+TRM-02 라인업 확정 데이터 DB 반영, 보안 취약점 수정, 게스트 신청 폼 UX 개선.
+
+#### TRM-02 라인업 등록 (`migrations/seed_lineup_trm02.sql`)
+- DOCK 1: DEXTUNE (23:00–01:00), STANN LUMO (01:00–03:00), LUCII (03:00–05:00)
+- DOCK 2: CUPRUM (00:00–02:00), FOI (02:00–04:00)
+- DJ별 한/영 바이오 등록
+
+#### DJ 게스트 코드 설정 (`migrations/seed_guest_codes_trm02.sql`)
+- DJ별 guestCode 및 guestLimit(10명) D1 적용
+- STANN LUMO guestLimit 미설정 (제한 없음)
+
+#### 보안 수정 (`app/api/gate/request/route.ts`, `app/api/gate/code-info/route.ts`)
+- guestLimit TOCTOU 레이스 컨디션 수정: 낙관적 삽입 패턴 적용 (INSERT 후 COUNT 재검증 → 초과 시 DELETE)
+- 입력값 서버사이드 검증 추가: name 100자, instagram 30자 + 형식 체크
+- 인증 코드 대소문자 무관 처리: `.toUpperCase()` 비교 적용
+
+#### 게스트 신청 폼 UX 개선 (`app/gate/request/page.tsx`, `lib/i18n.ts`)
+- 인증 코드 실시간 검증(500ms 디바운스): 유효 시 즉시 폼 활성화, 무효 시 비활성화(disabled)
+- 코드 입력창 우측 상태 인디케이터 추가: `···` 검증 중 / `✓` 유효 / `✗` 무효
+- 초대인 필드 라디오 선택으로 교체: DJ 이름(자동 완성) / 기타(직접 입력) 선택
+- 기타 선택 시 텍스트 입력창 슬라이드 등장(AnimatePresence)
+- 동의 항목과 초대인 섹션 사이 구분선 추가
+- 폼 순서 변경: 인증 코드 → 이름 → 이메일 → 인스타그램 → 초대인 → 동의
+- i18n 신규 키 추가: `invitedByOther`, `invitedByOtherPlaceholder`, `INVALID_INPUT`, `INVALID_INSTAGRAM_FORMAT`
+
+---
+
 ## [2026-04-21] fix: Lineup STATUS 컬럼 줄바꿈 및 컬럼 비율 조정
 
 ### 변경 개요

@@ -126,11 +126,16 @@ export const requestKo = {
   // 버튼
   submitting: "▸ 전송 중...",
   submitBtn: "▶ 신청 제출",
+  // 초대인 선택
+  invitedByOther: "기타",
+  invitedByOtherPlaceholder: "초대인 이름 직접 입력",
   // 에러
   errors: {
     ALL_FIELDS_REQUIRED: "모든 항목을 입력해주세요.",
     PRIVACY_CONSENT_REQUIRED: "개인정보 동의가 필요합니다.",
     INVALID_EMAIL_FORMAT: "이메일 형식이 올바르지 않습니다.",
+    INVALID_INPUT: "입력값이 올바르지 않습니다.",
+    INVALID_INSTAGRAM_FORMAT: "인스타그램 형식이 올바르지 않습니다.",
     NO_UPCOMING_EVENT: "예정된 이벤트가 없습니다.",
     REQUEST_PERIOD_INACTIVE: "신청 기간이 아닙니다.",
     INVALID_ACCESS_CODE: "유효하지 않은 인증 코드입니다.",
@@ -334,10 +339,16 @@ export const requestEn = {
     "[OPTIONAL] I consent to receive future event announcements via email or Instagram DM.",
   submitting: "▸ TRANSMITTING...",
   submitBtn: "▶ SUBMIT REQUEST",
+  // invitedBy options
+  invitedByOther: "OTHER",
+  invitedByOtherPlaceholder: "ENTER INVITER NAME",
+  // errors
   errors: {
     ALL_FIELDS_REQUIRED: "ALL FIELDS ARE REQUIRED.",
     PRIVACY_CONSENT_REQUIRED: "PRIVACY CONSENT IS REQUIRED.",
     INVALID_EMAIL_FORMAT: "INVALID EMAIL FORMAT.",
+    INVALID_INPUT: "INVALID INPUT.",
+    INVALID_INSTAGRAM_FORMAT: "INVALID INSTAGRAM FORMAT.",
     NO_UPCOMING_EVENT: "NO UPCOMING EVENT FOUND.",
     REQUEST_PERIOD_INACTIVE: "REQUEST PERIOD IS NOT ACTIVE.",
     INVALID_ACCESS_CODE: "INVALID ACCESS CODE.",

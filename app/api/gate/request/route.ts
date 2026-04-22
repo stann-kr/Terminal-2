@@ -37,8 +37,15 @@ export async function POST(request: Request) {
     if (!privacyConsent) {
       return NextResponse.json({ error: "PRIVACY_CONSENT_REQUIRED" }, { status: 400 });
     }
+    if (name.length > 100) {
+      return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+    }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: "INVALID_EMAIL_FORMAT" }, { status: 400 });
+    }
+    const cleanInstagram = instagram.replace(/^@/, "");
+    if (cleanInstagram.length === 0 || cleanInstagram.length > 30 || !/^[\w.]+$/.test(cleanInstagram)) {
+      return NextResponse.json({ error: "INVALID_INSTAGRAM_FORMAT" }, { status: 400 });
     }
 
     const { env } = getCloudflareContext();
@@ -72,34 +79,19 @@ export async function POST(request: Request) {
       .all();
 
     type ArtistData = { guestCode?: string; guestLimit?: number };
+    const normalizedCode = accessCode.toUpperCase();
     const matchedArtist = artistRows.find((a) => {
       const data = JSON.parse(a.data) as ArtistData;
-      return data.guestCode && data.guestCode === accessCode;
+      return data.guestCode && data.guestCode.toUpperCase() === normalizedCode;
     });
 
     if (!matchedArtist) {
       return NextResponse.json({ error: "INVALID_ACCESS_CODE" }, { status: 401 });
     }
 
-    // 5. 게스트 리밋 확인
     const artistData = JSON.parse(matchedArtist.data) as ArtistData;
-    if (artistData.guestLimit !== undefined) {
-      const [{ count: guestCount }] = await db
-        .select({ count: count() })
-        .from(accessRequests)
-        .where(
-          and(
-            eq(accessRequests.eventId, upcomingRow.id),
-            eq(accessRequests.artistId, matchedArtist.id)
-          )
-        );
 
-      if (guestCount >= artistData.guestLimit) {
-        return NextResponse.json({ error: "GUEST_LIMIT_REACHED" }, { status: 409 });
-      }
-    }
-
-    // 6. 이메일 중복 확인 (동일 이벤트 내)
+    // 5. 이메일 중복 확인 (동일 이벤트 내)
     const existing = await db
       .select({ id: accessRequests.id })
       .from(accessRequests)
@@ -115,7 +107,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "EMAIL_ALREADY_REGISTERED" }, { status: 409 });
     }
 
-    // 7. DB INSERT
+    // 6. DB INSERT (낙관적 삽입 — 먼저 저장 후 리밋 재검증으로 TOCTOU 방지)
     const id = `req-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
     const createdAt = new Date().toISOString();
 
@@ -131,6 +123,24 @@ export async function POST(request: Request) {
       marketingConsent,
       createdAt,
     });
+
+    // 7. 게스트 리밋 재검증 — INSERT 이후 COUNT로 동시 요청 초과 차단
+    if (artistData.guestLimit !== undefined) {
+      const [{ count: guestCount }] = await db
+        .select({ count: count() })
+        .from(accessRequests)
+        .where(
+          and(
+            eq(accessRequests.eventId, upcomingRow.id),
+            eq(accessRequests.artistId, matchedArtist.id)
+          )
+        );
+
+      if (guestCount > artistData.guestLimit) {
+        await db.delete(accessRequests).where(eq(accessRequests.id, id));
+        return NextResponse.json({ error: "GUEST_LIMIT_REACHED" }, { status: 409 });
+      }
+    }
 
     return NextResponse.json({ ok: true }, { status: 201 });
   } catch (error) {

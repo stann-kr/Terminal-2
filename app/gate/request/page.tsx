@@ -43,22 +43,44 @@ function RequestAccessContent() {
     privacyConsent: false,
     marketingConsent: false,
   });
+
+  // 코드 검증 상태
+  const [codeVerified, setCodeVerified] = useState(false);
+  const [codeArtistName, setCodeArtistName] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [invitedByType, setInvitedByType] = useState<'dj' | 'other'>('dj');
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submittingRef = useRef(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const fetchCodeInfo = (code: string) => {
-    if (!code.trim()) return;
+  const verifyCode = (code: string) => {
+    if (!code.trim()) {
+      setCodeVerified(false);
+      setCodeArtistName(null);
+      return;
+    }
+    setIsVerifying(true);
     fetch(`/api/gate/code-info?code=${encodeURIComponent(code.trim())}`)
       .then(res => res.json() as Promise<{ name: string | null }>)
       .then(data => {
         if (data.name) {
+          setCodeArtistName(data.name);
+          setCodeVerified(true);
+          setInvitedByType('dj');
           setForm(prev => ({ ...prev, invitedBy: data.name! }));
+        } else {
+          setCodeVerified(false);
+          setCodeArtistName(null);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        setCodeVerified(false);
+        setCodeArtistName(null);
+      })
+      .finally(() => setIsVerifying(false));
   };
 
   useEffect(() => {
@@ -76,15 +98,18 @@ function RequestAccessContent() {
       .catch(() => setError(t.common.signalUnstable))
       .finally(() => setLoading(false));
 
-    // URL ?code= 파라미터로 접근 시 초기 자동 완성
-    if (initialCode) fetchCodeInfo(initialCode);
+    // URL ?code= 파라미터 자동 검증
+    if (initialCode) verifyCode(initialCode);
   }, []);
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const code = e.target.value;
     setForm(prev => ({ ...prev, accessCode: code }));
+    // 코드 변경 시 즉시 미검증 상태로
+    setCodeVerified(false);
+    setCodeArtistName(null);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => fetchCodeInfo(code), 500);
+    debounceRef.current = setTimeout(() => verifyCode(code), 500);
   };
 
   const handleChange = (field: keyof Omit<FormState, 'privacyConsent' | 'marketingConsent' | 'accessCode'>) =>
@@ -93,7 +118,7 @@ function RequestAccessContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submittingRef.current) return;
+    if (submittingRef.current || !codeVerified) return;
     setError('');
 
     submittingRef.current = true;
@@ -126,6 +151,11 @@ function RequestAccessContent() {
   };
 
   const invitationLines = event?.invitationLines?.[lang] ?? t.request.invitationLines;
+
+  // 비활성화 공통 클래스
+  const disabledClass = !codeVerified
+    ? 'opacity-30 pointer-events-none select-none'
+    : 'transition-opacity duration-300';
 
   return (
     <PageLayout centerContent={false}>
@@ -197,111 +227,203 @@ function RequestAccessContent() {
             <TerminalPanel title="GUEST_REQUEST_FORM" accent="secondary">
               <form onSubmit={handleSubmit} className="space-y-4">
 
-                {/* 인증 코드 */}
+                {/* 인증 코드 — 항상 활성화 */}
                 <FormField label={t.request.labelCode}>
-                  <input
-                    type="text"
-                    value={form.accessCode}
-                    onChange={handleCodeChange}
-                    placeholder={t.request.placeholderCode}
-                    className={`${inputClassBase} ${inputAccentClass.secondary}`}
-                  />
-                </FormField>
-
-                {/* 초대인 (코드 입력 시 자동 완성) */}
-                <FormField label={t.request.labelInvitedBy}>
-                  <input
-                    type="text"
-                    value={form.invitedBy}
-                    onChange={handleChange('invitedBy')}
-                    placeholder={t.request.placeholderInvitedBy}
-                    className={`${inputClassBase} ${inputAccentClass.secondary}`}
-                  />
-                </FormField>
-
-                {/* 이름 */}
-                <FormField label={t.request.labelName}>
-                  <input
-                    type="text"
-                    value={form.name}
-                    onChange={handleChange('name')}
-                    placeholder={t.request.placeholderName}
-                    className={`${inputClassBase} ${inputAccentClass.secondary}`}
-                  />
-                </FormField>
-
-                {/* 이메일 */}
-                <FormField label={t.request.labelEmail}>
-                  <input
-                    type="email"
-                    value={form.email}
-                    onChange={handleChange('email')}
-                    placeholder={t.request.placeholderEmail}
-                    className={`${inputClassBase} ${inputAccentClass.secondary}`}
-                  />
-                </FormField>
-
-                {/* 인스타그램 */}
-                <FormField label={t.request.labelInstagram}>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none select-none font-mono text-small md:text-body text-terminal-accent-secondary">
-                      @
-                    </span>
                     <input
                       type="text"
-                      value={form.instagram.replace(/^@/, '')}
-                      onChange={(e) => {
-                        const raw = e.target.value.replace(/^@+/, '');
-                        setForm(prev => ({ ...prev, instagram: raw ? '@' + raw : '' }));
-                      }}
-                      placeholder="USERNAME"
-                      className={`${inputClassBase} ${inputAccentClass.secondary} pl-6`}
+                      value={form.accessCode}
+                      onChange={handleCodeChange}
+                      placeholder={t.request.placeholderCode}
+                      className={`${inputClassBase} ${inputAccentClass.secondary} pr-8`}
                     />
+                    {/* 검증 상태 인디케이터 */}
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-caption pointer-events-none">
+                      {isVerifying ? (
+                        <span className="text-terminal-muted animate-pulse">···</span>
+                      ) : codeVerified ? (
+                        <span className="text-terminal-accent-secondary">✓</span>
+                      ) : form.accessCode ? (
+                        <span className="text-terminal-accent-alert">✗</span>
+                      ) : null}
+                    </span>
                   </div>
                 </FormField>
 
-                {/* 개인정보 동의 */}
-                <div>
-                  <label className="flex items-start gap-3 cursor-pointer group">
-                    <div className="relative mt-0.5 shrink-0">
-                      <input
-                        type="checkbox"
-                        checked={form.privacyConsent}
-                        onChange={e => setForm(prev => ({ ...prev, privacyConsent: e.target.checked }))}
-                        className="sr-only"
-                      />
-                      <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${
-                        form.privacyConsent
-                          ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
-                          : 'border-terminal-accent-secondary/30 text-transparent'
-                      }`}>✓</div>
-                    </div>
-                    <span className="font-mono text-terminal-subdued leading-relaxed group-hover:text-terminal-primary transition-colors">
-                      <MetaText autoHeight text={t.request.privacyConsent} />
-                    </span>
-                  </label>
-                </div>
+                {/* 이하 필드 — 코드 미검증 시 비활성화 */}
+                <div className={disabledClass}>
 
-                {/* 마케팅 동의 (선택) */}
-                <div>
-                  <label className="flex items-start gap-3 cursor-pointer group">
-                    <div className="relative mt-0.5 shrink-0">
+                  {/* 이름 */}
+                  <div className="space-y-4">
+                    <FormField label={t.request.labelName}>
                       <input
-                        type="checkbox"
-                        checked={form.marketingConsent}
-                        onChange={e => setForm(prev => ({ ...prev, marketingConsent: e.target.checked }))}
-                        className="sr-only"
+                        type="text"
+                        value={form.name}
+                        onChange={handleChange('name')}
+                        placeholder={t.request.placeholderName}
+                        disabled={!codeVerified}
+                        className={`${inputClassBase} ${inputAccentClass.secondary}`}
                       />
-                      <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${
-                        form.marketingConsent
-                          ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
-                          : 'border-terminal-accent-secondary/30 text-transparent'
-                      }`}>✓</div>
+                    </FormField>
+
+                    {/* 이메일 */}
+                    <FormField label={t.request.labelEmail}>
+                      <input
+                        type="email"
+                        value={form.email}
+                        onChange={handleChange('email')}
+                        placeholder={t.request.placeholderEmail}
+                        disabled={!codeVerified}
+                        className={`${inputClassBase} ${inputAccentClass.secondary}`}
+                      />
+                    </FormField>
+
+                    {/* 인스타그램 */}
+                    <FormField label={t.request.labelInstagram}>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none select-none font-mono text-small md:text-body text-terminal-accent-secondary">
+                          @
+                        </span>
+                        <input
+                          type="text"
+                          value={form.instagram.replace(/^@/, '')}
+                          onChange={(e) => {
+                            const raw = e.target.value.replace(/^@+/, '');
+                            setForm(prev => ({ ...prev, instagram: raw ? '@' + raw : '' }));
+                          }}
+                          placeholder="USERNAME"
+                          disabled={!codeVerified}
+                          className={`${inputClassBase} ${inputAccentClass.secondary} pl-6`}
+                        />
+                      </div>
+                    </FormField>
+
+                    {/* 초대인 — 라디오 선택 */}
+                    <FormField label={t.request.labelInvitedBy}>
+                      <div className="space-y-2 pt-1">
+                        {/* DJ 옵션 */}
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <div className="relative shrink-0">
+                            <input
+                              type="radio"
+                              name="invitedByType"
+                              checked={codeVerified && invitedByType === 'dj'}
+                              onChange={() => {
+                                setInvitedByType('dj');
+                                setForm(prev => ({ ...prev, invitedBy: codeArtistName ?? '' }));
+                              }}
+                              disabled={!codeVerified}
+                              className="sr-only"
+                            />
+                            <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${
+                              codeVerified && invitedByType === 'dj'
+                                ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
+                                : 'border-terminal-accent-secondary/30 text-transparent'
+                            }`}>✓</div>
+                          </div>
+                          <span className="font-mono text-small text-terminal-primary tracking-wider">
+                            {codeArtistName ?? '—'}
+                          </span>
+                        </label>
+
+                        {/* 기타 옵션 */}
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <div className="relative shrink-0">
+                            <input
+                              type="radio"
+                              name="invitedByType"
+                              checked={codeVerified && invitedByType === 'other'}
+                              onChange={() => {
+                                setInvitedByType('other');
+                                setForm(prev => ({ ...prev, invitedBy: '' }));
+                              }}
+                              disabled={!codeVerified}
+                              className="sr-only"
+                            />
+                            <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${
+                              codeVerified && invitedByType === 'other'
+                                ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
+                                : 'border-terminal-accent-secondary/30 text-transparent'
+                            }`}>✓</div>
+                          </div>
+                          <span className="font-mono text-small text-terminal-primary tracking-wider">
+                            {t.request.invitedByOther}
+                          </span>
+                        </label>
+
+                        {/* 기타 선택 시 텍스트 입력 */}
+                        <AnimatePresence>
+                          {invitedByType === 'other' && codeVerified && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="overflow-hidden pl-7"
+                            >
+                              <input
+                                type="text"
+                                value={form.invitedBy}
+                                onChange={handleChange('invitedBy')}
+                                placeholder={t.request.invitedByOtherPlaceholder}
+                                className={`${inputClassBase} ${inputAccentClass.secondary} w-full`}
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </FormField>
+
+                    {/* 동의 항목 구분선 */}
+                    <div className="border-t border-terminal-accent-secondary/10 pt-4 space-y-3">
+
+                    {/* 개인정보 동의 */}
+                    <div>
+                      <label className="flex items-start gap-3 cursor-pointer group">
+                        <div className="relative mt-0.5 shrink-0">
+                          <input
+                            type="checkbox"
+                            checked={form.privacyConsent}
+                            onChange={e => setForm(prev => ({ ...prev, privacyConsent: e.target.checked }))}
+                            disabled={!codeVerified}
+                            className="sr-only"
+                          />
+                          <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${
+                            form.privacyConsent
+                              ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
+                              : 'border-terminal-accent-secondary/30 text-transparent'
+                          }`}>✓</div>
+                        </div>
+                        <span className="font-mono text-terminal-subdued leading-relaxed group-hover:text-terminal-primary transition-colors">
+                          <MetaText autoHeight text={t.request.privacyConsent} />
+                        </span>
+                      </label>
                     </div>
-                    <span className="font-mono text-terminal-subdued leading-relaxed group-hover:text-terminal-primary transition-colors">
-                      <MetaText autoHeight text={t.request.marketingConsent} />
-                    </span>
-                  </label>
+
+                    {/* 마케팅 동의 (선택) */}
+                    <div>
+                      <label className="flex items-start gap-3 cursor-pointer group">
+                        <div className="relative mt-0.5 shrink-0">
+                          <input
+                            type="checkbox"
+                            checked={form.marketingConsent}
+                            onChange={e => setForm(prev => ({ ...prev, marketingConsent: e.target.checked }))}
+                            disabled={!codeVerified}
+                            className="sr-only"
+                          />
+                          <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${
+                            form.marketingConsent
+                              ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
+                              : 'border-terminal-accent-secondary/30 text-transparent'
+                          }`}>✓</div>
+                        </div>
+                        <span className="font-mono text-terminal-subdued leading-relaxed group-hover:text-terminal-primary transition-colors">
+                          <MetaText autoHeight text={t.request.marketingConsent} />
+                        </span>
+                      </label>
+                    </div>
+
+                    </div>{/* end 동의 항목 구분선 */}
+                  </div>
                 </div>
 
                 {/* 에러 메시지 */}
@@ -319,7 +441,7 @@ function RequestAccessContent() {
                 </AnimatePresence>
 
                 {/* 제출 버튼 */}
-                <div className="flex justify-end pt-2">
+                <div className={`flex justify-end pt-2 ${!codeVerified ? 'opacity-30 pointer-events-none' : ''}`}>
                   <SubmitButton
                     isSubmitting={isSubmitting}
                     variant="primary"

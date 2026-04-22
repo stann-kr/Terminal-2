@@ -43,9 +43,10 @@ export async function GET(request: Request) {
       .all();
 
     type ArtistData = { name?: string; guestCode?: string };
+    const normalizedCode = code.toUpperCase();
     const matched = artistRows.find((a) => {
       const data = JSON.parse(a.data) as ArtistData;
-      return data.guestCode === code;
+      return data.guestCode?.toUpperCase() === normalizedCode;
     });
 
     if (!matched) {
