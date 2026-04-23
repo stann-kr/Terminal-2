@@ -97,8 +97,8 @@ export const requestKo = {
   /** `신청 가능까지 T-${n}일` */
   windowCountdown: (n: number) => `신청 가능까지 T-${n}일`,
   noEvent: "예정된 이벤트 없음. 나중에 다시 확인하세요.",
-  committed: "✓ 신청 완료 — 확인 대기 중",
-  committedSub: "신청이 접수되었습니다. 추가 안내가 이어질 예정입니다.",
+  committed: "✓ 신청 완료",
+  committedSub: "여정에 함께해 주셔서 감사합니다.",
   invitationLines: [
     "이 채널에 대한 접근 권한이 부여되었습니다.",
     "이 초대는 개인적이며 양도 불가합니다.",
@@ -170,19 +170,19 @@ export const lineupKo = {
 // ─────────────────────────────────────────────
 
 export const statusKo = {
-  labelSessionsRun:  "진행 세션",
-  labelNextLaunch:   "다음 발사",
-  labelArtistNodes:  "참여 아티스트",
-  unitArchived:      "SESSIONS",
-  unitStandby:       "STANDBY",
-  unitConfirmed:     "ARTISTS",
-  sessionLogTitle:   "SESSION_LOG.rec",
-  colSession:        "세션",
-  colDate:           "날짜",
-  colArtists:        "아티스트",
-  colStatus:         "상태",
-  loading:           "▸ 시스템 데이터 로딩 중...",
-  noSessions:        "기록된 세션 없음.",
+  labelSessionsRun: "진행 세션",
+  labelNextLaunch: "다음 발사",
+  labelArtistNodes: "참여 아티스트",
+  unitArchived: "SESSIONS",
+  unitStandby: "STANDBY",
+  unitConfirmed: "ARTISTS",
+  sessionLogTitle: "SESSION_LOG.rec",
+  colSession: "세션",
+  colDate: "날짜",
+  colArtists: "아티스트",
+  colStatus: "상태",
+  loading: "▸ 시스템 데이터 로딩 중...",
+  noSessions: "기록된 세션 없음.",
 };
 
 // ─────────────────────────────────────────────
@@ -313,9 +313,8 @@ export const requestEn = {
   eventDate: (date: string, time: string) => `EVENT DATE — ${date} · ${time}`,
   windowCountdown: (n: number) => `WINDOW OPENS IN T-${n} DAYS`,
   noEvent: "NO UPCOMING EVENT SCHEDULED. CHECK BACK LATER.",
-  committed: "✓ REQUEST SUBMITTED — AWAITING CONFIRMATION",
-  committedSub:
-    "Your request has been received. Further instructions will follow.",
+  committed: "✓ REQUEST SUBMITTED",
+  committedSub: "Thank you for joining the voyage.",
   invitationLines: [
     "YOU HAVE BEEN GRANTED ACCESS TO THIS CHANNEL.",
     "THIS INVITATION IS PERSONAL AND NON-TRANSFERABLE.",
@@ -373,19 +372,19 @@ export const lineupEn = {
 };
 
 export const statusEn = {
-  labelSessionsRun:  "SESSIONS RUN",
-  labelNextLaunch:   "NEXT LAUNCH",
-  labelArtistNodes:  "TOTAL ARTISTS",
-  unitArchived:      "SESSIONS",
-  unitStandby:       "STANDBY",
-  unitConfirmed:     "ARTISTS",
-  sessionLogTitle:   "SESSION_LOG.rec",
-  colSession:        "SESSION",
-  colDate:           "DATE",
-  colArtists:        "ARTISTS",
-  colStatus:         "STATUS",
-  loading:           "▸ LOADING SYSTEM DATA...",
-  noSessions:        "NO SESSIONS RECORDED.",
+  labelSessionsRun: "SESSIONS RUN",
+  labelNextLaunch: "NEXT LAUNCH",
+  labelArtistNodes: "TOTAL ARTISTS",
+  unitArchived: "SESSIONS",
+  unitStandby: "STANDBY",
+  unitConfirmed: "ARTISTS",
+  sessionLogTitle: "SESSION_LOG.rec",
+  colSession: "SESSION",
+  colDate: "DATE",
+  colArtists: "ARTISTS",
+  colStatus: "STATUS",
+  loading: "▸ LOADING SYSTEM DATA...",
+  noSessions: "NO SESSIONS RECORDED.",
 };
 
 export const transmitEn = {

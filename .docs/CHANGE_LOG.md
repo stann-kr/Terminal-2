@@ -283,7 +283,7 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
 
 ### 데이터 관리
 - `events.data` JSON에 `description`, `posterUrl` 필드 추가로 제어 (스키마 마이그레이션 불필요)
-- 포스터는 Cloudflare R2 public URL 참조
+- 포스터는 [[Cloudflare]] R2 public URL 참조
 - 운영 가이드: `.docs/private/specs/event-info-panel.md`
 
 ---
@@ -522,14 +522,14 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
 * **`node_modules/use-scramble/dist/use-scramble.esm.js` L175:** `innerHTML` → `textContent`
 * **`node_modules/use-scramble/dist/use-scramble.cjs.development.js` L179:** `innerHTML` → `textContent`
 * **`node_modules/use-scramble/dist/use-scramble.cjs.production.min.js`:** `O.current.innerHTML=r` → `O.current.textContent=r`
-* **`Dockerfile`:** `RUN npm install` 뒤에 `sed` 명령으로 세 파일 직접 패치 — Docker 컨테이너 빌드 시 항상 자동 적용.
-* **`package.json`:** `postinstall: "patch-package"` → 안내 echo로 변경 (컨테이너에 git 없어 patch-package 동작 불가; Dockerfile sed로 대체).
+* **`Dockerfile`:** `RUN npm install` 뒤에 `sed` 명령으로 세 파일 직접 패치 — [[Docker]] 컨테이너 빌드 시 항상 자동 적용.
+* **`package.json`:** `postinstall: "patch-package"` → 안내 echo로 변경 (컨테이너에 git 없어 patch-package 동작 불가; [[Docker]]file sed로 대체).
 * **`patches/use-scramble+2.2.15.patch`:** 패치 내용 참조용으로 유지.
 
 ### 근본 원인
 * `docker-compose.yml`의 `volumes: /app/node_modules` anonymous volume으로 인해 호스트의 node_modules 수정이 컨테이너에 반영되지 않음.
 * Turbopack `.next/` 캐시도 anonymous volume(`/app/.next`)으로 격리 → 호스트 파일 변경 후 재시작해도 캐시된 innerHTML 버전 사용.
-* 해결: Dockerfile 이미지 빌드 단계에서 직접 패치 적용.
+* 해결: [[Docker]]file 이미지 빌드 단계에서 직접 패치 적용.
 
 ---
 
@@ -627,9 +627,9 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
 
 ### 빌드 오류 수정
 * **`_global-error` / `_not-found` SSG 프리렌더링 실패 수정:**
-    * **근본 원인:** `docker-compose.yml`에 `NODE_ENV=development`가 설정된 상태로 `next build` 실행 시, Next.js + React 19가 개발 빌드의 dispatcher 초기화 코드를 사용하여 특수 페이지(`_global-error`, `_not-found`) SSG prerendering 실패.
+    * **근본 원인:** `docker-compose.yml`에 `NODE_ENV=development`가 설정된 상태로 `next build` 실행 시, [[Next.js]] + [[React]] 19가 개발 빌드의 dispatcher 초기화 코드를 사용하여 특수 페이지(`_global-error`, `_not-found`) SSG prerendering 실패.
     * **수정:** `package.json`의 `build` 스크립트를 `cross-env NODE_ENV=production next build`로 변경하여 빌드 환경을 항상 production으로 강제.
-    * **`global-error.tsx` 보강:** `<head>` 내 `<title>/<style>` JSX 자식 렌더 시 React 19 metadata hoisting context 경유로 인한 이차 실패 방지 — `<head dangerouslySetInnerHTML>` 방식으로 교체.
+    * **`global-error.tsx` 보강:** `<head>` 내 `<title>/<style>` JSX 자식 렌더 시 [[React]] 19 metadata hoisting context 경유로 인한 이차 실패 방지 — `<head dangerouslySetInnerHTML>` 방식으로 교체.
     * **`not-found.tsx` 보강:** `dynamic = 'force-dynamic'` 적용 및 외부 컴포넌트 의존성 완전 제거 (self-contained 구현).
 
 ---
@@ -642,7 +642,7 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
     * `MetaText`의 데스크톱 가독성을 위해 `md:text-xs` 스케일을 보강하고, 긴 문단용 `BodyText` 가독성 최적화.
 * **`tailwind-merge` 및 `clsx` 도입을 통한 클래스 충돌 방지:**
     * `lib/utils.ts`에 `cn()` (classNames) 유틸리티 함수를 신규 구축하여 업계 표준 방식의 클래스 병합 로직 도입.
-    * 컴포넌트 내장 기본 클래스와 부모로부터 전달된 오버라이드 클래스가 충돌할 때, Tailwind CSS 우선순위에 따라 지능적으로 병합되도록 `TerminalText.tsx` 전체를 리팩토링함.
+    * 컴포넌트 내장 기본 클래스와 부모로부터 전달된 오버라이드 클래스가 충돌할 때, [[Tailwind CSS]] 우선순위에 따라 지능적으로 병합되도록 `TerminalText.tsx` 전체를 리팩토링함.
 * **반응형 레이아웃 버그 및 텍스트 렌더링 수정:**
     * **CSS 상속 문제 해결**: 홈 페이지 및 게이트 페이지에서 래퍼(`div`)에 적용된 스타일이 자식 시맨틱 컴포넌트에 상속되지 않던 현상을 수정. 모든 스타일 속성을 컴포넌트의 `className`으로 직접 전달하도록 구조를 개선함.
     * **카운트다운 스케일 안정화**: `CountdownBlock.tsx`의 4단계로 쪼개진 불안정한 반응형 스케일을 2~3단계로 통합하여 화면 크기 조절 시 UI 출렁임 현상 제거.
@@ -676,7 +676,7 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
 * **UI 데이터 연동 고도화 (`app/gate/request/page.tsx`):**
     * 전역 언어 설정(`lang`)에 따라 `event.invitationLines.ko` 또는 `event.invitationLines.en`을 동적으로 선택하여 렌더링하도록 로직 수정.
     * DB에 데이터가 없을 경우 기존의 기본값(`DEFAULT_INVITATION_LINES`, `requestKo.invitationLines`)으로 안전하게 Fallback 처리하는 로직 유지.
-* **D1 데이터베이스 마이그레이션 (`migrations/0004_event_invitation_lines.sql`):**
+* **[[D1]] 데이터베이스 마이그레이션 (`migrations/0004_event_invitation_lines.sql`):**
     * SQLite의 `json_set` 함수를 활용하여 기존 `TRM-02` 이벤트의 JSON 데이터(`data` 컬럼) 내부에 한/영 초대 메시지 객체를 주입.
     * 하드코딩된 메시지를 DB 데이터로 점진적으로 대체하기 위한 기반 마련.
 
@@ -698,7 +698,7 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
 * **디자인 토큰 시스템 강화:** 
     * 하드코딩된 오버레이 색상(`bg-[#0c0c10]`)을 전역 디자인 토큰(`--color-bg-overlay`, `terminal-bg-overlay`)으로 통합하여 유지보수성 향상.
     * 레거시 색상 이름(`amber`, `green` 등)에 대한 시맨틱 매핑을 프로젝트 전반에서 일관되게 통일 (`amber`/`green` -> `primary`, `cyan` -> `secondary` 등).
-* **UI/UX 일관성 및 몰입감 강화:**
+* **[[UI-UX|UI/UX]] 일관성 및 몰입감 강화:**
     * 테마 베이스 컬러(`bg-terminal-bg-base`, `#05060A`) 통일로 화면 전환 시 이질감 해결 및 시각적 정돈감 향상.
     * `CRTWrapper.tsx` 내 이동 주사선(Scanline Beam) 색상을 시맨틱 토큰(`via-terminal-bg-base/30`)으로 교체 및 하드코딩 제거.
 * **3D 파티클 및 WebGL 그래픽 동기화 (`GlobeMap.tsx`, `ParticleField.tsx`):**
@@ -730,7 +730,7 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
 
 ### 추가
 - `lib/lang.ts`: localStorage 기반 언어 설정 유틸
-- `lib/langContext.tsx`: Lang React Context + `useLang()` 훅
+- `lib/langContext.tsx`: Lang [[React]] Context + `useLang()` 훅
 - `lib/i18n.ts`: 홈 DIRS 설명 및 About 매니페스토 KO 번역
 - `components/ui/LangToggle.tsx`: `[ KO ] / [ EN ]` 브래킷 토글 컴포넌트
 
@@ -746,9 +746,9 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
 
 ---
 
-## [2026-04-09] Cloudflare D1 DB 연동 및 Workers 배포 구현
+## [2026-04-09] [[Cloudflare]] [[D1]] DB 연동 및 Workers 배포 구현
 
-* **DB 범위 확정:** Transmit(방명록), Gate(이벤트), Lineup(아티스트) 3개 섹션을 D1으로 전환 결정. About/Home/Status 텍스트는 정적 유지.
+* **DB 범위 확정:** Transmit(방명록), Gate(이벤트), Lineup(아티스트) 3개 섹션을 [[D1]]으로 전환 결정. About/Home/Status 텍스트는 정적 유지.
 * **DB 명세 문서 작성:** `.docs/DB_DEPLOYMENT_PLAN.md` 신규 작성. 스키마 ERD, API 엔드포인트 명세, 배포 절차 포함.
 * **환경변수 템플릿 생성:** `.env.example` 신규 추가 (CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN).
 * **패키지 설치:** `@opennextjs/cloudflare`, `wrangler` 설치 완료.
@@ -758,18 +758,18 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
 * **초기 시드 SQL:** `migrations/seed.sql` 생성 (기존 eventData.ts 데이터 기반).
 * **API Routes 신규 작성:** `app/api/events/route.ts`, `app/api/artists/route.ts`, `app/api/transmit/route.ts` (GET/POST).
 * **클라이언트 마이그레이션:** `app/transmit/page.tsx` (localStorage 제거 → API), `app/gate/page.tsx`, `app/lineup/page.tsx`, `app/home/page.tsx` (하드코딩 제거 → API fetch).
-* **CI/CD:** `.github/workflows/deploy.yml` 작성 (main 브랜치 push → Cloudflare Workers 자동 배포).
+* **CI/CD:** `.github/workflows/deploy.yml` 작성 (main 브랜치 push → [[Cloudflare Workers]] 자동 배포).
 * **gitignore 업데이트:** `.open-next/` 추가.
 * **미완료 (수동 작업 필요):**
   - `wrangler d1 create terminal-db` 실행 후 `wrangler.toml` database_id 입력
-  - D1 마이그레이션 & 시드 실행 (`--remote`)
+  - [[D1]] 마이그레이션 & 시드 실행 (`--remote`)
   - GitHub Secrets (CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID) 등록
 
 프로젝트에 적용된 주요 변경 사항을 기록함. Git 커밋 내역 외에도 의미 있는 아키텍처 변화 등을 요약함.
 
-## [2026-04-08] 초기 프로젝트 셋팅 (AI 개발 환경 및 Docker)
-* **환경 셋팅:** Apple Silicon에 최적화된 Docker 컨테이너 셋팅 (Node 20 기반) 완료.
-* **DB 셋팅 준비:** Cloudflare D1 연동을 위한 Drizzle ORM 도입 계획, `wrangler.toml` 기초 설정.
+## [2026-04-08] 초기 프로젝트 셋팅 (AI 개발 환경 및 [[Docker]])
+* **환경 셋팅:** Apple Silicon에 최적화된 [[Docker]] 컨테이너 셋팅 (Node 20 기반) 완료.
+* **DB 셋팅 준비:** [[Cloudflare]] [[D1]] 연동을 위한 [[Drizzle ORM]] 도입 계획, `wrangler.toml` 기초 설정.
 * **애니메이션/레이아웃:** `@chenglou/pretext` 라이브러리를 도입하여 리플로우 없는 빠른 텍스트 애니메이션 및 페이지 전환 기반 마련.
 * **문서화 구조:** 전역 지침에 따라 `.docs/` 폴더 구성 및 AI 도구(Claude Code, Antigravity Gemini) 통합 지침용 스킬 파일 추가 완료.
 * **페이지 전환 시각화 (Cipher / Decode):** 각 컴포넌트에 적용되어 있던 기존의 페이드 애니메이션을 제거하고, `use-scramble` 기반의 `<DecodeText>` 인라인 컴포넌트를 설계/적용하여 텍스트 복호화(Ciper/Decode) 시각 연출 및 레이아웃 유지 구현.
@@ -780,7 +780,7 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
 * **홈/게이트 카운트다운 수정:** border·padding을 부모 div로 이동하여 이중 적용 해소, `display:flex` 숫자 중앙 정렬 복원.
 * **페이지 전환 스크롤 점프 해결:** `PageTransition.tsx`에 pathname 변경 시 `window.scrollTo({ top:0, behavior:'instant' })` 추가.
 * **Lineup 이중 효과 제거:** `containerVariants`에서 `opacity 0→1` fade 제거, 각 `DecodeText`의 decode 효과만 유지.
-* **의존성 추가:** `use-scramble` 패키지 설치 및 Docker 이미지 리빌드 완료.
+* **의존성 추가:** `use-scramble` 패키지 설치 및 [[Docker]] 이미지 리빌드 완료.
 
 ## [2026-04-09] R3F 배경 개선 (Postprocessing 및 CameraRig)
 * **후처리 효과 추가 (`ParticleField.tsx`):** `@react-three/postprocessing`을 도입하여 `EffectComposer` 기반으로 Bloom, Noise, ChromaticAberration, Scanline, Vignette 효과를 일괄 적용. 디지털 노이즈 및 아날로그 터미널 질감 강화.
@@ -788,7 +788,7 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
 
 ## [2026-04-09] 폰트 최적화, ParticleField 리디자인, 전환 효과 개선
 
-* **Google Fonts 직접 import 제거 (`crt.css`, `layout.tsx`):** `@import url(...)` 방식 제거, Next.js `Space_Mono` 폰트 최적화 적용. CSS 변수 `--font-mono`에 `var(--font-space-mono)` 참조 추가로 폰트 로딩 일관성 확보.
+* **Google Fonts 직접 import 제거 (`crt.css`, `layout.tsx`):** `@import url(...)` 방식 제거, [[Next.js]] `Space_Mono` 폰트 최적화 적용. CSS 변수 `--font-mono`에 `var(--font-space-mono)` 참조 추가로 폰트 로딩 일관성 확보.
 * **ParticleFieldDynamic 전역 배치 (`layout.tsx`):** `RootLayout`에 `ParticleFieldDynamic` 추가하여 모든 페이지에서 배경 파티클 유지.
 * **ParticleField TERMINAL 글자 파티클 렌더링 (`ParticleField.tsx`):** 기존 랜덤 부유 파티클에서 "TERMINAL" 글자 윤곽선(`LineCurve3` 기반 세그먼트)을 따라 파티클이 분포하는 방식으로 전면 재작성. 외곽 박스 포함 글자별 세그먼트 정의.
 * **DecodeText 측정 안정화 (`DecodeText.tsx`):** `useEffect` → `useLayoutEffect` 전환으로 첫 페인트 전 `minHeight` 확정, 플래시 방지. 초기 너비가 좁은(1ch) 컨테이너의 조상 탐색 로직 추가. 초기 측정을 RAF 없이 즉시 microtask로 처리.
@@ -823,7 +823,7 @@ iOS Safari는 `font-size < 16px`인 input 포커스 시 자동 확대. 모바일
 * **디자인 시스템 브릿지 구축:** `crt.css`가 전역 변수를 참조하도록 통일하여 보더 및 글로우 색상 이슈 원천 해결.
 * **GlobeMap Three.js 최적화:** 3D 매테리얼의 하드코딩 헥사코드를 `THEME_COLORS` 상수로 통합 관리.
 * **UI 전역 안정화:** `layout.tsx`, `CRTWrapper.tsx`, `PageTransition.tsx` 등 핵심 레이아웃 기저의 하드코딩된 배경 및 보더 색상을 토큰화.
-* **빌드/린트 시스템 복구:** ESLint v9 다운그레이드로 Next.js 15 호환성 확보 및 `output: "export"` 제거로 빌드 안정화.
+* **빌드/린트 시스템 복구:** ESLint v9 다운그레이드로 [[Next.js]] 15 호환성 확보 및 `output: "export"` 제거로 빌드 안정화.
 * **UI 버그 수정:** `StatusMetric.tsx` 색상 토큰 오류 수정 및 `globals.css` 내 `text-shadow-glow` 유틸리티 디자인 토큰화.
 
 ## [2026-04-09] 시맨틱 TerminalText 컴포넌트 도입 및 애니메이션 토큰화 적용

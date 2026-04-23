@@ -1,8 +1,8 @@
-# DB 연결 및 Cloudflare Workers 배포 명세
+# DB 연결 및 [[Cloudflare Workers]] 배포 명세
 
 ## 1. 개요
 
-본 문서는 TERMINAL 프로젝트의 Cloudflare D1 데이터베이스 연동 및 Cloudflare Workers 배포 아키텍처를 명세함.  
+본 문서는 TERMINAL 프로젝트의 [[Cloudflare]] [[D1]] 데이터베이스 연동 및 [[Cloudflare Workers]] 배포 아키텍처를 명세함.  
 에이전트 간 협업 시 이 문서를 컨텍스트 기준점으로 사용할 것.
 
 ---
@@ -25,11 +25,11 @@
 
 | 항목 | 선택 | 비고 |
 |------|------|------|
-| 배포 플랫폼 | Cloudflare Workers | `@opennextjs/cloudflare` 사용 |
-| 데이터베이스 | Cloudflare D1 | SQLite 호환, 엣지 실행 |
-| ORM | Drizzle ORM | `drizzle-orm`, `drizzle-kit` 이미 설치 |
+| 배포 플랫폼 | [[Cloudflare Workers]] | `@opennextjs/cloudflare` 사용 |
+| 데이터베이스 | [[Cloudflare]] [[D1]] | SQLite 호환, 엣지 실행 |
+| ORM | [[Drizzle ORM]] | `drizzle-orm`, `drizzle-kit` 이미 설치 |
 | CI/CD | GitHub Actions → `wrangler deploy` | `main` 브랜치 push 시 자동 배포 |
-| 로컬 개발 | Docker + `wrangler dev` | D1 로컬 에뮬레이션 포함 |
+| 로컬 개발 | [[Docker]] + `wrangler dev` | [[D1]] 로컬 에뮬레이션 포함 |
 
 ---
 
@@ -178,7 +178,7 @@ terminal-2/
 
 ## 7. 배포 절차
 
-### 7-1. 최초 D1 DB 생성
+### 7-1. 최초 [[D1]] DB 생성
 
 ```bash
 docker compose run --rm web npx wrangler d1 create terminal-db
@@ -232,8 +232,8 @@ GitHub Repository Secrets에 다음 값 사전 등록 필요:
 
 | Secret 이름 | 설명 | 발급 위치 |
 |-------------|------|-----------|
-| `CLOUDFLARE_API_TOKEN` | Workers 배포 권한 토큰 | Cloudflare 대시보드 → My Profile → API Tokens |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare 계정 ID | Cloudflare 대시보드 → 우측 하단 |
+| `CLOUDFLARE_API_TOKEN` | Workers 배포 권한 토큰 | [[Cloudflare]] 대시보드 → My Profile → API Tokens |
+| `CLOUDFLARE_ACCOUNT_ID` | [[Cloudflare]] 계정 ID | [[Cloudflare]] 대시보드 → 우측 하단 |
 
 ---
 
@@ -255,4 +255,4 @@ GitHub Repository Secrets에 다음 값 사전 등록 필요:
 |--------|-----------|------|
 | `CLOUDFLARE_ACCOUNT_ID` | `.env.local`, GitHub Secrets | Wrangler 인증 |
 | `CLOUDFLARE_API_TOKEN` | `.env.local`, GitHub Secrets | Wrangler 배포 |
-| `DB` (binding) | `wrangler.toml` | D1 데이터베이스 바인딩 |
+| `DB` (binding) | `wrangler.toml` | [[D1]] 데이터베이스 바인딩 |

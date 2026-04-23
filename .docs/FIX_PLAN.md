@@ -170,7 +170,7 @@ border/padding을 부모 div로 이동하여 `gate/CountdownBlock`과 구조 통
 
 ---
 
-## 검증 방법 (Docker 환경)
+## 검증 방법 ([[Docker]] 환경)
 
 ```bash
 # 빌드 에러 확인

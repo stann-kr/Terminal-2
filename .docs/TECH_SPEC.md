@@ -4,9 +4,9 @@
 
 ## 1. 전역 아키텍처 및 렌더링 원칙
 
-- **프레임워크:** Next.js 16.2.3 (App Router 기반), React 19
-- **런타임 및 개발 환경:** Docker 호스트 컨테이너 내 구동됨 (Apple Silicon 환경의 `linux/arm64` 기반)
-- **UI/UX 미학(Aesthetics):** 심우주(Deep Space) 및 모노크롬 블루프린트(Monochrome Blueprint) 테마 수립. 차갑고 건조한 단색(Icy Blue, `#D6E5ED`) 기반의 시맨틱 색상 체계를 사용하며, 색수차를 배제하고 빛 번짐(Bloom)과 주사선(Scanline) 텍스처를 활용해 몰입감을 극대화함.
+- **프레임워크:** [[Next.js]] 16.2.3 (App Router 기반), [[React]] 19
+- **런타임 및 개발 환경:** [[Docker]] 호스트 컨테이너 내 구동됨 (Apple Silicon 환경의 `linux/arm64` 기반)
+- **[[UI-UX|UI/UX]] 미학(Aesthetics):** 심우주(Deep Space) 및 모노크롬 블루프린트(Monochrome Blueprint) 테마 수립. 차갑고 건조한 단색(Icy Blue, `#D6E5ED`) 기반의 시맨틱 색상 체계를 사용하며, 색수차를 배제하고 빛 번짐(Bloom)과 주사선(Scanline) 텍스처를 활용해 몰입감을 극대화함.
 - **명명 규칙 및 코드 스타일:** 명확한 시맨틱 네이밍, 하드 코딩 지양. CSS 스타일링 시 Tailwind를 기본으로 하되, 복잡한 인라인 동적 속성은 `style` 객체로 관리함.
 
 ## 2. 타이포그래피 시스템
@@ -87,7 +87,7 @@
 2. **Typescript 무결성 확보 규칙:**
    - 렌더링 컴포넌트는 `use client` 디렉티브 선언을 엄수함.
    - 3D 표현을 다루는 `@react-three/fiber` 환경에서 `THREE.Line` 등 WebGL 객체를 넣을 때 DOM 태그(`<line>`)와 충돌하는 것을 막기 위하여 항상 `<primitive object={}>`로 캐스팅하여 주입함.
-3. **환경 관리 가이드 (Docker):**
+3. **환경 관리 가이드 ([[Docker]]):**
    - 로컬 시스템 명령어 제안을 일절 배제함. 모듈 패키지는 `docker compose exec web npm install <패키지>`로 호스트-컨테이너 간 `node_modules` 변이를 제어할 것.
 
 ## 5. 통합 디자인 시스템 및 테마 관리
@@ -112,7 +112,7 @@
 
 ## 6. 데이터 모델 및 DB 아키텍처 (Flexible JSON Schema)
 
-Cloudflare D1의 제약 사항과 개발 생산성을 고려하여, 핵심 비즈니스 로직이 담긴 테이블(`events`, `artists`)은 고정된 컬럼 대신 유연한 JSON 구조를 채택함.
+[[Cloudflare]] [[D1]]의 제약 사항과 개발 생산성을 고려하여, 핵심 비즈니스 로직이 담긴 테이블(`events`, `artists`)은 고정된 컬럼 대신 유연한 JSON 구조를 채택함.
 
 ### 6.1 `events` 테이블 설계
 - **`id` (PK):** 이벤트 식별자 (예: `TRM-02`)
@@ -190,6 +190,6 @@ const { mutate } = useMutation({
 
 ## 7. 알려진 미해결 과제
 
-- **빌드 시 `NODE_ENV` 주의:** `docker-compose.yml`의 `NODE_ENV=development`가 `next build`에 전파되면 React 개발 빌드 사용으로 인해 `_global-error` / `_not-found` SSG 프리렌더링 실패. `package.json`의 `build` 스크립트(`cross-env NODE_ENV=production next build`)로 해결됨 — 빌드 스크립트를 수정하지 말 것.
-- **TypeScript 타입 무결성:** `framer-motion` 및 `@react-three/fiber` 환경에서의 전역 타입 선언 미흡으로 인한 `JSX.IntrinsicElements` 에러. (런타임 영향은 없으나 빌드 시 CI 환경 검증 필요)
+- **빌드 시 `NODE_ENV` 주의:** `docker-compose.yml`의 `NODE_ENV=development`가 `next build`에 전파되면 [[React]] 개발 빌드 사용으로 인해 `_global-error` / `_not-found` SSG 프리렌더링 실패. `package.json`의 `build` 스크립트(`cross-env NODE_ENV=production next build`)로 해결됨 — 빌드 스크립트를 수정하지 말 것.
+- **[[TypeScript]] 타입 무결성:** `framer-motion` 및 `@react-three/fiber` 환경에서의 전역 타입 선언 미흡으로 인한 `JSX.IntrinsicElements` 에러. (런타임 영향은 없으나 빌드 시 CI 환경 검증 필요)
 - **모듈 해석 이슈 (중요):** `docker-compose.yml`의 `node_modules`는 anonymous volume(`- /app/node_modules`)으로 선언됨. `docker compose run --rm web npm install <pkg>`로 설치 시 컨테이너 종료와 함께 설치 내용이 사라짐. **반드시 실행 중인 컨테이너에서 설치**: `docker compose exec web npm install <패키지>`. 설치 후 `docker compose restart web` 필요.

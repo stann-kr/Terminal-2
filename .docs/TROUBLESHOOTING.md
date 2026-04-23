@@ -29,13 +29,13 @@
 
 ---
 
-### [2026-04-17] use-scramble node_modules 패치가 Docker 컨테이너에 반영되지 않는 현상
+### [2026-04-17] use-scramble node_modules 패치가 [[Docker]] 컨테이너에 반영되지 않는 현상
 
 * **발생 상황:**
     * 호스트에서 `node_modules/use-scramble` 파일을 직접 수정(`innerHTML` → `textContent`)했으나, 컨테이너 내 파일은 변경되지 않음. `patch-package` 실행 시 `spawnSync git ENOENT` 오류.
 * **원인 분석:**
     * `docker-compose.yml`의 `volumes: - /app/node_modules` (anonymous volume) 설정으로 호스트의 `node_modules` 디렉토리가 마운트되지 않고 컨테이너 전용 볼륨 사용.
-    * Docker 컨테이너에 `git`이 설치되어 있지 않아 `patch-package`가 패치 생성 시 실패.
+    * [[Docker]] 컨테이너에 `git`이 설치되어 있지 않아 `patch-package`가 패치 생성 시 실패.
     * 동일 이유로 `/app/.next` 도 anonymous volume → 호스트에서 Turbopack 캐시 삭제 불가.
 * **해결 방법:**
     1. `Dockerfile`의 `RUN npm install` 뒤에 `sed` 명령 추가 → 이미지 빌드 시 직접 패치:
@@ -69,7 +69,7 @@
 * **발생 상황:**
     * `app/transmit/page.tsx` 및 `app/gate/request/page.tsx` 페이지에서 전송 버튼을 짧은 시간에 여러 번 클릭하거나 엔터 키를 연타할 경우, 동일한 메시지나 신청서가 DB에 중복으로 생성되는 현상 발생.
 * **원인 분석:**
-    * **상태 전이 지연:** 버튼 비활성화 상태(`disabled`)가 React 상태 업데이트 및 DOM 반영까지의 미세한 지연 시간 동안 여전히 클릭 가능한 상태로 남아있음.
+    * **상태 전이 지연:** 버튼 비활성화 상태(`disabled`)가 [[React]] 상태 업데이트 및 DOM 반영까지의 미세한 지연 시간 동안 여전히 클릭 가능한 상태로 남아있음.
     * **가드 로직 부재:** 폼 제출 함수(`handleSubmit`) 내부 최상단에서 이미 전송 중인지 확인하는 동기적 가드 로직이 없어, 비동기 API 요청이 여러 번 중첩되어 실행됨.
 * **해결 방법:**
     1. **동기적 가드 추가:** 각 폼의 `handleSubmit` 최상단에 `if (isSubmitting) return;` 방어 코드를 추가하여 중복 실행을 즉시 차단.
@@ -91,7 +91,7 @@
 
 ---
 
-### [2026-04-15] `_global-error` / `_not-found` SSG 프리렌더링 실패 (React dispatcher null)
+### [2026-04-15] `_global-error` / `_not-found` SSG 프리렌더링 실패 ([[React]] dispatcher null)
 
 * **발생 상황:**
     * `npm run build` 시 `_global-error`, `_not-found` 특수 페이지에서 다음 오류 발생:
@@ -100,30 +100,30 @@
     * `dynamic = 'force-dynamic'` 설정 및 외부 컴포넌트 제거 후에도 실패.
 * **원인 분석:**
     * **근본 원인:** `docker-compose.yml`에 `NODE_ENV=development`가 컨테이너 환경 변수로 설정된 상태로 `next build` 실행.
-    * Next.js가 이미 설정된 `NODE_ENV`를 재정의하지 못하고 경고(`non-standard NODE_ENV`)만 출력.
-    * React 개발 빌드는 SSG 프리렌더링 시 dispatcher 초기화 코드 경로가 production과 달라 — 특수 페이지(`_global-error`, `_not-found`)의 SSG 진입 시 `ReactCurrentDispatcher.current`가 null인 상태로 렌더 실행 → hook 호출 시 TypeError.
-    * `_global-error`: Next.js 내부의 metadata/router context 설정 과정에서 `useContext` 호출 → dispatcher null로 실패.
+    * [[Next.js]]가 이미 설정된 `NODE_ENV`를 재정의하지 못하고 경고(`non-standard NODE_ENV`)만 출력.
+    * [[React]] 개발 빌드는 SSG 프리렌더링 시 dispatcher 초기화 코드 경로가 production과 달라 — 특수 페이지(`_global-error`, `_not-found`)의 SSG 진입 시 `ReactCurrentDispatcher.current`가 null인 상태로 렌더 실행 → hook 호출 시 TypeError.
+    * `_global-error`: [[Next.js]] 내부의 metadata/router context 설정 과정에서 `useContext` 호출 → dispatcher null로 실패.
     * `_not-found`: 루트 레이아웃이 함께 렌더되며 `LangProvider`의 `useState` 호출 → dispatcher null로 실패.
 * **해결 방법:**
     1. **`package.json` build 스크립트 수정 (영구 고정):**
         * `"build": "next build"` → `"build": "cross-env NODE_ENV=production next build"`
         * 컨테이너 환경 변수 설정과 무관하게 빌드 시 항상 production 환경 강제.
     2. **`global-error.tsx` 보강:**
-        * React 19는 `<style>{children}</style>` JSX 패턴을 metadata hoisting context를 통해 처리 → `useContext` 호출 경로 추가.
-        * `<head>` 내 `<title>`, `<style>`을 `<head dangerouslySetInnerHTML={{ __html: headHtml }}>` 방식으로 교체하여 React 19 metadata 처리 경로 우회.
+        * [[React]] 19는 `<style>{children}</style>` JSX 패턴을 metadata hoisting context를 통해 처리 → `useContext` 호출 경로 추가.
+        * `<head>` 내 `<title>`, `<style>`을 `<head dangerouslySetInnerHTML={{ __html: headHtml }}>` 방식으로 교체하여 [[React]] 19 metadata 처리 경로 우회.
     3. **`not-found.tsx` 보강:**
         * `export const dynamic = 'force-dynamic'` 적용 + 모든 외부 컴포넌트 의존성 제거 (self-contained).
 
 ---
 
-### [2026-04-09] Next.js 15 빌드 시 ESLint 순환 참조 및 <Html> 프리렌더링 에러
+### [2026-04-09] [[Next.js]] 15 빌드 시 ESLint 순환 참조 및 <Html> 프리렌더링 에러
 
 * **발생 상황:**
   * `npm run build` 시 `ESLint: Converting circular structure to JSON` 오류로 린트 실패.
   * 린트 우회 시에도 `Error: <Html> should not be imported outside of pages/_document.` 에러와 함께 `/404`, `/500` 페이지 프리렌더링 실패.
 * **원인 분석:**
-  * **ESLint:** Next.js 15의 Flat Config 도입 과정에서 ESLint v10과 `eslint-config-next` 간의 Peer Dependency 충돌 및 플러그인 호환성 버그.
-  * **Next.js:** `output: "export"` 설정 잔류 및 `.next` 캐시 오염으로 인해 App Router 프로젝트임에도 Pages Router 폴백 엔진이 오작동하여 발생한 현상.
+  * **ESLint:** [[Next.js]] 15의 Flat Config 도입 과정에서 ESLint v10과 `eslint-config-next` 간의 Peer Dependency 충돌 및 플러그인 호환성 버그.
+  * **[[Next.js]]:** `output: "export"` 설정 잔류 및 `.next` 캐시 오염으로 인해 App Router 프로젝트임에도 Pages Router 폴백 엔진이 오작동하여 발생한 현상.
 * **해결 방법:**
   1. **ESLint 다운그레이드:** v10에서 v9(`^9.16.0`)로 다운그레이드하여 `eslint-config-next`와의 호환성 확보.
   2. **린트 무시 설정:** `next.config.ts`에 `eslint: { ignoreDuringBuilds: true }`를 추가하여 빌드 안정성 우선 확보.
@@ -226,18 +226,18 @@
 
 ---
 
-### [2026-04-08] 패키지 타입 충돌 및 Next.js 15 빌드 에러 이슈
+### [2026-04-08] 패키지 타입 충돌 및 [[Next.js]] 15 빌드 에러 이슈
 * **발생 상황 및 에러 로그:**
   * 1) `app/lineup/page.tsx` 내 Framer Motion `ease` 배열 타입 호환에러 발생.
   * 2) `app/status/GlobeMap.tsx` 내 JSX IntrinsicElements 인식으로 인해 `<line>` 요소와 `geometry` 프로퍼티 충돌 발생.
-  * 3) `use-scramble` 패키지가 Docker 컨테이너 레벨 node_modules 볼륨 캐싱으로 인해 런타임에 누락됨.
-  * 4) 컴파일은 모두 통과했으나 `npm run build` 시 Next.js 앱라우터 정적 변환 엔진에서 `Error: <Html> should not be imported outside of pages/_document.` 가 보고되며 빌드 엑시트(`Code 1`).
+  * 3) `use-scramble` 패키지가 [[Docker]] 컨테이너 레벨 node_modules 볼륨 캐싱으로 인해 런타임에 누락됨.
+  * 4) 컴파일은 모두 통과했으나 `npm run build` 시 [[Next.js]] 앱라우터 정적 변환 엔진에서 `Error: <Html> should not be imported outside of pages/_document.` 가 보고되며 빌드 엑시트(`Code 1`).
 * **원인 분석:**
-  * 1,2번: React 19 최신 타입 정의(`@types/react`)가 적용되며 Framer Motion 및 Three Fiber 컴포넌트의 유연했던 타입이 엄격하게 제한됨.
+  * 1,2번: [[React]] 19 최신 타입 정의(`@types/react`)가 적용되며 Framer Motion 및 Three Fiber 컴포넌트의 유연했던 타입이 엄격하게 제한됨.
   * 3번: 기존 로컬 볼륨 바인딩 시 `docker compose up` 단계에서 기존의 익명 볼륨(`/app/node_modules`)이 호스트에 그대로 매핑되어 남아있는 상태를 유지함.
-  * 4번: 프로젝트 내부에서는 `Html`을 임포트하지 않았으나, `next.config.ts`의 `output: "export"` 옵션을 통해 순수 정적 에셋 스태틱 사이트 마운트(SSG)를 시도할 때 발생한 Next.js 15+ App router 폴백 처리 버그 현상임.
+  * 4번: 프로젝트 내부에서는 `Html`을 임포트하지 않았으나, `next.config.ts`의 `output: "export"` 옵션을 통해 순수 정적 에셋 스태틱 사이트 마운트(SSG)를 시도할 때 발생한 [[Next.js]] 15+ App router 폴백 처리 버그 현상임.
 * **해결 방법:**
   * Framer Motion의 ease는 기본 제공되는 `'easeOut'` 문자 포맷으로 우회 타입 적용 완료함.
   * Three.js Line을 HTML DOM 태그 대신 `<primitive object={...}>` 방식으로 교체하여 DOM JSX Element 컨플릭트를 원천 봉쇄함.
   * `docker compose down -v` 로 볼륨 캐시 강제 삭제, 후 `docker compose exec web npm install`을 단독 실행해 노드 패키지를 말끔히 현행화.
-  * (미결) `output: "export"` 삭제/유지 여부는 프로덕션 CI/CD 및 Cloudflare 기반 배포 환경을 확인 한 뒤 우회 예정이므로 일시 보류함.
+  * (미결) `output: "export"` 삭제/유지 여부는 프로덕션 CI/CD 및 [[Cloudflare]] 기반 배포 환경을 확인 한 뒤 우회 예정이므로 일시 보류함.
