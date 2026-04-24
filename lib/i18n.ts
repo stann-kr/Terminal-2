@@ -121,9 +121,9 @@ export const requestKo = {
   placeholderInstagram: "@사용자명",
   // 개인정보 동의
   privacyConsent:
-    "이벤트 게스트 관리 목적으로 개인정보(이름, 이메일, 인스타그램 ID)의 수집 및 이용에 동의합니다. 제3자에게 공유되지 않습니다.",
+    "이벤트 게스트 관리 목적으로 개인정보(이름, 이메일, 인스타그램 ID)를 수집·이용하는 것에 동의합니다. (보유 기간: 이벤트 종료 후 1년 / 제3자 미공유)",
   marketingConsent:
-    "[선택] 향후 이벤트 공지 및 안내를 이메일 또는 인스타그램 DM으로 수신하는 것에 동의합니다.",
+    "[선택] 향후 이벤트 공지 및 안내를 이메일·인스타그램 DM으로 수신하는 것에 동의합니다. (보유 기간: 수신 거부 시까지)",
   // 버튼
   submitting: "▸ 전송 중...",
   submitBtn: "▶ 신청 제출",
@@ -363,9 +363,9 @@ export const requestEn = {
   placeholderEmail: "EMAIL@ADDRESS.COM",
   placeholderInstagram: "@USERNAME",
   privacyConsent:
-    "I consent to the collection and use of personal information (name, email, Instagram ID) for event guest management. It will not be shared with third parties.",
+    "I consent to the collection and use of personal information (name, email, Instagram ID) for event guest management. (Retention: 1 year after event / Not shared with third parties)",
   marketingConsent:
-    "[OPTIONAL] I consent to receive future event announcements via email or Instagram DM.",
+    "[OPTIONAL] I consent to receive future event announcements via email or Instagram DM. (Retention: until unsubscribed)",
   submitting: "▸ TRANSMITTING...",
   submitBtn: "▶ SUBMIT REQUEST",
   // invitedBy options
