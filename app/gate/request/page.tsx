@@ -8,6 +8,8 @@ import ReturnLink from '@/components/ui/ReturnLink';
 import TerminalPanel from '@/components/TerminalPanel';
 import SubmitButton from '@/components/SubmitButton';
 import { LabelText, MetaText, SubtitleText } from '@/components/ui/TerminalText';
+import ConsentCheckbox from '@/components/ui/ConsentCheckbox';
+import ConsentBlock from '@/components/ui/ConsentBlock';
 import { FormField, inputClassBase, inputAccentClass } from '@/components/ui/FormField';
 import { useLang, useT } from '@/lib/langContext';
 import type { TerminalEvent } from '@/lib/eventData';
@@ -373,56 +375,20 @@ function RequestAccessContent() {
                       </div>
                     </FormField>
 
-                    {/* 동의 항목 구분선 */}
-                    <div className="border-t border-terminal-accent-secondary/10 pt-4 space-y-3">
-
-                    {/* 개인정보 동의 */}
-                    <div>
-                      <label className="flex items-start gap-3 cursor-pointer group">
-                        <div className="relative mt-0.5 shrink-0">
-                          <input
-                            type="checkbox"
-                            checked={form.privacyConsent}
-                            onChange={e => setForm(prev => ({ ...prev, privacyConsent: e.target.checked }))}
-                            disabled={!codeVerified}
-                            className="sr-only"
-                          />
-                          <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${
-                            form.privacyConsent
-                              ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
-                              : 'border-terminal-accent-secondary/30 text-transparent'
-                          }`}>✓</div>
-                        </div>
-                        <span className="font-mono text-terminal-subdued leading-relaxed group-hover:text-terminal-primary transition-colors">
-                          <MetaText autoHeight text={t.request.privacyConsent} />
-                        </span>
-                      </label>
-                    </div>
-
-                    {/* 마케팅 동의 (선택) */}
-                    <div>
-                      <label className="flex items-start gap-3 cursor-pointer group">
-                        <div className="relative mt-0.5 shrink-0">
-                          <input
-                            type="checkbox"
-                            checked={form.marketingConsent}
-                            onChange={e => setForm(prev => ({ ...prev, marketingConsent: e.target.checked }))}
-                            disabled={!codeVerified}
-                            className="sr-only"
-                          />
-                          <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${
-                            form.marketingConsent
-                              ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary'
-                              : 'border-terminal-accent-secondary/30 text-transparent'
-                          }`}>✓</div>
-                        </div>
-                        <span className="font-mono text-terminal-subdued leading-relaxed group-hover:text-terminal-primary transition-colors">
-                          <MetaText autoHeight text={t.request.marketingConsent} />
-                        </span>
-                      </label>
-                    </div>
-
-                    </div>{/* end 동의 항목 구분선 */}
+                    <ConsentBlock>
+                      <ConsentCheckbox
+                        checked={form.privacyConsent}
+                        onChange={checked => setForm(prev => ({ ...prev, privacyConsent: checked }))}
+                        label={t.request.privacyConsent}
+                        disabled={!codeVerified}
+                      />
+                      <ConsentCheckbox
+                        checked={form.marketingConsent}
+                        onChange={checked => setForm(prev => ({ ...prev, marketingConsent: checked }))}
+                        label={t.request.marketingConsent}
+                        disabled={!codeVerified}
+                      />
+                    </ConsentBlock>
                   </div>
                 </div>
 

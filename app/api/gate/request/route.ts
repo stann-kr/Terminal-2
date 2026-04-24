@@ -2,7 +2,8 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { eq, and, count } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
-import { accessRequests, artists, events } from "@/lib/db/schema";
+import { accessRequests, artists, events, signal } from "@/lib/db/schema";
+import { generateId } from "@/lib/utils/id";
 
 const MS_IN_DAY = 86_400_000;
 const ACCESS_WINDOW_DAYS = 30;
@@ -108,7 +109,7 @@ export async function POST(request: Request) {
     }
 
     // 6. DB INSERT (낙관적 삽입 — 먼저 저장 후 리밋 재검증으로 TOCTOU 방지)
-    const id = `req-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    const id = generateId('req');
     const createdAt = new Date().toISOString();
 
     await db.insert(accessRequests).values({
@@ -123,6 +124,18 @@ export async function POST(request: Request) {
       marketingConsent,
       createdAt,
     });
+
+    // 마케팅 동의한 경우 signal 테이블에 저장
+    if (marketingConsent) {
+      await db.insert(signal).values({
+        id: generateId('sig'),
+        name,
+        email,
+        instagram,
+        source: 'gate',
+        createdAt,
+      }).onConflictDoNothing();
+    }
 
     // 7. 게스트 리밋 재검증 — INSERT 이후 COUNT로 동시 요청 초과 차단
     if (artistData.guestLimit !== undefined) {

@@ -5,6 +5,7 @@ export const dirDescKo: Record<string, string> = {
   lineup: "아티스트 라인업 / 도크",
   status: "시스템 진단 / 네트워크 텔레메트리",
   transmit: "방문자 로그",
+  signal: "소식 구독 / 마케팅 수신 신청",
   link: "외부 채널 / 공식 링크",
 };
 
@@ -120,9 +121,9 @@ export const requestKo = {
   placeholderInstagram: "@사용자명",
   // 개인정보 동의
   privacyConsent:
-    "이벤트 게스트 관리 목적으로 개인정보(이름, 이메일, 인스타그램 ID)의 수집 및 이용에 동의합니다. 제3자에게 공유되지 않습니다.",
+    "이름·이메일·인스타그램 ID를 게스트 접근 관리 목적으로 수집합니다. 보존 기간: 이벤트 종료 후 1개월. 제3자 미공개.",
   marketingConsent:
-    "[선택] 향후 이벤트 공지 및 안내를 이메일 또는 인스타그램 DM으로 수신하는 것에 동의합니다.",
+    "[선택] 차기 이벤트 신호를 이메일·인스타그램 채널로 수신합니다. 보존 기간: 수신 거부 시까지.",
   // 버튼
   submitting: "▸ 전송 중...",
   submitBtn: "▶ 신청 제출",
@@ -214,6 +215,35 @@ export const transmitKo = {
 };
 
 // ─────────────────────────────────────────────
+// SIGNAL
+// ─────────────────────────────────────────────
+
+export const signalKo = {
+  description: [
+    "TERMINAL 이벤트 신호 수신을 위한 채널을 등록합니다.",
+    "신호는 등록된 이메일 또는 인스타그램 채널로 발신됩니다.",
+  ],
+  labelEmail: "이메일:",
+  labelInstagram: "인스타그램 ID:",
+  placeholderEmail: "이메일@주소.COM",
+  consentLabel:
+    "이메일·인스타그램 계정을 TERMINAL 이벤트 신호 발신 목적으로 수집합니다. 보존 기간: 채널 해지 시까지.",
+  submitting: "▸ 채널 등록 중...",
+  submitBtn: "▶ 채널 등록",
+  committed: "✓ 채널 등록 완료",
+  committedSub: "신호 발신 시 등록된 채널로 전송됩니다.",
+  errors: {
+    ALL_FIELDS_REQUIRED: "이메일과 인스타그램을 입력해주세요.",
+    CONSENT_REQUIRED: "동의가 필요합니다.",
+    INVALID_EMAIL_FORMAT: "이메일 형식이 올바르지 않습니다.",
+    INVALID_INSTAGRAM_FORMAT: "인스타그램 형식이 올바르지 않습니다.",
+    EMAIL_ALREADY_SUBSCRIBED: "이미 구독 중인 이메일입니다.",
+    TRANSMISSION_FAILED: "전송 실패.",
+    CONNECTION_ERROR: "전송 실패. 연결을 확인하세요.",
+  },
+};
+
+// ─────────────────────────────────────────────
 // LINK
 // ─────────────────────────────────────────────
 
@@ -238,6 +268,7 @@ export const dirDescEn: Record<string, string> = {
   lineup: "ARTIST ROSTER / DOCK",
   status: "SYSTEM DIAGNOSTICS / NETWORK TELEMETRY",
   transmit: "VISITOR LOG",
+  signal: "SIGNAL SUBSCRIPTION / MARKETING OPT-IN",
   link: "EXTERNAL CHANNELS / OFFICIAL LINKS",
 };
 
@@ -333,9 +364,9 @@ export const requestEn = {
   placeholderEmail: "EMAIL@ADDRESS.COM",
   placeholderInstagram: "@USERNAME",
   privacyConsent:
-    "I consent to the collection and use of personal information (name, email, Instagram ID) for event guest management. It will not be shared with third parties.",
+    "Name, email, and Instagram ID will be collected for guest access management. Retention: 1 month after event. Not disclosed to third parties.",
   marketingConsent:
-    "[OPTIONAL] I consent to receive future event announcements via email or Instagram DM.",
+    "[OPTIONAL] Subscribe to receive future event signals via email or Instagram DM. Retention: until unsubscribed.",
   submitting: "▸ TRANSMITTING...",
   submitBtn: "▶ SUBMIT REQUEST",
   // invitedBy options
@@ -410,6 +441,31 @@ export const transmitEn = {
   },
 };
 
+export const signalEn = {
+  description: [
+    "REGISTER YOUR RECEPTION CHANNEL FOR TERMINAL EVENT SIGNALS.",
+    "SIGNALS WILL BE TRANSMITTED TO YOUR REGISTERED EMAIL OR INSTAGRAM CHANNEL.",
+  ],
+  labelEmail: "EMAIL:",
+  labelInstagram: "INSTAGRAM ID:",
+  placeholderEmail: "EMAIL@ADDRESS.COM",
+  consentLabel:
+    "Email and Instagram account will be collected for TERMINAL event signal transmission only. Retention: until channel is closed.",
+  submitting: "▸ REGISTERING CHANNEL...",
+  submitBtn: "▶ REGISTER CHANNEL",
+  committed: "✓ CHANNEL REGISTERED",
+  committedSub: "SIGNAL WILL BE ROUTED TO YOUR CHANNEL ON NEXT TRANSMISSION.",
+  errors: {
+    ALL_FIELDS_REQUIRED: "EMAIL AND INSTAGRAM ARE REQUIRED.",
+    CONSENT_REQUIRED: "CONSENT IS REQUIRED.",
+    INVALID_EMAIL_FORMAT: "INVALID EMAIL FORMAT.",
+    INVALID_INSTAGRAM_FORMAT: "INVALID INSTAGRAM FORMAT.",
+    EMAIL_ALREADY_SUBSCRIBED: "THIS EMAIL IS ALREADY SUBSCRIBED.",
+    TRANSMISSION_FAILED: "TRANSMISSION FAILED.",
+    CONNECTION_ERROR: "TRANSMISSION FAILED. CHECK CONNECTION.",
+  },
+};
+
 export const linkEn = {
   externalChannels: "▶ EXTERNAL CHANNELS — /terminal/link/",
   nodeCount: "3 NODES",
@@ -435,6 +491,7 @@ export const i18n = {
     lineup: lineupKo,
     status: statusKo,
     transmit: transmitKo,
+    signal: signalKo,
     link: linkKo,
   },
   en: {
@@ -447,6 +504,7 @@ export const i18n = {
     lineup: lineupEn,
     status: statusEn,
     transmit: transmitEn,
+    signal: signalEn,
     link: linkEn,
   },
 } as const;
