@@ -52,6 +52,18 @@ export const accessRequests = sqliteTable("access_requests", {
   createdAt: text("created_at").notNull(),
 });
 
+// ──────────────────────────────────────────────────────────
+// signal 테이블 — Signal 구독자
+// ──────────────────────────────────────────────────────────
+export const signal = sqliteTable("signal", {
+  id: text("id").primaryKey(),
+  name: text("name"),
+  email: text("email").notNull(),
+  instagram: text("instagram").notNull(),
+  source: text("source").notNull(),
+  createdAt: text("created_at").notNull(),
+});
+
 // 타입 추론
 export type EventRow = typeof events.$inferSelect;
 export type ArtistRow = typeof artists.$inferSelect;
@@ -59,3 +71,5 @@ export type TransmitLog = typeof transmitLogs.$inferSelect;
 export type NewTransmitLog = typeof transmitLogs.$inferInsert;
 export type AccessRequest = typeof accessRequests.$inferSelect;
 export type NewAccessRequest = typeof accessRequests.$inferInsert;
+export type SignalSubscriber = typeof signal.$inferSelect;
+export type NewSignalSubscriber = typeof signal.$inferInsert;
