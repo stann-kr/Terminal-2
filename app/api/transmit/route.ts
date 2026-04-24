@@ -72,7 +72,8 @@ export async function POST(request: Request) {
 
     const now = new Date();
     const id = String(now.getTime());
-    const ts = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")} / ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+    const ts = `${kst.getUTCFullYear()}.${String(kst.getUTCMonth() + 1).padStart(2, "0")}.${String(kst.getUTCDate()).padStart(2, "0")} / ${String(kst.getUTCHours()).padStart(2, "0")}:${String(kst.getUTCMinutes()).padStart(2, "0")}`;
 
     const { env } = getCloudflareContext();
     const db = getDb(env.DB);
