@@ -5,6 +5,7 @@ export const dirDescKo: Record<string, string> = {
   lineup: "아티스트 라인업 / 도크",
   status: "시스템 진단 / 네트워크 텔레메트리",
   transmit: "방문자 로그",
+  signal: "소식 구독 / 마케팅 수신 신청",
   link: "외부 채널 / 공식 링크",
 };
 
@@ -214,6 +215,34 @@ export const transmitKo = {
 };
 
 // ─────────────────────────────────────────────
+// SIGNAL
+// ─────────────────────────────────────────────
+
+export const signalKo = {
+  description: [
+    "TERMINAL 이벤트 소식을 가장 먼저 받아보세요.",
+    "이메일 또는 인스타그램 DM으로 안내드립니다.",
+  ],
+  labelEmail: "이메일:",
+  labelInstagram: "인스타그램 ID:",
+  placeholderEmail: "이메일@주소.COM",
+  consentLabel:
+    "이메일·인스타그램 계정을 TERMINAL 이벤트 소식 발송 목적으로 수집·이용하는 것에 동의합니다. (보유 기간: 구독 해지 시까지)",
+  submitting: "▸ 전송 중...",
+  submitBtn: "▶ 구독 신청",
+  committed: "✓ 구독 완료",
+  committedSub: "소식을 보내드릴 때 찾아가겠습니다.",
+  errors: {
+    CONSENT_REQUIRED: "동의가 필요합니다.",
+    INVALID_EMAIL_FORMAT: "이메일 형식이 올바르지 않습니다.",
+    INVALID_INSTAGRAM_FORMAT: "인스타그램 형식이 올바르지 않습니다.",
+    EMAIL_ALREADY_SUBSCRIBED: "이미 구독 중인 이메일입니다.",
+    TRANSMISSION_FAILED: "전송 실패.",
+    CONNECTION_ERROR: "전송 실패. 연결을 확인하세요.",
+  },
+};
+
+// ─────────────────────────────────────────────
 // LINK
 // ─────────────────────────────────────────────
 
@@ -238,6 +267,7 @@ export const dirDescEn: Record<string, string> = {
   lineup: "ARTIST ROSTER / DOCK",
   status: "SYSTEM DIAGNOSTICS / NETWORK TELEMETRY",
   transmit: "VISITOR LOG",
+  signal: "SIGNAL SUBSCRIPTION / MARKETING OPT-IN",
   link: "EXTERNAL CHANNELS / OFFICIAL LINKS",
 };
 
@@ -410,6 +440,30 @@ export const transmitEn = {
   },
 };
 
+export const signalEn = {
+  description: [
+    "BE THE FIRST TO HEAR ABOUT TERMINAL EVENTS.",
+    "WE'LL REACH YOU VIA EMAIL OR INSTAGRAM DM.",
+  ],
+  labelEmail: "EMAIL:",
+  labelInstagram: "INSTAGRAM ID:",
+  placeholderEmail: "EMAIL@ADDRESS.COM",
+  consentLabel:
+    "I consent to the collection and use of my email and Instagram account for sending TERMINAL event updates. (Retention: until unsubscribed)",
+  submitting: "▸ TRANSMITTING...",
+  submitBtn: "▶ SUBSCRIBE",
+  committed: "✓ SUBSCRIBED",
+  committedSub: "We'll reach you when the signal goes out.",
+  errors: {
+    CONSENT_REQUIRED: "CONSENT IS REQUIRED.",
+    INVALID_EMAIL_FORMAT: "INVALID EMAIL FORMAT.",
+    INVALID_INSTAGRAM_FORMAT: "INVALID INSTAGRAM FORMAT.",
+    EMAIL_ALREADY_SUBSCRIBED: "THIS EMAIL IS ALREADY SUBSCRIBED.",
+    TRANSMISSION_FAILED: "TRANSMISSION FAILED.",
+    CONNECTION_ERROR: "TRANSMISSION FAILED. CHECK CONNECTION.",
+  },
+};
+
 export const linkEn = {
   externalChannels: "▶ EXTERNAL CHANNELS — /terminal/link/",
   nodeCount: "3 NODES",
@@ -435,6 +489,7 @@ export const i18n = {
     lineup: lineupKo,
     status: statusKo,
     transmit: transmitKo,
+    signal: signalKo,
     link: linkKo,
   },
   en: {
@@ -447,6 +502,7 @@ export const i18n = {
     lineup: lineupEn,
     status: statusEn,
     transmit: transmitEn,
+    signal: signalEn,
     link: linkEn,
   },
 } as const;
