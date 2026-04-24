@@ -30,7 +30,7 @@ export const decode = {
   /** 부제목/설명 — 이벤트 부제, 설명 텍스트 */
   subtitle: { speed: 0.5, scramble: 8, animateTextLength: true, balanced: false as const },
   /** 본문 텍스트 — Manifesto 등 긴 문단 */
-  body: { speed: 0.8, scramble: 4, animateTextLength: true },
+  body: { speed: 0.8, scramble: 4, animateTextLength: true, balanced: false as const },
   /** 라벨/경로/코드 — 메뉴명, 경로, 짧은 식별자 */
   label: { speed: 0.6, scramble: 4, animateTextLength: true },
   /** 메타 정보 — 날짜, ID, 하단 상태 */
