@@ -25,6 +25,7 @@ export default function HomePage() {
     { href: "/lineup",   label: "Lineup",   description: t.dirDesc.lineup,   accent: "primary" as const },
     { href: "/status",   label: "Status",   description: t.dirDesc.status,   accent: "primary" as const },
     { href: "/transmit", label: "Transmit", description: t.dirDesc.transmit, accent: "primary" as const },
+    { href: "/signal",   label: "Signal",   description: t.dirDesc.signal,   accent: "primary" as const },
     { href: "/link",     label: "Link",     description: t.dirDesc.link,     accent: "primary" as const },
   ];
 
