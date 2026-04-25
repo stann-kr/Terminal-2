@@ -215,11 +215,18 @@ function RequestAccessContent() {
           <motion.div variants={itemVariants}>
             <TerminalPanel title="INVITATION_BRIEF" accent="secondary">
               <div className="space-y-1.5">
-                {invitationLines.map((line, i) => (
-                  <div key={i} className="font-mono text-terminal-subdued tracking-wide">
-                    <SubtitleText text={line} delay={i * 40} />
-                  </div>
-                ))}
+                {invitationLines.map((line, i) => {
+                  const isSeparator = /^[\s=\-─═╔╗╚╝╠╣╦╩╬]+$/.test(line);
+                  return (
+                    <div key={i} className={`font-mono text-terminal-subdued tracking-wide${isSeparator ? ' overflow-hidden' : ''}`}>
+                      <SubtitleText
+                        text={line}
+                        delay={i * 40}
+                        style={isSeparator ? { whiteSpace: 'nowrap' } : undefined}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </TerminalPanel>
           </motion.div>
