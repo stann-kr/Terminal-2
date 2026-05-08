@@ -92,7 +92,8 @@ function RequestAccessContent() {
         if (data.length > 0) {
           const ev = data[0];
           setEvent(ev);
-          const days = (new Date(ev.date).getTime() - Date.now()) / 86_400_000;
+          const eventDateTime = new Date(`${ev.date}T${ev.time.replace(' KST', '')}:00+09:00`);
+          const days = (eventDateTime.getTime() - Date.now()) / 86_400_000;
           setDaysUntil(Math.ceil(days));
           setIsActive(days >= 0 && days <= ACCESS_WINDOW_DAYS);
         }

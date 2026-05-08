@@ -64,7 +64,7 @@ export async function POST(request: Request) {
     }
 
     const eventData = JSON.parse(upcomingRow.data) as { date: string; time: string };
-    const eventDate = new Date(`${eventData.date}T00:00:00`);
+    const eventDate = new Date(`${eventData.date}T${eventData.time.replace(' KST', '')}:00+09:00`);
     const daysUntil = (eventDate.getTime() - Date.now()) / MS_IN_DAY;
 
     // 3. 30일 이내 접수 기간 확인
