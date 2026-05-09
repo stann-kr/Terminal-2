@@ -50,6 +50,8 @@ export default function HomePage() {
 
   const eventDate = countdownTarget;
 
+  const isElapsed = countdownTarget ? countdownTarget.getTime() < Date.now() : false;
+
   const eventDateLabel = upcomingEvent
     ? new Date(upcomingEvent.date)
         .toLocaleDateString("en-US", {
@@ -129,7 +131,7 @@ export default function HomePage() {
               <div className="mb-1 tracking-[0.1em]">
                 <MetaText
                   className="text-terminal-muted"
-                  text={`${t.home.nextEntry} ${eventDateLabel}`}
+                  text={`${isElapsed ? t.home.lastEntry : t.home.nextEntry} ${eventDateLabel}`}
                 />
               </div>
               <div className="drop-shadow-[0_0_16px_rgb(var(--color-accent-primary)/0.4)]">
