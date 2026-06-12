@@ -3,6 +3,9 @@ module.exports = {
   content: ["./{app,components,libs,pages,hooks}/**/*.{html,js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      letterSpacing: {
+        label: 'var(--os-tracking)', // 0.14em — STANN OS 모노 라벨 자간
+      },
       fontFamily: {
         'pixie': ['ProcrastinatingPixie', 'monospace'],
         'orbit': ['Orbit', 'monospace'],

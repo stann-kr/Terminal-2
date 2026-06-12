@@ -1,3 +1,4 @@
+@import "./stann-os.css";
 @import url("https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css");
 
 @font-face {
@@ -41,7 +42,8 @@
     --color-accent-secondary: 140 155 165; /* Muted Icy Blue (투명도/명도로 계층 구분) */
     --color-accent-tertiary: 90 100 110;   /* Dark Icy Blue */
     
-    /* Status Colors - Muted & Desaturated */
+    /* Status Colors — STANN OS 상태색 역할(stann-os.css E섹션)과 값 일치
+       alert = --os-status-alert(#b34747 = 179 71 71) · warn = --os-status-warn(#b39847 = 179 152 71) */
     --color-accent-alert: 179 71 71;       /* Muted Red (채도 빠진 건조한 빨강) */
     --color-accent-warn: 179 152 71;       /* Muted Gold (채도 빠진 건조한 노랑) */
 
