@@ -38,7 +38,7 @@ export default function PageHeader({ path, title, accent = 'primary', variants =
       <HeadingText
         text={title}
         autoHeight
-        className={`text-heading md:text-h2 font-bold tracking-[0.2em] ${accentClass}`}
+        className={`font-orbit text-heading md:text-h2 font-bold tracking-[0.2em] ${accentClass}`}
       />
     </motion.div>
   );

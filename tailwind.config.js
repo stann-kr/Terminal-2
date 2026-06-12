@@ -9,7 +9,8 @@ module.exports = {
       fontFamily: {
         'pixie': ['ProcrastinatingPixie', 'monospace'],
         'orbit': ['Orbit', 'monospace'],
-        'mono': ['Orbit', 'var(--font-space-mono)', 'monospace'],
+        // 모노 = 라벨/메타 글루 (STANN OS — JetBrains Mono). 타이틀은 font-orbit으로 핀
+        'mono': ['var(--font-jetbrains)', 'JetBrains Mono', 'monospace'],
       },
       fontSize: {
         pico:    ['var(--text-pico)',    { lineHeight: '1.2' }],

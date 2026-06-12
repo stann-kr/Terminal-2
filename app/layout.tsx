@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import "./crt.css";
 import CRTWrapper from "@/components/CRTWrapper";
@@ -6,6 +7,13 @@ import PageTransition from "@/components/PageTransition";
 import ParticleFieldDynamic from "@/components/ParticleFieldDynamic";
 import { LangProvider } from "@/lib/langContext";
 import { QueryProvider } from "@/providers/query-provider";
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "TERMINAL",
@@ -25,7 +33,7 @@ export const viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" suppressHydrationWarning={true}>
-      <body className="font-orbit bg-terminal-bg-base overflow-x-hidden">
+      <body className={`${jetbrainsMono.variable} font-orbit bg-terminal-bg-base overflow-x-hidden`}>
         <QueryProvider>
           <LangProvider>
             <CRTWrapper>

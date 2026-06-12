@@ -50,7 +50,8 @@ const primaryStyle: AccentStyle = {
   label: 'text-terminal-muted',
   wrapperClass: 'grid grid-cols-4 gap-2 sm:gap-4',
   cellClass: 'text-center border py-3 sm:py-4 bg-terminal-bg-overlay/50',
-  valueSize: 'text-4xl md:text-5xl lg:text-6xl font-bold font-mono flex items-center justify-center',
+  // 카운트다운 큰 숫자 — 디스플레이 성격: font-orbit 핀 (라벨 글루 font-mono와 분리)
+  valueSize: 'text-4xl md:text-5xl lg:text-6xl font-bold font-orbit flex items-center justify-center',
   labelClass: 'text-nano sm:text-small mt-2 tracking-wider sm:tracking-widest font-mono',
   modeLabel: 'text-terminal-accent-primary/60',
 };
@@ -62,7 +63,8 @@ const secondaryStyle: AccentStyle = {
   label: 'text-terminal-accent-secondary/50',
   wrapperClass: 'grid grid-cols-4 gap-3 font-mono',
   cellClass: 'text-center border bg-terminal-bg-overlay/40 py-4',
-  valueSize: 'text-3xl sm:text-4xl md:text-5xl font-bold flex items-center justify-center',
+  // 카운트다운 큰 숫자 — 디스플레이 성격: font-orbit 핀 (wrapperClass의 font-mono 오버라이드)
+  valueSize: 'text-3xl sm:text-4xl md:text-5xl font-bold font-orbit flex items-center justify-center',
   labelClass: 'text-nano sm:text-small mt-1 tracking-wider sm:tracking-widest',
   modeLabel: 'text-terminal-accent-secondary/60',
 };
@@ -96,7 +98,8 @@ export default function CountdownBlock({ targetDate, accent = 'primary', compact
     ? `text-center border py-2 bg-terminal-bg-overlay/50 ${s.border}`
     : `${s.cellClass} ${s.border}`;
   const valueSizeClass = compact
-    ? `text-xl sm:text-2xl font-bold font-mono flex items-center justify-center ${s.value}`
+    // 카운트다운 큰 숫자 — 디스플레이 성격: font-orbit 핀
+    ? `text-xl sm:text-2xl font-bold font-orbit flex items-center justify-center ${s.value}`
     : `${s.valueSize} ${s.value}`;
   const labelSizeClass = compact
     ? `text-nano mt-1 tracking-wider font-mono ${s.label}`

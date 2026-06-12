@@ -22,7 +22,8 @@ export default function NotFound() {
         {/* Page header */}
         <div className="mb-8 font-mono">
           <div className="text-caption tracking-widest mb-1 text-terminal-muted">/404</div>
-          <h1 className="text-h2 md:text-h1 font-bold tracking-[0.2em] text-terminal-accent-alert text-shadow-glow-alert">
+          {/* 타이틀 — PageHeader와 동일하게 Orbit 핀 (래퍼 font-mono 오버라이드) */}
+          <h1 className="font-orbit text-h2 md:text-h1 font-bold tracking-[0.2em] text-terminal-accent-alert text-shadow-glow-alert">
             ERROR: 404
           </h1>
         </div>
