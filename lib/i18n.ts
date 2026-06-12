@@ -47,6 +47,7 @@ export const manifestoKo: string[] = [
 export const commonKo = {
   signalUnstable: "⚠ 신호 링크 불안정",
   dbUnreachable: "데이터베이스 연결 실패 — 나중에 재시도",
+  signalNetAria: "STANN OS 표면 간 이동",
 };
 
 // ─────────────────────────────────────────────
@@ -241,8 +242,9 @@ export const signalKo = {
 
 export const linkKo = {
   externalChannels: "▶ 외부 채널 — /terminal/link/",
-  nodeCount: "3 노드",
+  nodeCount: "4 노드",
   descriptions: {
+    stannHub: "STANN OS 허브 — 오퍼레이터 본부",
     stannWeb: "공식 웹사이트 / 비주얼 아카이브",
     stannInsta: "소셜 채널 / 업데이트",
     terminalInsta: "이벤트 피드 / 신호 방송",
@@ -298,6 +300,7 @@ export const manifestoEn: string[] = [
 export const commonEn = {
   signalUnstable: "⚠ SIGNAL LINK UNSTABLE",
   dbUnreachable: "DATABASE UNREACHABLE — RETRY LATER",
+  signalNetAria: "Navigate between STANN OS surfaces",
 };
 
 export const homeEn = {
@@ -451,8 +454,9 @@ export const signalEn = {
 
 export const linkEn = {
   externalChannels: "▶ EXTERNAL CHANNELS — /terminal/link/",
-  nodeCount: "3 NODES",
+  nodeCount: "4 NODES",
   descriptions: {
+    stannHub: "STANN OS HUB — OPERATOR HQ",
     stannWeb: "OFFICIAL WEBSITE / VISUAL ARCHIVE",
     stannInsta: "SOCIAL CHANNEL / UPDATES",
     terminalInsta: "EVENT FEED / SIGNAL BROADCAST",

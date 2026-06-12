@@ -2,6 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { containerVariants, itemVariants } from '@/lib/animationTokens';
+import SignalNet from '@/components/ui/SignalNet';
 
 // re-export: 기존 import 경로 유지 (PageLayout에서 import하는 파일 무변경)
 export { containerVariants, itemVariants };
@@ -25,6 +26,10 @@ export default function PageLayout({ children, centerContent = true }: PageLayou
         animate="visible"
       >
         {children}
+
+        <div className="mt-12 border-t border-terminal-bg-panel-border/40 pt-4">
+          <SignalNet />
+        </div>
       </motion.div>
     </div>
   );
