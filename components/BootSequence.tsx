@@ -164,6 +164,17 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
+  // 대기 중인 부트 출력 타이머 — 스킵 시 일괄 clear
+  const phase1TimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const langTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const phase3TimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const doneTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prefersReducedMotionRef = useRef(false);
+
+  useEffect(() => {
+    prefersReducedMotionRef.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }, []);
+
   useEffect(() => {
     const t = setTimeout(() => setPowering(false), 700);
     return () => clearTimeout(t);
@@ -171,22 +182,81 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
 
   useEffect(() => {
     if (powering) return;
+
+    // reduced-motion: 출력 지연 없이 즉시 다음 게이트(언어 선택) 표시
+    if (prefersReducedMotionRef.current) {
+      setVisiblePhase1(PHASE_1.map((_, i) => i));
+      setShowLangSelect(true);
+      return;
+    }
+
     const timers = PHASE_1.map((item, i) =>
       setTimeout(() => setVisiblePhase1(prev => [...prev, i]), item.delay)
     );
     const langTimer = setTimeout(() => setShowLangSelect(true), LANG_SELECT_DELAY);
+    phase1TimersRef.current = timers;
+    langTimerRef.current = langTimer;
     return () => { timers.forEach(clearTimeout); clearTimeout(langTimer); };
   }, [powering]);
 
   useEffect(() => {
     if (!selectedLang) return;
     const phase3 = getPhase3(selectedLang);
+
+    // reduced-motion: 출력 지연 없이 즉시 다음 게이트(ENTER TERMINAL) 표시
+    if (prefersReducedMotionRef.current) {
+      setVisiblePhase3(phase3.map((_, i) => i));
+      setDone(true);
+      return;
+    }
+
     const timers = phase3.map((item, i) =>
       setTimeout(() => setVisiblePhase3(prev => [...prev, i]), item.delay)
     );
     const doneTimer = setTimeout(() => setDone(true), PHASE_3_DONE_DELAY);
+    phase3TimersRef.current = timers;
+    doneTimerRef.current = doneTimer;
     return () => { timers.forEach(clearTimeout); clearTimeout(doneTimer); };
   }, [selectedLang]);
+
+  /**
+   * 진행 중인 출력 애니메이션을 건너뛰고 다음 인터랙션 포인트로 점프.
+   * - 언어 선택 전(phase1) → phase1 전체 즉시 표시 + 언어 선택 즉시 노출
+   * - 언어 선택 후(phase3) → phase3 전체 즉시 표시 + done(ENTER TERMINAL)
+   * 언어 선택 자체는 스킵 대상이 아님(자동 선택 금지) — 호출 시점은 리스너 effect에서 가드.
+   */
+  const skipToNextGate = () => {
+    if (powering) return;
+
+    if (!selectedLang) {
+      phase1TimersRef.current.forEach(clearTimeout);
+      if (langTimerRef.current) clearTimeout(langTimerRef.current);
+      setVisiblePhase1(PHASE_1.map((_, i) => i));
+      setShowLangSelect(true);
+      return;
+    }
+
+    if (!done) {
+      phase3TimersRef.current.forEach(clearTimeout);
+      if (doneTimerRef.current) clearTimeout(doneTimerRef.current);
+      setVisiblePhase3(getPhase3(selectedLang).map((_, i) => i));
+      setDone(true);
+    }
+  };
+
+  useEffect(() => {
+    // 언어 선택 대기 중(자동 선택 방지) 또는 부트 완료(ENTER 버튼 클릭과 충돌 방지) 시 리스너 해제
+    if ((showLangSelect && !selectedLang) || done) return;
+
+    const handleSkip = () => skipToNextGate();
+    window.addEventListener('keydown', handleSkip);
+    window.addEventListener('pointerdown', handleSkip);
+    return () => {
+      window.removeEventListener('keydown', handleSkip);
+      window.removeEventListener('pointerdown', handleSkip);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showLangSelect, selectedLang, done, powering]);
 
   const handleLangSelect = (lang: Lang) => {
     setLang(lang);
@@ -194,6 +264,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
   };
 
   const phase3Items = selectedLang ? getPhase3(selectedLang) : [];
+  const showSkipHint = !powering && !done && !(showLangSelect && !selectedLang);
 
   return (
     <motion.div
@@ -250,6 +321,13 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
           </motion.div>
         )}
       </div>
+
+      {/* 스킵 힌트 — 언어 선택·완료 상태에서는 숨김 (시스템 라벨, KO/EN 분기 없음) */}
+      {showSkipHint && (
+        <div className="absolute bottom-6 inset-x-0 flex justify-center font-mono text-micro text-terminal-muted/60 tracking-label">
+          [ PRESS ANY KEY TO SKIP ]
+        </div>
+      )}
     </motion.div>
   );
 }

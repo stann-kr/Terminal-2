@@ -82,3 +82,26 @@
     text-shadow: 0 0 16px rgb(var(--color-accent-tertiary) / 0.4);
   }
 }
+
+/* 셀렉션 — 액센트 배경 (STANN OS 불변 글루) */
+::selection {
+  background: rgb(var(--color-accent-primary));
+  color: rgb(var(--color-bg-base));
+}
+
+/* 포커스 가시화 — STANN OS 불변 글루 (canon: 2px accent, offset 2px) */
+:focus-visible {
+  outline: 2px solid rgb(var(--color-accent-primary));
+  outline-offset: 2px;
+}
+
+/* reduced-motion 전역 가드 (STANN OS 공통 — 디코드·스캔라인·CRT 즉시 표시 폴백) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
