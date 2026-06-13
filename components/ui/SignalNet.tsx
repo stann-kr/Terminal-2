@@ -23,7 +23,7 @@ export default function SignalNet() {
               key={node.id}
               href={node.href}
               rel="noopener noreferrer"
-              className="text-terminal-subdued transition-colors hover:text-terminal-accent-primary"
+              className="text-terminal-subdued transition-colors duration-[var(--os-dur-fast)] hover:text-terminal-accent-primary"
             >
               [{node.label}] {node.id}
             </a>
