@@ -1,5 +1,34 @@
 # 변경 이력 (Change Log)
 
+## [2026-06-13] feat: STANN OS 통일 Phase 3 (terminal-2 = TM-02)
+
+### 변경 개요
+
+3사이트 세계관 통일 — terminal-2를 STANN OS 공통 토큰·글루에 정렬. 이벤트 스킨(아이시 블루) 색상은 불변 유지, 비색상 토큰만 소비.
+
+### 디자인 토큰
+
+- `app/stann-os.css` — STANN OS 공통 토큰 정본 도입 (stann-web 복사, 3파일 md5 일치). 비색상 토큰(A 불변·B 타입·C 모노폰트·E 상태색역할)만 소비
+- `app/globals.css` — `@import` 1행, 상태색 역할(alert/warn) 정본 값 일치 주석. 색상 트리플릿 무변경
+- `tailwind.config.js` — `tracking-label`(`--os-tracking` 0.14em) 토큰
+
+### 폰트 글루
+
+- JetBrains Mono(`next/font`) 라벨·메타 글루 도입 — `font-mono` 스택 전환. 타이틀/디스플레이(PageHeader·CountdownBlock·StatusMetric·not-found)는 `font-orbit` 핀 유지
+
+### 라벨·SIGNAL_NET
+
+- `PageHeader` path 라벨 `[ /PATH ]` 문법 + `tracking-label`
+- `lib/signalNet.ts` + `components/ui/SignalNet.tsx` — 3표면 상호 링크(TM-02 self 마커), PageLayout 하단 전 페이지 노출
+- `/link` 페이지에 `STANN OS Hub`(stann.kr) 노드 맨 앞 추가, i18n KO/EN 키
+
+### 글루·UX
+
+- `::selection` 액센트 배경, `:focus-visible` 2px accent 아웃라인, `prefers-reduced-motion` 전역 가드
+- 부트 시퀀스 스킵(키/포인터 → 다음 게이트, 언어 선택 자동선택 금지), `[ PRESS ANY KEY TO SKIP ]` 힌트
+
+---
+
 ## [2026-04-22] feat: TRM-02 라인업 DB 등록 및 게스트 신청 시스템 개선
 
 ### 변경 개요
