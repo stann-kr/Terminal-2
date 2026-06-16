@@ -1,5 +1,18 @@
 # 변경 이력 (Change Log)
 
+## [2026-06-13] fix/chore: 사후 정비 — lint 게이트 복구·토큰 드리프트 가드
+
+### lint 게이트 복구 (`80c78cc`)
+
+- `next lint`가 Next 16에서 제거돼 lint가 사망 상태였음 → `eslint-config-next@16` flat export 직접 사용으로 마이그레이션(`FlatCompat` 제거), 스크립트 `eslint .`로 교체
+- 신규 react-hooks 순수성 규칙(purity/set-state-in-effect/immutability)은 실시간 CRT 미학과 충돌 → `warn` 완화 (상세: TROUBLESHOOTING 2026-06-13)
+
+### 토큰 드리프트 가드 (`d379400`)
+
+- `scripts/check-token-sync.mjs` + `prebuild` 훅 — `app/stann-os.css`(정본 복사본) 해시 검증, 사본 무단 편집 시 빌드 차단
+
+---
+
 ## [2026-06-13] feat: STANN OS 통일 Phase 3 (terminal-2 = TM-02)
 
 ### 변경 개요

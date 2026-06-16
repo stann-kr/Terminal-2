@@ -4,6 +4,22 @@
 
 ---
 
+### [2026-06-13] Next 16 `next lint` 제거로 lint 게이트 사망
+
+* **발생 상황:**
+    * `npm run lint` 실행 시 `Invalid project directory provided, no such directory: /app/lint` 오류.
+    * lint가 동작하지 않아 품질 게이트 없이 `build`만 통과하는 상태 방치됨(사후 검증에서 발견).
+* **원인 분석:**
+    * [[Next.js]] 16에서 `next lint` 서브커맨드 **완전 제거**됨 → `"lint": "next lint"`가 `lint`를 디렉토리 인자로 오인.
+    * 직접 `eslint .` 실행 시 기존 `eslint.config.mjs`의 `FlatCompat` 래핑(`compat.extends("next/...")`)이 ESLint 9에서 `Converting circular structure to JSON` 에러 → 레거시 호환 레이어가 ESLint 9 비호환.
+* **해결 방법:**
+    1. **모던 flat config 마이그레이션:** `eslint.config.mjs`를 `import next from "eslint-config-next"` + `...next`(v16 flat export)로 교체, `FlatCompat`·`@eslint/eslintrc` 의존 제거.
+    2. **lint 스크립트 교체:** `"lint": "next lint"` → `"lint": "eslint ."`.
+    3. **신규 react-hooks 순수성 규칙 완화:** `eslint-config-next@16`이 새로 켠 `react-hooks/purity`·`set-state-in-effect`·`immutability`가 실시간 CRT 미학(렌더 중 `Date.now()`/`Math.random()` — 라이브 클락·디코드)과 충돌(50건 중 43건). `error → warn` 완화로 게이트 복구하되 진짜 에러는 계속 차단.
+    * 커밋: `80c78cc`. 3레포 lint 정책은 stann-web `.docs/2026-06-11-stann-os-ui-unification-design.md §10` 참조.
+
+---
+
 ### [2026-04-17] DecodeText 특정 텍스트 깜빡임 / 이중 렌더링 착시
 
 * **발생 상황:**
