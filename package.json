@@ -43,6 +43,7 @@
   "name": "next-app",
   "private": true,
   "scripts": {
+    "prebuild": "node scripts/check-token-sync.mjs",
     "build": "cross-env NODE_ENV=production next build",
     "build:worker": "opennextjs-cloudflare build",
     "deploy": "opennextjs-cloudflare deploy",
