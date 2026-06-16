@@ -48,7 +48,7 @@
     "deploy": "opennextjs-cloudflare deploy",
     "cf:preview": "opennextjs-cloudflare preview",
     "dev": "cross-env NODE_ENV=development next dev -H 0.0.0.0 -p 3000",
-    "lint": "next lint",
+    "lint": "eslint .",
     "postinstall": "echo 'use-scramble patch applied via Dockerfile'"
   },
   "version": "0.1.0"
