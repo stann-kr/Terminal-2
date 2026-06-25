@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
@@ -58,7 +58,7 @@ function RequestAccessContent() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const verifyCode = (code: string) => {
+  const verifyCode = useCallback((code: string) => {
     if (!code.trim()) {
       setCodeVerified(false);
       setCodeArtistName(null);
@@ -83,7 +83,7 @@ function RequestAccessContent() {
         setCodeArtistName(null);
       })
       .finally(() => setIsVerifying(false));
-  };
+  }, []);
 
   useEffect(() => {
     fetch('/api/events?status=UPCOMING')
@@ -103,7 +103,7 @@ function RequestAccessContent() {
 
     // URL ?code= 파라미터 자동 검증
     if (initialCode) verifyCode(initialCode);
-  }, []);
+  }, [initialCode, t.common.signalUnstable, verifyCode]);
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const code = e.target.value;

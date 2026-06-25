@@ -77,10 +77,9 @@ const accentStyles: Record<string, AccentStyle> = {
 };
 
 export default function CountdownBlock({ targetDate, accent = 'primary', compact = false }: Props) {
-  const [delta, setDelta] = useState<TimeDelta>({ elapsed: false, d: 0, h: 0, m: 0, s: 0 });
+  const [delta, setDelta] = useState<TimeDelta>(() => getTimeDelta(targetDate));
 
   useEffect(() => {
-    setDelta(getTimeDelta(targetDate));
     const interval = setInterval(() => setDelta(getTimeDelta(targetDate)), 1000);
     return () => clearInterval(interval);
   }, [targetDate]);

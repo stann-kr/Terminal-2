@@ -41,6 +41,7 @@ dist/
 
 # ai agents context
 .agents/
+.claude/
 build_log.txt
 
 # private

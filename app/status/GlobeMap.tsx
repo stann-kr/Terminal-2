@@ -38,6 +38,13 @@ const ARC_PAIRS = [
   [2,11],[4,10],[8,9],
 ];
 
+const seededUnit = (seed: number) => {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453123;
+  return x - Math.floor(x);
+};
+
+const centeredUnit = (seed: number) => seededUnit(seed) - 0.5;
+
 function GalaxyDisk() {
   const diskRef = useRef<THREE.Group>(null);
 
@@ -56,22 +63,23 @@ function GalaxyDisk() {
     for (let arm = 0; arm < arms; arm++) {
       const armOffset = (arm / arms) * Math.PI * 2;
       for (let i = 0; i < pointsPerArm; i++) {
+        const seedBase = arm * 10000 + i * 17;
         const t = i / pointsPerArm;
         const angle = armOffset + t * Math.PI * 4;
         const radius = t * 2.2;
         const spread = (1 - t) * 0.18 + 0.04;
-        const x = Math.cos(angle) * radius + (Math.random() - 0.5) * spread;
-        const y = (Math.random() - 0.5) * 0.12 * (1 - t * 0.6);
-        const z = Math.sin(angle) * radius + (Math.random() - 0.5) * spread;
+        const x = Math.cos(angle) * radius + centeredUnit(seedBase + 1) * spread;
+        const y = centeredUnit(seedBase + 2) * 0.12 * (1 - t * 0.6);
+        const z = Math.sin(angle) * radius + centeredUnit(seedBase + 3) * spread;
         positions.push(x, y, z);
 
-        const brightness = 0.4 + Math.random() * 0.6;
+        const brightness = 0.4 + seededUnit(seedBase + 4) * 0.6;
         const isCore = t < 0.15;
         if (isCore) {
           // 코어는 가장 밝은 화이트/아이스블루
           colors.push(brightness * 0.95, brightness * 0.98, brightness * 1.0);
         } else {
-          const blend = Math.random();
+          const blend = seededUnit(seedBase + 5);
           if (blend < 0.5) {
             // 기본 Icy Blue (D6E5ED 근사치)
             colors.push(brightness * 0.84, brightness * 0.90, brightness * 0.93);
@@ -88,11 +96,12 @@ function GalaxyDisk() {
 
     const coreCount = 300;
     for (let i = 0; i < coreCount; i++) {
-      const r = Math.random() * 0.35;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = (Math.random() - 0.5) * 0.4;
+      const seedBase = 50000 + i * 19;
+      const r = seededUnit(seedBase + 1) * 0.35;
+      const theta = seededUnit(seedBase + 2) * Math.PI * 2;
+      const phi = centeredUnit(seedBase + 3) * 0.4;
       positions.push(Math.cos(theta) * r, phi * r, Math.sin(theta) * r);
-      const b = 0.7 + Math.random() * 0.3;
+      const b = 0.7 + seededUnit(seedBase + 4) * 0.3;
       // 코어 포인트 화이트 아이스블루
       colors.push(b * 0.95, b * 0.98, b * 1.0);
     }
@@ -104,11 +113,12 @@ function GalaxyDisk() {
     const count = 200;
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const r = 0.3 + Math.random() * 1.8;
-      arr[i * 3] = Math.cos(angle) * r + (Math.random() - 0.5) * 0.5;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 0.08;
-      arr[i * 3 + 2] = Math.sin(angle) * r + (Math.random() - 0.5) * 0.5;
+      const seedBase = 70000 + i * 13;
+      const angle = seededUnit(seedBase + 1) * Math.PI * 2;
+      const r = 0.3 + seededUnit(seedBase + 2) * 1.8;
+      arr[i * 3] = Math.cos(angle) * r + centeredUnit(seedBase + 3) * 0.5;
+      arr[i * 3 + 1] = centeredUnit(seedBase + 4) * 0.08;
+      arr[i * 3 + 2] = Math.sin(angle) * r + centeredUnit(seedBase + 5) * 0.5;
     }
     return arr;
   }, []);
@@ -182,7 +192,7 @@ function NodeLayer() {
 
 function PulseRing({ index }: { index: number }) {
   const ringRef = useRef<THREE.Mesh>(null);
-  const t = useRef(Math.random() * Math.PI * 2);
+  const t = useRef(seededUnit(90000 + index) * Math.PI * 2);
 
   useFrame((_, delta) => {
     if (!ringRef.current) return;
@@ -211,9 +221,10 @@ function DeepStarfield() {
     const count = 800;
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      const r = 6 + Math.random() * 8;
+      const seedBase = 110000 + i * 17;
+      const theta = seededUnit(seedBase + 1) * Math.PI * 2;
+      const phi = Math.acos(2 * seededUnit(seedBase + 2) - 1);
+      const r = 6 + seededUnit(seedBase + 3) * 8;
       arr[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       arr[i * 3 + 2] = r * Math.cos(phi);
@@ -225,7 +236,7 @@ function DeepStarfield() {
     const count = 800;
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const type = Math.random();
+      const type = seededUnit(130000 + i * 7);
       if (type < 0.6) { arr[i*3]=0.9; arr[i*3+1]=0.85; arr[i*3+2]=0.75; }
       else if (type < 0.8) { arr[i*3]=0.6; arr[i*3+1]=0.75; arr[i*3+2]=1.0; }
       else { arr[i*3]=1.0; arr[i*3+1]=0.7; arr[i*3+2]=0.4; }
@@ -249,11 +260,12 @@ function NebulaCloud() {
     const count = 120;
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const r = 1.5 + Math.random() * 1.2;
-      arr[i * 3] = Math.cos(angle) * r + (Math.random() - 0.5) * 0.8;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 0.6;
-      arr[i * 3 + 2] = Math.sin(angle) * r + (Math.random() - 0.5) * 0.8;
+      const seedBase = 150000 + i * 11;
+      const angle = seededUnit(seedBase + 1) * Math.PI * 2;
+      const r = 1.5 + seededUnit(seedBase + 2) * 1.2;
+      arr[i * 3] = Math.cos(angle) * r + centeredUnit(seedBase + 3) * 0.8;
+      arr[i * 3 + 1] = centeredUnit(seedBase + 4) * 0.6;
+      arr[i * 3 + 2] = Math.sin(angle) * r + centeredUnit(seedBase + 5) * 0.8;
     }
     return arr;
   }, []);

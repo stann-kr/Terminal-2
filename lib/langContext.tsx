@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import { getLang, setLang as storeLang, type Lang } from '@/lib/lang';
 import { i18n } from '@/lib/i18n';
 
@@ -13,11 +13,7 @@ interface LangCtx {
 const LangContext = createContext<LangCtx>({ lang: 'ko', setLang: () => {} });
 
 export function LangProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>('ko');
-
-  useEffect(() => {
-    setLangState(getLang());
-  }, []);
+  const [lang, setLangState] = useState<Lang>(() => getLang());
 
   const setLang = (l: Lang) => {
     setLangState(l);

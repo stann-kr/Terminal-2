@@ -48,7 +48,7 @@ function StatusLine({ label, value, accent, warn, cyan }: Partial<StatusItem>) {
 }
 
 function ProgressLine({ label }: { label: string }) {
-  const [pct, setPct] = useState(0);
+  const [pct, setPct] = useState(() => Math.floor(Math.random() * 20) + 75);
   const BARS = 15;
 
   useEffect(() => {
@@ -59,7 +59,6 @@ function ProgressLine({ label }: { label: string }) {
         return Math.max(70, Math.min(98, next)); // 70~98% 사이 유지
       });
     }, 2000);
-    setPct(Math.floor(Math.random() * 20) + 75);
     return () => clearInterval(interval);
   }, []);
 
@@ -80,13 +79,9 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
   const [waking, setWaking] = useState(false);
   const [time, setTime] = useState('');
   const [visibleItems, setVisibleItems] = useState<number[]>([]);
-  const [lastAccess, setLastAccess] = useState('');
+  const [lastAccess] = useState(() => new Date().toISOString().split('T')[0]);
   const wakeTriggered = useRef(false);
   const wakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    setLastAccess(new Date().toISOString().split('T')[0]);
-  }, []);
 
   useEffect(() => {
     const update = () => {

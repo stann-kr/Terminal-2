@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
 import { hasVisited, markVisited } from '@/lib/visitState';
@@ -9,13 +9,8 @@ import SleepScreen from '@/components/SleepScreen';
 type Phase = 'loading' | 'boot' | 'sleep' | 'done';
 
 export default function EntryController() {
-  const [phase, setPhase] = useState<Phase>('loading');
+  const [phase, setPhase] = useState<Phase>(() => (hasVisited() ? 'sleep' : 'boot'));
   const router = useRouter();
-
-  useEffect(() => {
-    const visited = hasVisited();
-    setPhase(visited ? 'sleep' : 'boot');
-  }, []);
 
   const handleBootComplete = () => {
     markVisited();
@@ -27,10 +22,6 @@ export default function EntryController() {
     setPhase('done');
     router.push('/home');
   };
-
-  if (phase === 'loading') {
-    return <div className="fixed inset-0 bg-terminal-bg-base" />;
-  }
 
   return (
     <AnimatePresence mode="wait">

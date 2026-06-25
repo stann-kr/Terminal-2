@@ -108,7 +108,7 @@ const DecodeText = memo(function DecodeText({
       if (!scrambleOnUpdate) {
         // 초기 애니메이션 완료: scramble ref 해제 → 이후 재트리거 시 draw() 무시
         animationSettledRef.current = true;
-        (scrambleRef as any).current = null; // eslint-disable-line @typescript-eslint/no-explicit-any
+        scrambleNodeRef.current = null;
         // 현재 실제 텍스트로 즉시 업데이트 (frozenText와 다를 수 있음)
         if (measureRef.current) {
           measureRef.current.textContent = text;
@@ -123,6 +123,7 @@ const DecodeText = memo(function DecodeText({
       onComplete?.();
     },
   });
+  const scrambleNodeRef = scrambleRef as { current: HTMLElement | null };
 
   // delay 구현: 마운트 시 1회, delay ms 후 isDelaying 해제
   useEffect(() => {
@@ -280,8 +281,7 @@ const DecodeText = memo(function DecodeText({
     // settled가 아닌 경우에만 scramble ref 연결
     // (scrambleOnUpdate=true는 settled 상태가 되지 않으므로 항상 연결됨)
     if (!animationSettledRef.current) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (scrambleRef as any).current = node;
+      scrambleNodeRef.current = node;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // 빈 deps: scrambleRef(stable RefObject)와 animationSettledRef(ref)는 안정적
@@ -290,8 +290,7 @@ const DecodeText = memo(function DecodeText({
   if (autoHeight) {
     return (
       <Tag
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ref={setTagRef as any}
+        ref={setTagRef as never}
         className={className}
         style={{ whiteSpace: "pre-wrap", display: "block", ...style }}
       >
@@ -313,8 +312,7 @@ const DecodeText = memo(function DecodeText({
       }}
     >
       <Tag
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ref={setTagRef as any}
+        ref={setTagRef as never}
         className={className}
         style={{ whiteSpace: "pre-wrap", display: "block", ...style }}
       >

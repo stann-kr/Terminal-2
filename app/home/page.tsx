@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import AnimatedHeight from "@/components/ui/AnimatedHeight";
@@ -36,7 +37,7 @@ export default function HomePage() {
 
   const upcomingEvent = events.find((e) => e.status === "UPCOMING") ?? null;
 
-  const countdownTarget = (() => {
+  const countdownTarget = useMemo(() => {
     if (upcomingEvent) {
       return new Date(`${upcomingEvent.date}T${upcomingEvent.time.replace(" KST", "")}:00+09:00`);
     }
@@ -46,11 +47,10 @@ export default function HomePage() {
       return new Date(`${latest.date}T${latest.time.replace(" KST", "")}:00+09:00`);
     }
     return null;
-  })();
+  }, [events, upcomingEvent]);
 
   const eventDate = countdownTarget;
-
-  const isElapsed = countdownTarget ? countdownTarget.getTime() < Date.now() : false;
+  const isElapsed = upcomingEvent === null && countdownTarget !== null;
 
   const eventDateLabel = upcomingEvent
     ? new Date(upcomingEvent.date)
