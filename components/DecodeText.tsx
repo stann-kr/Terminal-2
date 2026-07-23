@@ -291,6 +291,7 @@ const DecodeText = memo(function DecodeText({
     return (
       <Tag
         ref={setTagRef as never}
+        aria-label={text}
         className={className}
         style={{ whiteSpace: "pre-wrap", display: "block", ...style }}
       >
@@ -313,6 +314,7 @@ const DecodeText = memo(function DecodeText({
     >
       <Tag
         ref={setTagRef as never}
+        aria-label={text}
         className={className}
         style={{ whiteSpace: "pre-wrap", display: "block", ...style }}
       >

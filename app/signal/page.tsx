@@ -39,7 +39,11 @@ export default function SignalPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submittingRef.current || !form.consent) return;
+    if (submittingRef.current) return;
+    if (!form.consent) {
+      setError(t.signal.errors.CONSENT_REQUIRED);
+      return;
+    }
     setError('');
 
     submittingRef.current = true;
@@ -120,8 +124,9 @@ export default function SignalPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
 
                 {/* 이메일 */}
-                <FormField label={t.signal.labelEmail}>
+                <FormField label={t.signal.labelEmail} htmlFor="signal-email">
                   <input
+                    id="signal-email"
                     type="email"
                     value={form.email}
                     onChange={handleChange('email')}
@@ -131,12 +136,13 @@ export default function SignalPage() {
                 </FormField>
 
                 {/* 인스타그램 */}
-                <FormField label={t.signal.labelInstagram}>
+                <FormField label={t.signal.labelInstagram} htmlFor="signal-instagram">
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none select-none font-mono text-small md:text-body text-terminal-accent-tertiary">
                       @
                     </span>
                     <input
+                      id="signal-instagram"
                       type="text"
                       value={form.instagram.replace(/^@/, '')}
                       onChange={(e) => {
@@ -173,11 +179,15 @@ export default function SignalPage() {
                 </AnimatePresence>
 
                 {/* 제출 버튼 */}
-                <div
-                  className={`flex justify-end pt-2 ${!form.consent ? 'opacity-30 pointer-events-none' : ''}`}
-                >
+                {!form.consent && (
+                  <div className="font-mono text-terminal-muted">
+                    <MetaText text={t.signal.errors.CONSENT_REQUIRED} />
+                  </div>
+                )}
+                <div className="flex justify-end pt-2">
                   <SubmitButton
                     isSubmitting={isSubmitting}
+                    disabled={!form.consent}
                     variant="primary"
                     defaultText={t.signal.submitBtn}
                     loadingText={t.signal.submitting}
