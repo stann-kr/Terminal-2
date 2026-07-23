@@ -1,30 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# terminal-2 — STANN OS LIVE
 
-## Getting Started
+terminal-2 is the STANN OS LIVE surface for `https://terminal.stann.kr`.
 
-First, run the development server:
+- Surface role: LIVE
+- SYS.ID: TM-02
+- Related surfaces:
+  - HUB: `https://stann.kr`
+  - ARCHIVE: `https://lumo.stann.kr`
+  - LIVE: `https://terminal.stann.kr`
+
+## Stack
+
+- Next.js 16 App Router
+- React 19
+- Tailwind CSS
+- TanStack Query
+- Cloudflare OpenNext
+- Cloudflare D1 + Drizzle schema
+- Docker for local/container workflows
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Default dev URL:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Verification
 
-## Learn More
+Run these before treating the project as healthy:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+npm run typecheck
+npm run build
+npm run build:worker
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`npm run build` intentionally runs `scripts/check-token-sync.mjs` first through the `prebuild` hook. This confirms the local STANN OS token copy at `app/stann-os.css` matches the expected canonical token hash.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Cloudflare / OpenNext
+
+Build a Cloudflare Worker bundle:
+
+```bash
+npm run build:worker
+```
+
+Run local Cloudflare preview:
+
+```bash
+npm run cf:preview
+```
+
+Deploy:
+
+```bash
+npm run deploy
+```
+
+Important: D1 migrations are not automatically applied by `npm run deploy`. Apply and verify migrations as a separate deployment step before or alongside Worker deployment.
+
+## D1
+
+Configuration:
+
+- `wrangler.toml`
+- `drizzle.config.ts`
+- `lib/db/schema.ts`
+- `migrations/*.sql`
+
+D1 binding name:
+
+```text
+DB
+```
+
+Local migration apply example:
+
+```bash
+npx wrangler d1 migrations apply terminal-db --local
+```
+
+Remote migration apply example:
+
+```bash
+npx wrangler d1 migrations apply terminal-db --remote
+```
+
+## Public write endpoints
+
+These routes accept public writes and must be protected by validation, body guards, and abuse controls before high-traffic public use:
+
+- `POST /api/gate/request`
+- `POST /api/signal`
+- `POST /api/transmit`
+
+Current baseline guards include JSON content-type and payload-size checks. Rate limiting / Turnstile / stronger abuse controls should still be added before broad public launch.
+
+## Documentation
+
+Repo-local project docs live in `.docs/`:
+
+- `.docs/README.md`
+- `.docs/REQUIREMENTS.md`
+- `.docs/TECH_SPEC.md`
+- `.docs/CHANGE_LOG.md`
+- `.docs/WORK_LOG.md`
+- `.docs/TROUBLESHOOTING.md`
