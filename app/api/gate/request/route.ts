@@ -3,6 +3,7 @@ import { eq, and, count } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
 import { accessRequests, artists, events, signal } from "@/lib/db/schema";
+import { readJsonBody } from "@/lib/api/guards";
 import { generateId } from "@/lib/utils/id";
 
 const MS_IN_DAY = 86_400_000;
@@ -21,7 +22,9 @@ const ACCESS_WINDOW_DAYS = 30;
  */
 export async function POST(request: Request) {
   try {
-    const body = await request.json() as Record<string, unknown>;
+    const parsed = await readJsonBody<Record<string, unknown>>(request, 16_384);
+    if (!parsed.ok) return parsed.response;
+    const body = parsed.body;
 
     const name = (body?.name as string | undefined)?.trim() ?? "";
     const email = (body?.email as string | undefined)?.trim().toLowerCase() ?? "";

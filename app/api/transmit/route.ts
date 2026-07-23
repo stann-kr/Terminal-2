@@ -3,6 +3,7 @@ import { desc, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
 import { transmitLogs } from "@/lib/db/schema";
+import { readJsonBody } from "@/lib/api/guards";
 
 const PAGE_SIZE = 5;
 
@@ -57,7 +58,9 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   try {
-    const body = await request.json() as Record<string, string>;
+    const parsed = await readJsonBody<Record<string, string>>(request, 8_192);
+    if (!parsed.ok) return parsed.response;
+    const body = parsed.body;
     const rawHandle: string = body?.handle ?? "";
     const rawMessage: string = body?.message ?? "";
     const deviceId: string = body?.deviceId ?? "";
@@ -71,7 +74,7 @@ export async function POST(request: Request) {
     if (message.length > 280) return NextResponse.json({ error: "MESSAGE_TOO_LONG" }, { status: 400 });
 
     const now = new Date();
-    const id = String(now.getTime());
+    const id = crypto.randomUUID();
     const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
     const ts = `${kst.getUTCFullYear()}.${String(kst.getUTCMonth() + 1).padStart(2, "0")}.${String(kst.getUTCDate()).padStart(2, "0")} / ${String(kst.getUTCHours()).padStart(2, "0")}:${String(kst.getUTCMinutes()).padStart(2, "0")}`;
 

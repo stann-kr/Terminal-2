@@ -3,11 +3,14 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
 import { signal } from "@/lib/db/schema";
+import { readJsonBody } from "@/lib/api/guards";
 import { generateId } from "@/lib/utils/id";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json() as Record<string, unknown>;
+    const parsed = await readJsonBody<Record<string, unknown>>(request, 8_192);
+    if (!parsed.ok) return parsed.response;
+    const body = parsed.body;
 
     const email = (body?.email as string | undefined)?.trim().toLowerCase() ?? "";
     const instagram = (body?.instagram as string | undefined)?.trim() ?? "";
