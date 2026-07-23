@@ -90,6 +90,7 @@ export const requestKo = {
   eventDate: (date: string, time: string) => `이벤트 날짜 — ${date} · ${time}`,
   /** `신청 가능까지 T-${n}일` */
   windowCountdown: (n: number) => `신청 가능까지 T-${n}일`,
+  eventElapsed: "이벤트가 종료되어 신청이 닫혔습니다.",
   noEvent: "예정된 이벤트 없음. 나중에 다시 확인하세요.",
   committed: "✓ 신청 완료",
   committedSub: "여정에 함께해 주셔서 감사합니다.",
@@ -329,6 +330,7 @@ export const requestEn = {
     `NEXT RESPONSE WINDOW OPENS ${days} DAYS BEFORE EVENT`,
   eventDate: (date: string, time: string) => `EVENT DATE — ${date} · ${time}`,
   windowCountdown: (n: number) => `WINDOW OPENS IN T-${n} DAYS`,
+  eventElapsed: "EVENT HAS ELAPSED — REQUEST WINDOW CLOSED.",
   noEvent: "NO UPCOMING EVENT SCHEDULED. CHECK BACK LATER.",
   committed: "✓ REQUEST SUBMITTED",
   committedSub: "Thank you for joining the voyage.",

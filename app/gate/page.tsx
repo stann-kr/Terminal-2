@@ -7,10 +7,12 @@ import PageLayout, { itemVariants } from "@/components/PageLayout";
 import { LabelText, SubtitleText, MetaText, HeadingText } from "@/components/ui/TerminalText";
 import ReturnLink from "@/components/ui/ReturnLink";
 import PageHeader from "@/components/ui/PageHeader";
+import TerminalPanel from "@/components/TerminalPanel";
 import TerminalButton from "@/components/TerminalButton";
 import EventDetail from "./EventDetail";
 import { useT } from "@/lib/langContext";
 import { fetchEvents, eventKeys } from "@/lib/queries/events";
+import { getArchivedOrElapsedEvents, getFutureUpcomingEvent } from "@/lib/eventLifecycle";
 
 export default function GatePage() {
   const t = useT();
@@ -22,8 +24,8 @@ export default function GatePage() {
     queryFn: fetchEvents,
   });
 
-  const upcomingEvent = events.find((e) => e.status === "UPCOMING") || events[0] || null;
-  const archivedEvents = events.filter((e) => e.status === "ARCHIVED");
+  const upcomingEvent = getFutureUpcomingEvent(events);
+  const archivedEvents = getArchivedOrElapsedEvents(events);
   const effectiveArchiveId = selectedArchive || archivedEvents[0]?.id || "";
   const selectedEvent =
     tab === "upcoming"
@@ -80,7 +82,7 @@ export default function GatePage() {
               transition={{ duration: 0.15 }}
               className="space-y-4"
             >
-              {upcomingEvent && (
+              {upcomingEvent ? (
                 <>
                   {/* Event header - 정보 가독성 유지 */}
                   <div className="border border-terminal-accent-secondary/30 px-4 py-4 bg-terminal-bg-panel">
@@ -119,6 +121,13 @@ export default function GatePage() {
                     </Link>
                   </div>
                 </>
+              ) : (
+                <TerminalPanel title="REQUEST_STATUS" accent="alert">
+                  <div className="text-center py-6 space-y-2 font-mono">
+                    <LabelText text={t.request.noEvent} />
+                    <MetaText text={t.request.eventElapsed} />
+                  </div>
+                </TerminalPanel>
               )}
             </motion.div>
           ) : (

@@ -12,6 +12,7 @@ import ConsentCheckbox from '@/components/ui/ConsentCheckbox';
 import ConsentBlock from '@/components/ui/ConsentBlock';
 import { FormField, inputClassBase, inputAccentClass } from '@/components/ui/FormField';
 import { useLang, useT } from '@/lib/langContext';
+import { getRequestWindowState } from '@/lib/eventLifecycle';
 import type { TerminalEvent } from '@/lib/eventData';
 
 const ACCESS_WINDOW_DAYS = 30;
@@ -92,10 +93,9 @@ function RequestAccessContent() {
         if (data.length > 0) {
           const ev = data[0];
           setEvent(ev);
-          const eventDateTime = new Date(`${ev.date}T${ev.time.replace(' KST', '')}:00+09:00`);
-          const days = (eventDateTime.getTime() - Date.now()) / 86_400_000;
-          setDaysUntil(Math.ceil(days));
-          setIsActive(days >= 0 && days <= ACCESS_WINDOW_DAYS);
+          const windowState = getRequestWindowState(ev, ACCESS_WINDOW_DAYS);
+          setDaysUntil(windowState.daysUntil);
+          setIsActive(windowState.isActive);
         }
       })
       .catch(() => setError(t.common.signalUnstable))
@@ -121,7 +121,11 @@ function RequestAccessContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submittingRef.current || !codeVerified) return;
+    if (submittingRef.current) return;
+    if (!codeVerified) {
+      setError(t.request.errors.INVALID_ACCESS_CODE);
+      return;
+    }
     setError('');
 
     submittingRef.current = true;
@@ -157,7 +161,7 @@ function RequestAccessContent() {
 
   // 비활성화 공통 클래스
   const disabledClass = !codeVerified
-    ? 'opacity-30 pointer-events-none select-none'
+    ? 'opacity-30 select-none'
     : 'transition-opacity duration-300';
 
   return (
@@ -187,7 +191,13 @@ function RequestAccessContent() {
                     <div><MetaText text={t.request.windowInfo(ACCESS_WINDOW_DAYS)} /></div>
                     <div><MetaText text={t.request.eventDate(event.date.replace(/-/g, '.'), event.time)} /></div>
                     <div className="pt-1 text-terminal-accent-primary">
-                      <MetaText text={t.request.windowCountdown(daysUntil - ACCESS_WINDOW_DAYS)} />
+                      <MetaText
+                        text={
+                          daysUntil < 0
+                            ? t.request.eventElapsed
+                            : t.request.windowCountdown(Math.max(0, daysUntil - ACCESS_WINDOW_DAYS))
+                        }
+                      />
                     </div>
                   </>
                 ) : (
@@ -240,9 +250,10 @@ function RequestAccessContent() {
               <form onSubmit={handleSubmit} className="space-y-4">
 
                 {/* 인증 코드 — 항상 활성화 */}
-                <FormField label={t.request.labelCode}>
+                <FormField label={t.request.labelCode} htmlFor="request-access-code">
                   <div className="relative">
                     <input
+                      id="request-access-code"
                       type="text"
                       value={form.accessCode}
                       onChange={handleCodeChange}
@@ -262,13 +273,20 @@ function RequestAccessContent() {
                   </div>
                 </FormField>
 
+                {!codeVerified && form.accessCode && !isVerifying && (
+                  <div className="font-mono text-terminal-accent-alert">
+                    <MetaText text={t.request.errors.INVALID_ACCESS_CODE} />
+                  </div>
+                )}
+
                 {/* 이하 필드 — 코드 미검증 시 비활성화 */}
                 <div className={disabledClass}>
 
                   {/* 이름 */}
                   <div className="space-y-4">
-                    <FormField label={t.request.labelName}>
+                    <FormField label={t.request.labelName} htmlFor="request-name">
                       <input
+                        id="request-name"
                         type="text"
                         value={form.name}
                         onChange={handleChange('name')}
@@ -279,8 +297,9 @@ function RequestAccessContent() {
                     </FormField>
 
                     {/* 이메일 */}
-                    <FormField label={t.request.labelEmail}>
+                    <FormField label={t.request.labelEmail} htmlFor="request-email">
                       <input
+                        id="request-email"
                         type="email"
                         value={form.email}
                         onChange={handleChange('email')}
@@ -291,12 +310,13 @@ function RequestAccessContent() {
                     </FormField>
 
                     {/* 인스타그램 */}
-                    <FormField label={t.request.labelInstagram}>
+                    <FormField label={t.request.labelInstagram} htmlFor="request-instagram">
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none select-none font-mono text-small md:text-body text-terminal-accent-secondary">
                           @
                         </span>
                         <input
+                          id="request-instagram"
                           type="text"
                           value={form.instagram.replace(/^@/, '')}
                           onChange={(e) => {
@@ -417,9 +437,15 @@ function RequestAccessContent() {
                 </AnimatePresence>
 
                 {/* 제출 버튼 */}
-                <div className={`flex justify-end pt-2 ${!codeVerified ? 'opacity-30 pointer-events-none' : ''}`}>
+                {!codeVerified && (
+                  <div className="font-mono text-terminal-muted">
+                    <MetaText text={t.request.errors.INVALID_ACCESS_CODE} />
+                  </div>
+                )}
+                <div className="flex justify-end pt-2">
                   <SubmitButton
                     isSubmitting={isSubmitting}
+                    disabled={!codeVerified}
                     variant="primary"
                     defaultText={t.request.submitBtn}
                     loadingText={t.request.submitting}

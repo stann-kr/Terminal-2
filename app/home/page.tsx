@@ -16,6 +16,7 @@ import CountdownBlock from "@/components/ui/CountdownBlock";
 import LangToggle from "@/components/ui/LangToggle";
 import { useT } from "@/lib/langContext";
 import { fetchEvents, eventKeys } from "@/lib/queries/events";
+import { getArchivedOrElapsedEvents, getEventDateTime, getFutureUpcomingEvent } from "@/lib/eventLifecycle";
 
 export default function HomePage() {
   const t = useT();
@@ -35,25 +36,25 @@ export default function HomePage() {
     queryFn: fetchEvents,
   });
 
-  const upcomingEvent = events.find((e) => e.status === "UPCOMING") ?? null;
+  const upcomingEvent = useMemo(() => getFutureUpcomingEvent(events), [events]);
 
   const countdownTarget = useMemo(() => {
     if (upcomingEvent) {
-      return new Date(`${upcomingEvent.date}T${upcomingEvent.time.replace(" KST", "")}:00+09:00`);
+      return getEventDateTime(upcomingEvent);
     }
-    const archived = events.filter((e) => e.status === "ARCHIVED");
+    const archived = getArchivedOrElapsedEvents(events);
     if (archived.length > 0) {
-      const latest = archived.sort((a, b) => b.date.localeCompare(a.date))[0];
-      return new Date(`${latest.date}T${latest.time.replace(" KST", "")}:00+09:00`);
+      return getEventDateTime(archived[0]);
     }
     return null;
   }, [events, upcomingEvent]);
 
   const eventDate = countdownTarget;
   const isElapsed = upcomingEvent === null && countdownTarget !== null;
+  const displayEvent = upcomingEvent ?? getArchivedOrElapsedEvents(events)[0] ?? null;
 
-  const eventDateLabel = upcomingEvent
-    ? new Date(upcomingEvent.date)
+  const eventDateLabel = displayEvent
+    ? new Date(displayEvent.date)
         .toLocaleDateString("en-US", {
           month: "short",
           day: "2-digit",
@@ -138,7 +139,7 @@ export default function HomePage() {
                 <HeadingText
                   autoHeight
                   className="font-bold text-terminal-accent-primary tracking-[0.2em]"
-                  text={upcomingEvent?.session ?? "—"} as="span"
+                  text={displayEvent?.session ?? "—"} as="span"
                 />
               </div>
               <div className="mt-1 tracking-[0.1em]">
@@ -146,8 +147,8 @@ export default function HomePage() {
                   className="text-terminal-subdued"
                   autoHeight
                   text={
-                    upcomingEvent
-                      ? `${upcomingEvent.subtitle} // ${upcomingEvent.venue}`
+                    displayEvent
+                      ? `${displayEvent.subtitle} // ${displayEvent.venue}`
                       : "—"
                   }
                 />
