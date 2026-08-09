@@ -106,11 +106,10 @@ Current baseline guards include JSON content-type and payload-size checks. Rate 
 
 ## Documentation
 
-Repo-local project docs live in `.docs/`:
+Public project documentation:
 
-- `.docs/README.md`
-- `.docs/REQUIREMENTS.md`
-- `.docs/TECH_SPEC.md`
-- `.docs/CHANGE_LOG.md`
-- `.docs/WORK_LOG.md`
-- `.docs/TROUBLESHOOTING.md`
+- [Documentation overview](docs/README.md)
+- [Requirements](docs/REQUIREMENTS.md)
+- [Technical specification](docs/TECH_SPEC.md)
+- [Change log](docs/CHANGE_LOG.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)

@@ -39,13 +39,19 @@ next-env.d.ts
 .open-next/
 dist/
 
-# ai agents context
+# 로컬 작업 지침 및 설정 (공개 금지)
+/CLAUDE.md
+/AGENTS.md
+/WORK_LOG.md
 .agents/
 .claude/
+.codex/
 build_log.txt
 
-# private
-.docs/private/
+# 프로젝트 문서 정책
+# docs/ = GitHub에 올릴 공개 프로젝트 문서
+# .docs/ = 개인 작업 및 재진입 문서 (GitHub 업로드 금지)
+/.docs/
 # git worktrees
 .worktrees/
 

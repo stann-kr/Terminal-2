@@ -5,14 +5,14 @@
 ## 1. 개요
 * 프로젝트 명: terminal-2 / STANN OS LIVE
 * 표면 역할: LIVE (`TM-02`) — 공개 URL `https://terminal.stann.kr`
-* 주요 기술 스택: [[Next.js]] 16 App Router, [[React]] 19, [[Tailwind CSS]], [[Docker]] (Apple Silicon), [[Cloudflare]] OpenNext Worker, [[Cloudflare]] [[D1]], [[Drizzle ORM]], TanStack Query
+* 주요 기술 스택: Next.js 16 App Router, React 19, Tailwind CSS, Docker (Apple Silicon), Cloudflare OpenNext Worker, Cloudflare D1, Drizzle ORM, TanStack Query
 * 디자인 시스템: STANN OS 공통 토큰 + terminal-2 이벤트 스킨, 모던 터미널 인터페이스 / 레트로 퓨처리즘 스타일 적용
 
 ## 2. 주요 아키텍처 원칙
-* **Apple Silicon 최적화 [[Docker]] 환경:** Docker는 로컬/dev 또는 prod-like smoke 용도로 사용한다. 공개 배포의 정본 artifact는 `@opennextjs/cloudflare` Worker bundle이다.
-* **DB 연동:** [[Cloudflare]] [[D1]] 바인딩(`DB`) 및 [[Drizzle ORM]]을 활용한 데이터 관리.
-* **페이지 전환 아키텍처 (`pretext` 기반):** DOM Reflow를 최소화하는 멀티라인 텍스트 측정 라이브러리인 `@chenglou/pretext`를 이용하여 혁신적인 페이지(상태) 전환 인터페이스 구현.
-* **UI/컴포넌트 설계:** 모든 값은 가급적 하드코딩을 피하고, 모듈화된 [[Tailwind CSS]] 클래스 혹은 설정 변수를 재활용.
+* **Apple Silicon 최적화 Docker 환경:** Docker는 로컬/dev 또는 prod-like smoke 용도로 사용한다. 공개 배포의 정본 artifact는 `@opennextjs/cloudflare` Worker bundle이다.
+* **DB 연동:** Cloudflare D1 바인딩(`DB`) 및 Drizzle ORM을 활용한 데이터 관리.
+* **텍스트 레이아웃 측정:** `@chenglou/pretext`로 디코딩 전 멀티라인 텍스트 치수를 계산하여 레이아웃 이동을 줄임.
+* **UI/컴포넌트 설계:** 모든 값은 가급적 하드코딩을 피하고, 모듈화된 Tailwind CSS 클래스 혹은 설정 변수를 재활용.
 
 ## 3. 기능 요구 사항
 * HOME: STANN OS LIVE 진입, 이벤트 카운트다운/elapsed 상태, 모듈 디렉토리 제공.

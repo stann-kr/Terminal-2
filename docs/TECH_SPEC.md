@@ -1,12 +1,12 @@
 # 기술 명세서 (Technical Specification)
 
-본 문서는 타 에이전트(AI 어시스턴트)가 개발 컨텍스트를 즉시 인계받아 작업을 이어갈 수 있도록, 프로젝트의 핵심 아키텍처 및 커스텀 컴포넌트 설계 명세를 기술함.
+본 문서는 프로젝트의 핵심 아키텍처, 커스텀 컴포넌트 설계, 운영 및 검증 계약을 기술한다.
 
 ## 1. 전역 아키텍처 및 렌더링 원칙
 
-- **프레임워크:** [[Next.js]] 16.2.3 (App Router 기반), [[React]] 19
-- **런타임 및 개발 환경:** [[Docker]] 호스트 컨테이너 내 구동됨 (Apple Silicon 환경의 `linux/arm64` 기반)
-- **[[UI-UX|UI/UX]] 미학(Aesthetics):** 심우주(Deep Space) 및 모노크롬 블루프린트(Monochrome Blueprint) 테마 수립. 차갑고 건조한 단색(Icy Blue, `#D6E5ED`) 기반의 시맨틱 색상 체계를 사용하며, 색수차를 배제하고 빛 번짐(Bloom)과 주사선(Scanline) 텍스처를 활용해 몰입감을 극대화함.
+- **프레임워크:** Next.js 16.2.11 (App Router 기반), React 19
+- **런타임 및 개발 환경:** 공개 배포는 OpenNext 기반 Cloudflare Worker bundle을 사용한다. 로컬 개발은 npm 스크립트를 기본으로 하며 Docker 환경도 지원한다.
+- **UI/UX 미학(Aesthetics):** 심우주(Deep Space) 및 모노크롬 블루프린트(Monochrome Blueprint) 테마 수립. 차갑고 건조한 단색(Icy Blue, `#D6E5ED`) 기반의 시맨틱 색상 체계를 사용하며, 색수차를 배제하고 빛 번짐(Bloom)과 주사선(Scanline) 텍스처를 활용해 몰입감을 극대화함.
 - **명명 규칙 및 코드 스타일:** 명확한 시맨틱 네이밍, 하드 코딩 지양. CSS 스타일링 시 Tailwind를 기본으로 하되, 복잡한 인라인 동적 속성은 `style` 객체로 관리함.
 
 ## 2. 타이포그래피 시스템
@@ -55,7 +55,7 @@
 
 ## 3. Page Transition 및 `DecodeText` 렌더링 (Cipher Decode 시스템)
 
-이전의 보편적 페이드인/아웃 전환 효과를 버려 완전히 터미널 특화형 텍스트 기반 Cipher(난수 복호화) 아키텍처로 통일됨.
+짧은 페이지 진입 전환 위에 터미널 특화형 텍스트 Cipher(난수 복호화) 애니메이션을 결합한다.
 
 ### 3.1 통합 컴포넌트 `<DecodeText>` 및 `<TerminalText>` 분석
 
@@ -69,26 +69,27 @@
   - `animateTextLength`: 타자기 효과 애니메이션 활성화 여부. 빈 문자열부터 길이가 늘어나는 연출로 레이아웃 점프 방지 기능을 보강함.
   - `delay` 및 `animateTextLength` 연동: 페이지 전환 시 텍스트가 즉시 노출되어 번쩍이는(Flash) 현상을 방지하기 위해 재생 시작 전까지 빈 상태를 유지함.
 - **레이아웃 보존 기술 (Layout Shift 방지):**
-  - 텍스트 길이가 시시각각 변동하면 줄바꿈이 빈번히 발생하여 브라우저의 전역 레이아웃 점프가 야기됨. 이를 원천 차단하기 위해 `@chenglou/pretext` 라이브러리의 DOM-less 텍스트 사이즈 측정을 `ResizeObserver` 및 `requestAnimationFrame`과 연계해 구동함.
+  - 텍스트 길이가 변할 때 생기는 줄바꿈과 레이아웃 이동을 줄이기 위해 `@chenglou/pretext`의 DOM-less 텍스트 측정을 사용한다. 자기 크기 관찰로 인한 피드백 루프를 피하도록 `ResizeObserver` 대신 `window.resize`와 `requestAnimationFrame`으로 재측정한다.
   - 컨테이너에 `overflow: hidden` 및 `height`, `min-height` 트랜지션을 동시 적용하여 텍스트의 동적 줄바꿈이 박스 크기를 급격하게 확장시키는 현상을 마스킹 처리함.
 
 ### 3.2 페이지 구조 (PageLayout & Transition)
 
 - **페이지 공통 래퍼:** `components/PageLayout.tsx` 및 `components/PageTransition.tsx`
 - **동작 원리:**
-  - 페이지 진입(Entry) 시에는 `framer-motion`의 `opacity` 전환 애니메이션을 주지 않음 (모든 진입은 `<DecodeText>`의 각 컴포넌트 스태거링 동작이 독점).
-  - 페이지 퇴장(Exit) 시에만 짧은 마이크로 애니메이션(`150ms opacity: 0`)을 통해 화면의 잔상을 즉시 차단함.
+  - 페이지 진입 시 `opacity: 0 → 1`을 300ms linear로 전환한다.
+  - 페이지 퇴장은 `opacity: 0`, duration 0으로 즉시 처리한다.
+  - 페이지 내부 텍스트는 `<DecodeText>` 프리셋과 `itemVariants`의 짧은 이동 효과를 별도로 사용한다.
 
-## 4. 타 에이전트를 위한 개발 가이드라인
+## 4. 개발 가이드라인
 
 1. **신규 페이지 혹은 컴포넌트 개발 시 규칙:**
    - 정적으로 고정되는 텍스트(예: 헤더, 라벨, 탭 이름, 로그 등)는 반드시 `<TerminalText>` 계열 컴포넌트(`TitleText`, `HeadingText` 등)로 감싸서 렌더링할 것. `DecodeText`를 직접 사용하는 것은 지양함.
    - `framer-motion`의 `variants` 내 애니메이션을 사용할 때는 `transition.ease` 배열 타입 충돌 여부(`Type 'number[]' is not assignable to type 'Easing...'`)를 주의하고, 반드시 기본 제공 문자열 네이밍 에셋(`ease: 'easeOut'`)으로 완화하여 기재함.
-2. **Typescript 무결성 확보 규칙:**
-   - 렌더링 컴포넌트는 `use client` 디렉티브 선언을 엄수함.
+2. **TypeScript 무결성 확보 규칙:**
+   - hook, 브라우저 API, Framer Motion을 사용하는 컴포넌트만 client boundary로 선언한다.
    - 3D 표현을 다루는 `@react-three/fiber` 환경에서 `THREE.Line` 등 WebGL 객체를 넣을 때 DOM 태그(`<line>`)와 충돌하는 것을 막기 위하여 항상 `<primitive object={}>`로 캐스팅하여 주입함.
-3. **환경 관리 가이드 ([[Docker]]):**
-   - 로컬 시스템 명령어 제안을 일절 배제함. 모듈 패키지는 `docker compose exec web npm install <패키지>`로 호스트-컨테이너 간 `node_modules` 변이를 제어할 것.
+3. **환경 관리 가이드 (Docker):**
+   - 호스트 개발은 저장소 루트의 npm 스크립트를 사용한다. Docker 전용 환경에서 패키지를 추가할 때는 실행 중인 컨테이너의 `docker compose exec web npm install <패키지>`를 사용해 anonymous `node_modules` volume과의 불일치를 피한다.
 
 ## 5. 통합 디자인 시스템 및 테마 관리
 
@@ -99,7 +100,7 @@
 - **위치:** `tailwind.config.js`, `app/globals.css`
 - **핵심 테마 변수:**
   - `terminal-primary`: 시스템 기본 텍스트 색상 (밝은 미색/화이트 계열)
-  - `terminal-accent-*`: 강조색 토큰 (`amber`, `cyan`, `hot`, `gold`)
+  - `terminal-accent-*`: 강조색 토큰 (`primary`, `secondary`, `tertiary`, `alert`, `warn`)
   - `terminal-bg-*`: 배경색 토큰 (`panel`, `panel-border`)
   - `terminal-muted`, `terminal-subdued`: 보조 및 비활성 텍스트 테마
 - **커스텀 유틸리티:**
@@ -112,7 +113,7 @@
 
 ## 6. 데이터 모델 및 DB 아키텍처 (Flexible JSON Schema)
 
-[[Cloudflare]] [[D1]]의 제약 사항과 개발 생산성을 고려하여, 핵심 비즈니스 로직이 담긴 테이블(`events`, `artists`)은 고정된 컬럼 대신 유연한 JSON 구조를 채택함.
+Cloudflare D1의 제약 사항과 개발 생산성을 고려하여, 핵심 비즈니스 로직이 담긴 테이블(`events`, `artists`)은 고정된 컬럼 대신 유연한 JSON 구조를 채택함.
 
 ### 6.1 `events` 테이블 설계
 - **`id` (PK):** 이벤트 식별자 (예: `TRM-02`)
@@ -130,7 +131,7 @@
 ### 6.3 `access_requests` 및 `transmit_logs`
 - 이들은 트랜잭션 성격이 강하므로 전통적인 관계형 컬럼 구조를 유지하여 쿼리 성능과 데이터 무결성을 확보함.
 
-## 8. 다국어(i18n) 아키텍처
+## 7. 다국어(i18n) 아키텍처
 
 ### 구조
 - `lib/i18n.ts` — ko/en 번역 쌍 전체 정의. 섹션별 객체로 분리 (common, home, gate, request, lineup, status, transmit, link, dirDesc, manifesto)
@@ -155,7 +156,7 @@ t.dirDesc.gate               // 디렉토리 설명
 
 ---
 
-## 9. 서버 상태 관리 (TanStack Query)
+## 8. 서버 상태 관리 (TanStack Query)
 
 ### 설정
 - `providers/query-provider.tsx` — 앱 루트(`app/layout.tsx`)에 `<QueryProvider>` 래핑
@@ -164,7 +165,7 @@ t.dirDesc.gate               // 디렉토리 설명
 - `retry: 1` — 실패 시 1회 자동 재시도
 
 ### Query Key 팩토리 패턴
-- `lib/queries/events.ts` — `eventKeys.list()` → home·lineup·gate 3페이지가 동일 키를 참조해 캐시 공유
+- `lib/queries/events.ts` — `eventKeys.list()` → home·lineup·gate·status가 동일 키를 참조해 캐시 공유
 - `lib/queries/transmit.ts` — `transmitKeys.list(page)` → 페이지 번호별 독립 캐시
 
 ### 사용 패턴
@@ -183,13 +184,12 @@ const { mutate } = useMutation({
 ```
 
 ### 적용 대상 (API 호출 있는 페이지만)
-- `app/home/page.tsx`, `app/lineup/page.tsx`, `app/gate/page.tsx`, `app/transmit/page.tsx`
-- `app/status/page.tsx`, `app/link/page.tsx` — 정적 데이터이므로 미적용
+- `app/home/page.tsx`, `app/lineup/page.tsx`, `app/gate/page.tsx`, `app/status/page.tsx`, `app/transmit/page.tsx`
+- `app/link/page.tsx` — 정적 데이터이므로 미적용
 
 ---
 
-## 7. 알려진 미해결 과제
+## 9. 운영 주의사항
 
-- **빌드 시 `NODE_ENV` 주의:** `docker-compose.yml`의 `NODE_ENV=development`가 `next build`에 전파되면 [[React]] 개발 빌드 사용으로 인해 `_global-error` / `_not-found` SSG 프리렌더링 실패. `package.json`의 `build` 스크립트(`cross-env NODE_ENV=production next build`)로 해결됨 — 빌드 스크립트를 수정하지 말 것.
-- **[[TypeScript]] 타입 무결성:** `framer-motion` 및 `@react-three/fiber` 환경에서의 전역 타입 선언 미흡으로 인한 `JSX.IntrinsicElements` 에러. (런타임 영향은 없으나 빌드 시 CI 환경 검증 필요)
-- **모듈 해석 이슈 (중요):** `docker-compose.yml`의 `node_modules`는 anonymous volume(`- /app/node_modules`)으로 선언됨. `docker compose run --rm web npm install <pkg>`로 설치 시 컨테이너 종료와 함께 설치 내용이 사라짐. **반드시 실행 중인 컨테이너에서 설치**: `docker compose exec web npm install <패키지>`. 설치 후 `docker compose restart web` 필요.
+- **빌드 환경:** `package.json`의 build 스크립트가 `cross-env NODE_ENV=production next build`로 production 모드를 고정한다. 이 보장은 `_global-error`와 `_not-found` 프리렌더링에 필요하다.
+- **Docker 패키지 설치:** `docker-compose.yml`의 `node_modules`는 anonymous volume이다. Docker 환경의 패키지 변경은 실행 중인 컨테이너에서 수행하고 이미지 재빌드 여부를 함께 판단한다.
