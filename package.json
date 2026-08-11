@@ -38,6 +38,7 @@
     "postcss": "^8.5.22",
     "tailwindcss": "^3.4.17",
     "typescript": "^5",
+    "vitest": "^4.1.10",
     "wrangler": "^4.113.0"
   },
   "name": "next-app",
@@ -51,8 +52,10 @@
     "dev": "cross-env NODE_ENV=development next dev -H 0.0.0.0 -p 3005",
     "start": "cross-env NODE_ENV=production next start -H 0.0.0.0 -p 3005",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:run": "vitest run",
     "typecheck": "tsc --noEmit",
-    "postinstall": "echo 'use-scramble patch applied via Dockerfile'"
+    "postinstall": "patch-package --error-on-fail && node scripts/verify-use-scramble-patch.mjs"
   },
   "version": "0.1.0",
   "overrides": {

@@ -4,7 +4,6 @@ export interface LogEntry {
   message: string
   ts: string
   createdAt: string
-  deviceId?: string | null
 }
 
 export interface LogPage {
@@ -17,7 +16,6 @@ export interface LogPage {
 export interface PostTransmitInput {
   handle: string
   message: string
-  deviceId: string
 }
 
 export const transmitKeys = {

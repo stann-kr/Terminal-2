@@ -22,14 +22,14 @@ terminal-2 is the STANN OS LIVE surface for `https://terminal.stann.kr`.
 ## Local development
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
 Default dev URL:
 
 ```text
-http://localhost:3000
+http://localhost:3005
 ```
 
 ## Verification
@@ -38,12 +38,15 @@ Run these before treating the project as healthy:
 
 ```bash
 npm run lint
+npm test
 npm run typecheck
 npm run build
 npm run build:worker
 ```
 
 `npm run build` intentionally runs `scripts/check-token-sync.mjs` first through the `prebuild` hook. This confirms the local STANN OS token copy at `app/stann-os.css` matches the expected canonical token hash.
+
+`npm ci` applies and verifies the bundled `use-scramble` security patch. The same check runs after a regular `npm install`.
 
 ## Cloudflare / OpenNext
 

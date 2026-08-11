@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { isJsonObject, type JsonObject } from './validation';
 
 const JSON_CONTENT_TYPE = 'application/json';
 
@@ -6,7 +7,7 @@ export type JsonGuardResult<T> =
   | { ok: true; body: T }
   | { ok: false; response: NextResponse };
 
-export async function readJsonBody<T = Record<string, unknown>>(
+export async function readJsonBody<T extends JsonObject = JsonObject>(
   request: Request,
   maxBytes = 16_384,
 ): Promise<JsonGuardResult<T>> {
@@ -44,7 +45,15 @@ export async function readJsonBody<T = Record<string, unknown>>(
   }
 
   try {
-    return { ok: true, body: JSON.parse(text) as T };
+    const body: unknown = JSON.parse(text);
+    if (!isJsonObject(body)) {
+      return {
+        ok: false,
+        response: NextResponse.json({ error: 'INVALID_JSON' }, { status: 400 }),
+      };
+    }
+
+    return { ok: true, body: body as T };
   } catch {
     return {
       ok: false,

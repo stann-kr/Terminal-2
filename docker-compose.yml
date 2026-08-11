@@ -6,7 +6,7 @@ services:
     # Apple Silicon 호환성 문제 방지
     platform: linux/arm64
     ports:
-      - "3000:3000"
+      - "3005:3005"
     volumes:
       # 로컬 소스코드 동기화
       - .:/app

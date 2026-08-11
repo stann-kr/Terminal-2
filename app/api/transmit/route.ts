@@ -4,8 +4,11 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
 import { transmitLogs } from "@/lib/db/schema";
 import { readJsonBody } from "@/lib/api/guards";
+import { hasOnlyKeys, isString, parsePositiveInteger } from "@/lib/api/validation";
+import { toPublicTransmitLog } from "@/lib/api/publicDtos";
 
 const PAGE_SIZE = 5;
+const MAX_PAGE = 1_000;
 
 /**
  * GET /api/transmit?page=1
@@ -17,7 +20,11 @@ const PAGE_SIZE = 5;
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
+    const pageParam = searchParams.get("page");
+    const page = pageParam === null ? 1 : parsePositiveInteger(pageParam, MAX_PAGE);
+    if (page === null) {
+      return NextResponse.json({ error: "INVALID_PAGE" }, { status: 400 });
+    }
     const offset = (page - 1) * PAGE_SIZE;
 
     const { env } = getCloudflareContext();
@@ -29,7 +36,13 @@ export async function GET(request: Request) {
       .all();
 
     const logs = await db
-      .select()
+      .select({
+        id: transmitLogs.id,
+        handle: transmitLogs.handle,
+        message: transmitLogs.message,
+        ts: transmitLogs.ts,
+        createdAt: transmitLogs.createdAt,
+      })
       .from(transmitLogs)
       .orderBy(desc(transmitLogs.createdAt))
       .limit(PAGE_SIZE)
@@ -37,7 +50,7 @@ export async function GET(request: Request) {
       .all();
 
     return NextResponse.json({
-      logs,
+      logs: logs.map(toPublicTransmitLog),
       total,
       page,
       totalPages: Math.ceil(total / PAGE_SIZE),
@@ -54,16 +67,18 @@ export async function GET(request: Request) {
  *
  * @body handle   - 방문자 별칭 (1–24자, 공백 → 언더스코어, 대문자 저장)
  * @body message  - 방문자 메시지 (1–280자)
- * @body deviceId - NODE-ID 원본 (alias 변경과 무관하게 사용자 특정용)
  */
 export async function POST(request: Request) {
   try {
-    const parsed = await readJsonBody<Record<string, string>>(request, 8_192);
+    const parsed = await readJsonBody(request, 8_192);
     if (!parsed.ok) return parsed.response;
     const body = parsed.body;
-    const rawHandle: string = body?.handle ?? "";
-    const rawMessage: string = body?.message ?? "";
-    const deviceId: string = body?.deviceId ?? "";
+    if (!hasOnlyKeys(body, ["handle", "message"]) || !isString(body.handle) || !isString(body.message)) {
+      return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+    }
+
+    const rawHandle = body.handle;
+    const rawMessage = body.message;
 
     const handle = rawHandle.trim().replace(/\s+/g, "_").toUpperCase();
     const message = rawMessage.trim();
@@ -81,10 +96,10 @@ export async function POST(request: Request) {
     const { env } = getCloudflareContext();
     const db = getDb(env.DB);
 
-    const newLog = { id, handle, message, ts, createdAt: now.toISOString(), deviceId: deviceId || null };
+    const newLog = { id, handle, message, ts, createdAt: now.toISOString() };
     await db.insert(transmitLogs).values(newLog);
 
-    return NextResponse.json(newLog, { status: 201 });
+    return NextResponse.json(toPublicTransmitLog(newLog), { status: 201 });
   } catch (error) {
     console.error("[POST /api/transmit] error:", error);
     return NextResponse.json({ error: "INTERNAL_SERVER_ERROR" }, { status: 500 });

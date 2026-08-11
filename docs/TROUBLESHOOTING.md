@@ -61,30 +61,22 @@
 
 ### 증상
 
-* 호스트에서 `node_modules/use-scramble` 파일을 직접 수정(`innerHTML` → `textContent`)했으나, 컨테이너 내 파일은 변경되지 않음. `patch-package` 실행 시 `spawnSync git ENOENT` 오류.
+* 설치 환경에 따라 `use-scramble`의 텍스트 출력 방식이 달라져 신뢰할 수 없는 문자열을 HTML로 해석할 위험이 있었음.
 
 ### 원인
 
-* `docker-compose.yml`의 `volumes: - /app/node_modules` (anonymous volume) 설정으로 호스트의 `node_modules` 디렉토리가 마운트되지 않고 컨테이너 전용 볼륨 사용.
-* Docker 컨테이너에 `git`이 설치되어 있지 않아 `patch-package`가 패치 생성 시 실패.
-* 동일 이유로 `/app/.next` 도 anonymous volume → 호스트에서 Turbopack 캐시 삭제 불가.
+* 이미지 빌드 단계의 직접 파일 치환에 의존해 일반 `npm install`과 Docker 설치 결과가 일치하지 않았음.
 
 ### 해결
 
-1. `Dockerfile`의 `RUN npm install` 뒤에 `sed` 명령 추가 → 이미지 빌드 시 직접 패치:
-   ```dockerfile
-   RUN npm install && \
-       sed -i 's/nodeRef\.current\.innerHTML = result;/nodeRef.current.textContent = result;/g' node_modules/use-scramble/dist/use-scramble.esm.js && \
-       sed -i 's/nodeRef\.current\.innerHTML = result;/nodeRef.current.textContent = result;/g' node_modules/use-scramble/dist/use-scramble.cjs.development.js && \
-       sed -i 's/O\.current\.innerHTML=r,/O.current.textContent=r,/g' node_modules/use-scramble/dist/use-scramble.cjs.production.min.js
-   ```
-2. `package.json`의 `postinstall`은 안내만 출력하도록 두고, 실제 패치 적용 책임을 Docker 이미지 빌드 단계로 한정.
-3. `docker compose build --no-cache web` 으로 이미지 재빌드.
+1. `patch-package`로 배포 파일의 `innerHTML` 쓰기를 `textContent`로 변경하는 추적 패치를 적용한다.
+2. 설치 후 검증 스크립트가 개발·프로덕션 배포 파일 모두에서 패치 적용 여부를 확인한다.
+3. Docker도 동일한 postinstall 경로를 사용하도록 `npm ci`로 의존성을 설치한다.
 
 ### 검증
 
-* 새 이미지의 `use-scramble` 배포 파일에서 DOM 쓰기가 `textContent`로 치환됐는지 확인한다.
-* 호스트의 `npm install`만으로는 이 패치가 적용되지 않음을 전제로 개발 환경을 구분한다.
+* `npm run postinstall`이 패치 적용과 검증을 모두 통과하는지 확인한다.
+* 새 Docker 이미지에서도 동일한 설치 명령이 통과하는지 확인한다.
 
 ## 2026-04-15 — `_global-error` / `_not-found` SSG 프리렌더링 실패 (React dispatcher null)
 

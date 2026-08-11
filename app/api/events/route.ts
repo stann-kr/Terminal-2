@@ -2,6 +2,8 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
 import { artists, events } from "@/lib/db/schema";
+import { getEventDateTime, withEffectiveEventStatus } from "@/lib/eventLifecycle";
+import type { TerminalEvent } from "@/lib/eventData";
 
 
 /**
@@ -32,6 +34,7 @@ export async function GET(request: Request) {
     }, {});
 
     // data JSON 파싱 후 클라이언트가 기대하는 TerminalEvent 형태로 변환
+    const now = new Date();
     const result = eventRows
       .map((row) => {
         const eventData = JSON.parse(row.data) as Record<string, unknown>;
@@ -39,9 +42,14 @@ export async function GET(request: Request) {
           const { guestCode: _gc, ...artistData } = JSON.parse(a.data as string) as Record<string, unknown>;
           return { id: a.id, eventId: a.eventId, ...artistData };
         });
-        return { id: row.id, ...eventData, artists: eventArtists } as unknown as Record<string, unknown> & { status: string };
+        const event = { id: row.id, ...eventData, artists: eventArtists } as unknown as TerminalEvent;
+        return withEffectiveEventStatus(event, now);
       })
-      .filter((ev) => (statusFilter ? ev.status === statusFilter : true));
+      .filter((event) => (statusFilter ? event.status === statusFilter : true));
+
+    if (statusFilter === "UPCOMING") {
+      result.sort((a, b) => getEventDateTime(a).getTime() - getEventDateTime(b).getTime());
+    }
 
     return NextResponse.json(result);
   } catch (error) {

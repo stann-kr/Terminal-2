@@ -56,7 +56,7 @@ export default function TransmitPage() {
     if (!handle.trim() || !message.trim()) { setError(t.transmit.errors.required); return; }
     if (message.length > 280) { setError(t.transmit.errors.tooLong); return; }
 
-    submitLog({ handle: handle.trim(), message: message.trim(), deviceId: getNodeId() });
+    submitLog({ handle: handle.trim(), message: message.trim() });
   };
 
   const { logs = [], total = 0, totalPages = 1 } = logPage ?? {};

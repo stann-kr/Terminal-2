@@ -25,7 +25,7 @@
 * LINK: STANN OS HUB / ARCHIVE / LIVE 및 외부 채널 연결.
 
 ## 4. 검증 및 배포 게이트
-* 최소 로컬 검증: `npm run lint`, `npm run typecheck`, `npm run build`, `npm run build:worker`.
+* 최소 로컬 검증: `npm run lint`, `npm test`, `npm run typecheck`, `npm run build`, `npm run build:worker`.
 * `deploy`는 Worker 배포만 수행한다. D1 migration apply는 별도 단계로 명시적으로 실행/검증해야 한다.
 * 공개 POST API(`/api/gate/request`, `/api/signal`, `/api/transmit`)는 JSON content-type/payload-size guard를 유지하고, public launch 전 rate limit/Turnstile 등 abuse control을 추가해야 한다.
 
@@ -35,4 +35,4 @@
     * `events`: 이벤트 정보 (세션, 일정, 장소, 다국어 초대 메시지 등).
     * `artists`: 출연진 정보 (프로필, 소개글 등).
     * `access_requests`: 입장 신청 내역 (개인정보, 인스타그램 ID 등).
-    * `transmit_logs`: 메시지 전송 로그 (핸들러, 메시지, 디바이스 ID 등).
+    * `transmit_logs`: 메시지 전송 로그. 신규 입력과 공개 응답은 핸들러·메시지·시각만 사용하며 레거시 디바이스 식별 컬럼은 공개하지 않음.

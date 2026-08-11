@@ -1,6 +1,5 @@
 'use client';
-import { useState, useEffect, useRef, Suspense, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
 import PageHeader from '@/components/ui/PageHeader';
@@ -27,18 +26,16 @@ interface FormState {
   marketingConsent: boolean;
 }
 
-function RequestAccessContent() {
+export default function RequestAccessPage() {
   const { lang } = useLang();
   const t = useT();
-  const searchParams = useSearchParams();
   const [event, setEvent] = useState<TerminalEvent | null>(null);
   const [loading, setLoading] = useState(true);
   const [isActive, setIsActive] = useState(false);
   const [daysUntil, setDaysUntil] = useState(0);
 
-  const initialCode = searchParams.get('code') ?? '';
   const [form, setForm] = useState<FormState>({
-    accessCode: initialCode,
+    accessCode: '',
     invitedBy: '',
     name: '',
     email: '',
@@ -56,19 +53,39 @@ function RequestAccessContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submittingRef = useRef(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const verificationAbortRef = useRef<AbortController | null>(null);
+  const verificationSequenceRef = useRef(0);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
   const verifyCode = useCallback((code: string) => {
-    if (!code.trim()) {
+    const normalizedCode = code.trim();
+    const sequence = ++verificationSequenceRef.current;
+
+    verificationAbortRef.current?.abort();
+    if (!normalizedCode) {
       setCodeVerified(false);
       setCodeArtistName(null);
+      setIsVerifying(false);
       return;
     }
+
+    const controller = new AbortController();
+    verificationAbortRef.current = controller;
     setIsVerifying(true);
-    fetch(`/api/gate/code-info?code=${encodeURIComponent(code.trim())}`)
-      .then(res => res.json() as Promise<{ name: string | null }>)
-      .then(data => {
+    void fetch('/api/gate/code-info', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: normalizedCode }),
+      cache: 'no-store',
+      signal: controller.signal,
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error('Code verification failed');
+        return res.json() as Promise<{ name: string | null }>;
+      })
+      .then((data) => {
+        if (sequence !== verificationSequenceRef.current) return;
         if (data.name) {
           setCodeArtistName(data.name);
           setCodeVerified(true);
@@ -80,16 +97,21 @@ function RequestAccessContent() {
         }
       })
       .catch(() => {
+        if (sequence !== verificationSequenceRef.current || controller.signal.aborted) return;
         setCodeVerified(false);
         setCodeArtistName(null);
       })
-      .finally(() => setIsVerifying(false));
+      .finally(() => {
+        if (sequence === verificationSequenceRef.current) setIsVerifying(false);
+      });
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
     fetch('/api/events?status=UPCOMING')
       .then(res => { if (!res.ok) throw new Error(); return res.json() as Promise<TerminalEvent[]>; })
       .then(data => {
+        if (cancelled) return;
         if (data.length > 0) {
           const ev = data[0];
           setEvent(ev);
@@ -98,19 +120,26 @@ function RequestAccessContent() {
           setIsActive(windowState.isActive);
         }
       })
-      .catch(() => setError(t.common.signalUnstable))
-      .finally(() => setLoading(false));
+      .catch(() => { if (!cancelled) setError(t.common.signalUnstable); })
+      .finally(() => { if (!cancelled) setLoading(false); });
 
-    // URL ?code= 파라미터 자동 검증
-    if (initialCode) verifyCode(initialCode);
-  }, [initialCode, t.common.signalUnstable, verifyCode]);
+    return () => { cancelled = true; };
+  }, [t.common.signalUnstable]);
+
+  useEffect(() => () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    verificationAbortRef.current?.abort();
+  }, []);
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const code = e.target.value;
     setForm(prev => ({ ...prev, accessCode: code }));
-    // 코드 변경 시 즉시 미검증 상태로
+    // 코드 변경 시 즉시 미검증 상태로 전환하고 이전 요청을 무효화한다.
+    ++verificationSequenceRef.current;
+    verificationAbortRef.current?.abort();
     setCodeVerified(false);
     setCodeArtistName(null);
+    setIsVerifying(false);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => verifyCode(code), 500);
   };
@@ -457,13 +486,5 @@ function RequestAccessContent() {
         </div>
       )}
     </PageLayout>
-  );
-}
-
-export default function RequestAccessPage() {
-  return (
-    <Suspense>
-      <RequestAccessContent />
-    </Suspense>
   );
 }

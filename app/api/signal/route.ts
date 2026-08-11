@@ -1,9 +1,9 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
 import { signal } from "@/lib/db/schema";
 import { readJsonBody } from "@/lib/api/guards";
+import { hasOnlyKeys, isBoolean, isString } from "@/lib/api/validation";
 import { generateId } from "@/lib/utils/id";
 
 export async function POST(request: Request) {
@@ -12,9 +12,18 @@ export async function POST(request: Request) {
     if (!parsed.ok) return parsed.response;
     const body = parsed.body;
 
-    const email = (body?.email as string | undefined)?.trim().toLowerCase() ?? "";
-    const instagram = (body?.instagram as string | undefined)?.trim() ?? "";
-    const consent = Boolean(body?.consent);
+    if (
+      !hasOnlyKeys(body, ["email", "instagram", "consent"])
+      || !isString(body.email)
+      || !isString(body.instagram)
+      || !isBoolean(body.consent)
+    ) {
+      return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+    }
+
+    const email = body.email.trim().toLowerCase();
+    const instagram = body.instagram.trim();
+    const consent = body.consent;
 
     // 1. 필수 필드 검증
     if (!email || !instagram) {
@@ -23,7 +32,7 @@ export async function POST(request: Request) {
     if (!consent) {
       return NextResponse.json({ error: "CONSENT_REQUIRED" }, { status: 400 });
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: "INVALID_EMAIL_FORMAT" }, { status: 400 });
     }
     const cleanInstagram = instagram.replace(/^@/, "");
@@ -34,29 +43,27 @@ export async function POST(request: Request) {
     const { env } = getCloudflareContext();
     const db = getDb(env.DB);
 
-    // 2. 이메일 중복 확인
-    const existing = await db
-      .select({ id: signal.id })
-      .from(signal)
-      .where(eq(signal.email, email))
-      .get();
-
-    if (existing) {
-      return NextResponse.json({ error: "EMAIL_ALREADY_SUBSCRIBED" }, { status: 409 });
-    }
-
-    // 3. DB INSERT
+    // The unique email index is the concurrency boundary for subscriptions.
     const id = generateId('sig');
     const createdAt = new Date().toISOString();
 
-    await db.insert(signal).values({
-      id,
-      name: null,
-      email,
-      instagram,
-      source: 'signal',
-      createdAt,
-    });
+    const created = await db
+      .insert(signal)
+      .values({
+        id,
+        name: null,
+        email,
+        instagram,
+        source: 'signal',
+        createdAt,
+      })
+      .onConflictDoNothing({ target: signal.email })
+      .returning({ id: signal.id })
+      .get();
+
+    if (!created) {
+      return NextResponse.json({ error: "EMAIL_ALREADY_SUBSCRIBED" }, { status: 409 });
+    }
 
     return NextResponse.json({ ok: true }, { status: 201 });
   } catch (error) {
