@@ -48,8 +48,8 @@
     "build:worker": "opennextjs-cloudflare build",
     "deploy": "opennextjs-cloudflare deploy",
     "cf:preview": "opennextjs-cloudflare preview",
-    "dev": "cross-env NODE_ENV=development next dev -H 0.0.0.0 -p 3000",
-    "start": "cross-env NODE_ENV=production next start -H 0.0.0.0 -p 3000",
+    "dev": "cross-env NODE_ENV=development next dev -H 0.0.0.0 -p 3005",
+    "start": "cross-env NODE_ENV=production next start -H 0.0.0.0 -p 3005",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "postinstall": "echo 'use-scramble patch applied via Dockerfile'"
