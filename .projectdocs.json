@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "instruction_source": "central-live",
+  "project": {
+    "name": "terminal-2 — STANN OS LIVE",
+    "purpose": "STANN OS의 LIVE 표면에서 이벤트 발견, 신청과 현장 신호를 제공한다.",
+    "in_scope": [
+      "Next.js 이벤트 사이트 UI와 접근성",
+      "공개 신청·Signal·Transmit API와 Cloudflare D1"
+    ],
+    "out_of_scope": [
+      "합의 없는 정보 구조 또는 시각 방향 전면 재설계",
+      "승인 없는 remote D1 migration·deploy"
+    ]
+  },
+  "profiles": [
+    "web-ui",
+    "backend-api"
+  ],
+  "commands": {
+    "install": "npm ci",
+    "test": "npm test",
+    "lint_typecheck": "npm run lint && npm run typecheck",
+    "build": "npm run postinstall && npm run build",
+    "run": "npm run dev"
+  },
+  "invariants": [
+    "이벤트 발견과 신청 usability를 terminal 분위기보다 우선한다.",
+    "공개 API는 content type, payload, identity와 중복 경쟁을 서버에서 검증한다.",
+    "local dev와 Docker port는 3005를 사용하고 token·patch verifier를 유지한다."
+  ],
+  "protected_paths": [
+    "migrations/",
+    "patches/"
+  ],
+  "commit_mode": "checkpoint"
+}
