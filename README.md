@@ -21,6 +21,8 @@ terminal-2 is the STANN OS LIVE surface for `https://terminal.stann.kr`.
 
 ## Local development
 
+Node.js 22 or newer is required.
+
 ```bash
 npm ci
 npm run dev

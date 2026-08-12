@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:20-bookworm-slim
+FROM node:22-bookworm-slim
 
 # 네이티브 의존성 빌드 + workerd(glibc 2.36 필요) 실행을 위한 패키지 설치
 RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
