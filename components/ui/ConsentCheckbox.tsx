@@ -75,10 +75,10 @@ export default function ConsentCheckbox({
           aria-required={required || undefined}
           aria-invalid={ariaInvalid}
           aria-describedby={ariaDescribedBy}
-          className="sr-only"
+          className="peer sr-only"
         />
         <div
-          className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${
+          className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-terminal-accent-primary ${
             checked
               ? `${cls.border} ${cls.bg} ${cls.text}`
               : `${cls.borderMuted} text-transparent`

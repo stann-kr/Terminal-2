@@ -2,13 +2,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import PageLayout, { itemVariants } from "@/components/PageLayout";
 import { LabelText, SubtitleText, MetaText, HeadingText } from "@/components/ui/TerminalText";
 import ReturnLink from "@/components/ui/ReturnLink";
 import PageHeader from "@/components/ui/PageHeader";
 import TerminalPanel from "@/components/TerminalPanel";
 import TerminalButton from "@/components/TerminalButton";
+import TerminalActionLink from "@/components/TerminalActionLink";
 import EventDetail from "./EventDetail";
 import { useT } from "@/lib/langContext";
 import { fetchEvents, eventKeys } from "@/lib/queries/events";
@@ -117,11 +117,9 @@ export default function GatePage() {
                   <EventDetail event={upcomingEvent} showCountdown />
 
                   <div className="text-center pt-2">
-                    <Link href="/gate/request">
-                      <TerminalButton className="px-8" variant="primary">
-                        {t.gate.requestBtn}
-                      </TerminalButton>
-                    </Link>
+                    <TerminalActionLink href="/gate/request" className="inline-flex px-8" variant="primary">
+                      {t.gate.requestBtn}
+                    </TerminalActionLink>
                   </div>
                 </>
               ) : (

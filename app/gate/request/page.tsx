@@ -475,9 +475,9 @@ export default function RequestAccessPage() {
                                 clearFieldError('invitedBy');
                               }}
                               disabled={!isCodeVerified}
-                              className="sr-only"
+                              className="peer sr-only"
                             />
-                            <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${isCodeVerified && invitedByType === 'dj' ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary' : 'border-terminal-accent-secondary/30 text-transparent'}`} aria-hidden="true">✓</div>
+                            <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-terminal-accent-primary ${isCodeVerified && invitedByType === 'dj' ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary' : 'border-terminal-accent-secondary/30 text-transparent'}`} aria-hidden="true">✓</div>
                           </div>
                           <span className="font-mono text-small text-terminal-primary tracking-wider">
                             {codeState.kind === 'verified' ? codeState.artistName : '—'}
@@ -495,9 +495,9 @@ export default function RequestAccessPage() {
                                 setForm(previous => ({ ...previous, invitedBy: '' }));
                               }}
                               disabled={!isCodeVerified}
-                              className="sr-only"
+                              className="peer sr-only"
                             />
-                            <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors ${isCodeVerified && invitedByType === 'other' ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary' : 'border-terminal-accent-secondary/30 text-transparent'}`} aria-hidden="true">✓</div>
+                            <div className={`w-4 h-4 border font-mono text-xs flex items-center justify-center transition-colors peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-terminal-accent-primary ${isCodeVerified && invitedByType === 'other' ? 'border-terminal-accent-secondary bg-terminal-accent-secondary/20 text-terminal-accent-secondary' : 'border-terminal-accent-secondary/30 text-transparent'}`} aria-hidden="true">✓</div>
                           </div>
                           <span className="font-mono text-small text-terminal-primary tracking-wider">{t.request.invitedByOther}</span>
                         </label>
