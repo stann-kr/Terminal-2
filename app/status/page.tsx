@@ -8,13 +8,14 @@ import PageLayout, { itemVariants } from '@/components/PageLayout';
 import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
+import TerminalButton from '@/components/TerminalButton';
 import { useT } from '@/lib/langContext';
 import { fetchEvents, eventKeys } from '@/lib/queries/events';
 
 export default function StatusPage() {
   const t = useT();
 
-  const { data: events = [], isLoading, isError } = useQuery({
+  const { data: events = [], isLoading, isError, refetch } = useQuery({
     queryKey: eventKeys.list(),
     queryFn: fetchEvents,
   });
@@ -80,7 +81,13 @@ export default function StatusPage() {
             <div className="font-mono text-terminal-muted py-4 text-center">
               <LabelText text={t.status.loading} />
             </div>
-          ) : isError || events.length === 0 ? (
+          ) : isError ? (
+            <div className="font-mono text-terminal-accent-alert py-4 text-center space-y-3" role="alert">
+              <div><LabelText text={t.common.signalUnstable} /></div>
+              <div className="text-terminal-muted"><MetaText text={t.common.dbUnreachable} /></div>
+              <div className="flex justify-center"><TerminalButton variant="ghost" onClick={() => void refetch()}>{t.common.retry}</TerminalButton></div>
+            </div>
+          ) : events.length === 0 ? (
             <div className="font-mono text-terminal-muted py-4 text-center">
               <MetaText text={t.status.noSessions} />
             </div>

@@ -3,11 +3,16 @@
 import { MetaText } from '@/components/ui/TerminalText';
 
 interface ConsentCheckboxProps {
+  id?: string;
+  name?: string;
   checked: boolean;
   onChange: (checked: boolean) => void;
   label: string;
   badge?: string;
   disabled?: boolean;
+  required?: boolean;
+  'aria-invalid'?: boolean;
+  'aria-describedby'?: string;
   accent?: 'primary' | 'secondary' | 'alert' | 'warn';
 }
 
@@ -42,11 +47,16 @@ const accentClasses: Record<
 };
 
 export default function ConsentCheckbox({
+  id,
+  name,
   checked,
   onChange,
   label,
   badge,
   disabled = false,
+  required = false,
+  'aria-invalid': ariaInvalid,
+  'aria-describedby': ariaDescribedBy,
   accent = 'secondary',
 }: ConsentCheckboxProps) {
   const cls = accentClasses[accent];
@@ -55,10 +65,16 @@ export default function ConsentCheckbox({
     <label className={`flex items-start gap-3 group ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
       <div className="relative mt-0.5 shrink-0">
         <input
+          id={id}
+          name={name}
           type="checkbox"
           checked={checked}
           onChange={e => onChange(e.target.checked)}
           disabled={disabled}
+          required={required}
+          aria-required={required || undefined}
+          aria-invalid={ariaInvalid}
+          aria-describedby={ariaDescribedBy}
           className="sr-only"
         />
         <div
@@ -67,6 +83,7 @@ export default function ConsentCheckbox({
               ? `${cls.border} ${cls.bg} ${cls.text}`
               : `${cls.borderMuted} text-transparent`
           }`}
+          aria-hidden="true"
         >
           ✓
         </div>

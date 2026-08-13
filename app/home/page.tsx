@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import AnimatedHeight from "@/components/ui/AnimatedHeight";
 import DirectoryLink from "@/components/DirectoryLink";
+import TerminalButton from "@/components/TerminalButton";
 import PageLayout, { itemVariants } from "@/components/PageLayout";
 import {
   TitleText,
@@ -31,7 +32,7 @@ export default function HomePage() {
     { href: "/link",     label: "Link",     description: t.dirDesc.link,     accent: "primary" as const },
   ];
 
-  const { data: events = [], isError: eventError } = useQuery({
+  const { data: events = [], isLoading: isEventLoading, isError: eventError, refetch } = useQuery({
     queryKey: eventKeys.list(),
     queryFn: fetchEvents,
   });
@@ -111,7 +112,11 @@ export default function HomePage() {
         variants={itemVariants}
         className="mb-8 border py-6 px-4 border-terminal-accent-primary/20 bg-terminal-bg-panel"
       >
-        {eventError ? (
+        {isEventLoading ? (
+          <div className="text-center py-4 font-mono text-terminal-muted" role="status" aria-live="polite">
+            <LabelText autoHeight text={t.home.loading} />
+          </div>
+        ) : eventError ? (
           <div className="text-center py-4 space-y-2">
             <div className="font-bold tracking-widest text-terminal-accent-alert font-mono">
               <LabelText
@@ -125,6 +130,13 @@ export default function HomePage() {
                 text={t.common.dbUnreachable}
               />
             </div>
+            <div className="flex justify-center">
+              <TerminalButton variant="ghost" onClick={() => void refetch()}>{t.common.retry}</TerminalButton>
+            </div>
+          </div>
+        ) : events.length === 0 ? (
+          <div className="text-center py-4 font-mono text-terminal-muted" role="status" aria-live="polite">
+            <MetaText autoHeight text={t.home.noEvents} />
           </div>
         ) : (
           <>

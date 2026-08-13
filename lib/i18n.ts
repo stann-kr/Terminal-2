@@ -47,6 +47,7 @@ export const manifestoKo: string[] = [
 export const commonKo = {
   signalUnstable: "⚠ 신호 링크 불안정",
   dbUnreachable: "데이터베이스 연결 실패 — 나중에 재시도",
+  retry: "다시 시도",
   signalNetAria: "STANN OS 표면 간 이동",
 };
 
@@ -55,6 +56,8 @@ export const commonKo = {
 // ─────────────────────────────────────────────
 
 export const homeKo = {
+  loading: "▸ 이벤트 데이터 로딩 중...",
+  noEvents: "표시할 이벤트가 없습니다.",
   nextEntry: "다음 발사 —",
   lastEntry: "지난 발사 —",
   rootDir: "▶ 루트 디렉토리 — /terminal/",
@@ -71,6 +74,7 @@ export const gateKo = {
   loading: "▸ 게이트 데이터 로딩 중...",
   requestBtn: "▶ 게스트 신청",
   archivedLabel: "◼ 아카이브됨",
+  noArchive: "기록된 아카이브가 없습니다.",
   locationWarning: "⚠ 세션 참가를 위한 상세 위치 및 게이트 정보입니다.",
   /** `◼ 세션 종료 — ${date}` */
   sessionArchived: (date: string) => `◼ 세션 종료 — ${date}`,
@@ -83,6 +87,8 @@ export const gateKo = {
 
 export const requestKo = {
   loading: "▸ 신청 데이터 로딩 중...",
+  eventLoadFailed: "신청 정보를 불러오지 못했습니다. 연결을 확인한 뒤 다시 시도하세요.",
+  retry: "다시 시도",
   periodInactive: "⚠ 신청 기간 아님",
   /** `다음 신청 가능 기간은 이벤트 ${days}일 전에 열립니다` */
   windowInfo: (days: number) =>
@@ -124,6 +130,9 @@ export const requestKo = {
   // 초대인 선택
   invitedByOther: "기타",
   invitedByOtherPlaceholder: "초대인 이름 직접 입력",
+  codeVerifying: "인증 코드를 확인 중입니다.",
+  codeVerified: (artistName: string) => `인증 코드 확인됨 — ${artistName}`,
+  codeVerificationUnavailable: "인증 코드를 확인할 수 없습니다. 연결을 확인한 뒤 다시 시도하세요.",
   // 에러
   errors: {
     ALL_FIELDS_REQUIRED: "모든 항목을 입력해주세요.",
@@ -199,6 +208,8 @@ export const transmitKo = {
   logSyncing: "신호 로그 — 동기화 중...",
   prevBtn: "◀ 이전",
   nextBtn: "다음 ▶",
+  logLoadFailed: "신호 로그를 불러오지 못했습니다. 다시 시도하세요.",
+  retry: "다시 시도",
   errors: {
     required: "별칭과 메시지를 입력해주세요.",
     tooLong: "메시지가 280자를 초과합니다.",
@@ -301,10 +312,13 @@ export const manifestoEn: string[] = [
 export const commonEn = {
   signalUnstable: "⚠ SIGNAL LINK UNSTABLE",
   dbUnreachable: "DATABASE UNREACHABLE — RETRY LATER",
+  retry: "RETRY",
   signalNetAria: "Navigate between STANN OS surfaces",
 };
 
 export const homeEn = {
+  loading: "▸ LOADING EVENT DATA...",
+  noEvents: "NO EVENTS AVAILABLE.",
   nextEntry: "NEXT LAUNCH —",
   lastEntry: "LAST LAUNCH —",
   rootDir: "▶ ROOT DIRECTORY — /terminal/",
@@ -317,6 +331,7 @@ export const gateEn = {
   loading: "▸ LOADING GATE DATA...",
   requestBtn: "▶ GUEST REQUEST",
   archivedLabel: "◼ ARCHIVED",
+  noArchive: "NO ARCHIVED SESSIONS AVAILABLE.",
   locationWarning:
     "⚠ DETAILED LOCATION AND GATE INFORMATION FOR SESSION ENTRY.",
   sessionArchived: (date: string) => `◼ SESSION ARCHIVED — ${date}`,
@@ -325,6 +340,8 @@ export const gateEn = {
 
 export const requestEn = {
   loading: "▸ LOADING REQUEST DATA...",
+  eventLoadFailed: "REQUEST DATA COULD NOT BE LOADED. CHECK YOUR CONNECTION AND RETRY.",
+  retry: "RETRY",
   periodInactive: "⚠ REQUEST PERIOD INACTIVE",
   windowInfo: (days: number) =>
     `NEXT RESPONSE WINDOW OPENS ${days} DAYS BEFORE EVENT`,
@@ -360,6 +377,9 @@ export const requestEn = {
   // invitedBy options
   invitedByOther: "OTHER",
   invitedByOtherPlaceholder: "ENTER INVITER NAME",
+  codeVerifying: "VERIFYING ACCESS CODE...",
+  codeVerified: (artistName: string) => `ACCESS CODE VERIFIED — ${artistName}`,
+  codeVerificationUnavailable: "ACCESS CODE COULD NOT BE VERIFIED. CHECK YOUR CONNECTION AND RETRY.",
   // errors
   errors: {
     ALL_FIELDS_REQUIRED: "ALL FIELDS ARE REQUIRED.",
@@ -420,6 +440,8 @@ export const transmitEn = {
   logSyncing: "SIGNAL LOG — SYNCING...",
   prevBtn: "◀ PREV",
   nextBtn: "NEXT ▶",
+  logLoadFailed: "SIGNAL LOG COULD NOT BE LOADED. RETRY.",
+  retry: "RETRY",
   errors: {
     required: "ENTER ALIAS AND MESSAGE.",
     tooLong: "MESSAGE EXCEEDS 280 CHARACTERS.",

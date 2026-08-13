@@ -25,7 +25,7 @@ function json(body: { name: string | null } | { error: string }, status = 200) {
  * guestCode 자체는 노출하지 않으며, 코드 유효 여부도 명시하지 않음.
  *
  * @body code - 인증 코드
- * @returns { name: string | null }
+ * @returns { name: string | null }; returns a no-store 500 error when verification is unavailable
  */
 export async function POST(request: Request) {
   try {
@@ -86,6 +86,6 @@ export async function POST(request: Request) {
     return json({ name: matchingArtists[0].data.name });
   } catch {
     console.error("[POST /api/gate/code-info] internal error");
-    return json({ name: null });
+    return json({ error: "INTERNAL_SERVER_ERROR" }, 500);
   }
 }

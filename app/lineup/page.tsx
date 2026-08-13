@@ -7,6 +7,8 @@ import PageLayout, { itemVariants } from '@/components/PageLayout';
 import { LabelText, SubtitleText, MetaText, HeadingText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
+import TerminalButton from '@/components/TerminalButton';
+import TerminalPanel from '@/components/TerminalPanel';
 import ArtistRow from './ArtistRow';
 import { useT } from '@/lib/langContext';
 import { fetchEvents, eventKeys } from '@/lib/queries/events';
@@ -15,7 +17,7 @@ export default function LineupPage() {
   const t = useT();
   const [selectedId, setSelectedId] = useState('');
 
-  const { data: events = [], isLoading: loading, isError: error } = useQuery({
+  const { data: events = [], isLoading: loading, isError: error, refetch } = useQuery({
     queryKey: eventKeys.list(),
     queryFn: fetchEvents,
   });
@@ -40,6 +42,17 @@ export default function LineupPage() {
           <div className="text-terminal-muted font-mono">
             <MetaText autoHeight text={t.common.dbUnreachable} />
           </div>
+          <div className="flex justify-center">
+            <TerminalButton variant="ghost" onClick={() => void refetch()}>{t.common.retry}</TerminalButton>
+          </div>
+        </motion.div>
+      ) : events.length === 0 ? (
+        <motion.div variants={itemVariants}>
+          <TerminalPanel title="LINEUP_STATUS" accent="alert">
+            <div className="font-mono text-terminal-muted py-4 text-center" role="status" aria-live="polite">
+              <MetaText autoHeight text={t.request.noEvent} />
+            </div>
+          </TerminalPanel>
         </motion.div>
       ) : (
         <>

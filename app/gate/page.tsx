@@ -19,7 +19,7 @@ export default function GatePage() {
   const [tab, setTab] = useState<"upcoming" | "archive">("upcoming");
   const [selectedArchive, setSelectedArchive] = useState("");
 
-  const { data: events = [], isLoading: loading, isError: error } = useQuery({
+  const { data: events = [], isLoading: loading, isError: error, refetch } = useQuery({
     queryKey: eventKeys.list(),
     queryFn: fetchEvents,
   });
@@ -69,6 +69,9 @@ export default function GatePage() {
           </div>
           <div className="text-terminal-muted font-mono">
             <MetaText text={t.common.dbUnreachable} />
+          </div>
+          <div className="flex justify-center">
+            <TerminalButton variant="ghost" onClick={() => void refetch()}>{t.common.retry}</TerminalButton>
           </div>
         </motion.div>
       ) : (
@@ -141,7 +144,13 @@ export default function GatePage() {
             >
               {/* Archive session list */}
               <div className="space-y-2">
-                {archivedEvents.map((ev) => (
+                {archivedEvents.length === 0 ? (
+                  <TerminalPanel title="ARCHIVE_STATUS" accent="alert">
+                    <div className="text-center py-4 font-mono text-terminal-muted" role="status" aria-live="polite">
+                      <MetaText text={t.gate.noArchive} />
+                    </div>
+                  </TerminalPanel>
+                ) : archivedEvents.map((ev) => (
                   <button
                     key={ev.id}
                     onClick={() => setSelectedArchive(ev.id)}
