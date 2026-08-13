@@ -11,8 +11,25 @@ export default defineConfig({
     },
   },
   test: {
-    environment: "node",
-    include: ["test/**/*.test.ts"],
     passWithNoTests: true,
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'node',
+          environment: 'node',
+          include: ['test/**/*.test.ts'],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'dom',
+          environment: 'jsdom',
+          include: ['test/**/*.test.tsx'],
+          setupFiles: ['test/setup-dom.ts'],
+        },
+      },
+    ],
   },
 });
