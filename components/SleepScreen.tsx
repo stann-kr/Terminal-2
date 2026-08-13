@@ -1,8 +1,9 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useScramble } from 'use-scramble';
 import TerminalButton from '@/components/TerminalButton';
+import DecodeText from '@/components/DecodeText';
+import { useMotionPolicy } from '@/lib/useMotionPolicy';
 
 interface SleepScreenProps {
   onWake: () => void;
@@ -27,31 +28,30 @@ const SYSTEM_STATUS: StatusItem[] = [
 ];
 
 function StatusLine({ label, value, accent, warn, cyan }: Partial<StatusItem>) {
-  const { ref } = useScramble({
-    text: value ? `${label}: ${value}` : label || '',
-    speed: 0.6,
-    scramble: 6,
-    step: 2,
-    range: [48, 90],
-    overdrive: false,
-    playOnMount: true,
-  });
-
   let colorClass = 'text-terminal-subdued font-normal';
   if (accent) colorClass = 'text-terminal-accent-primary drop-shadow-[0_0_8px_rgb(var(--color-accent-primary)/0.8)] font-bold';
   else if (cyan) colorClass = 'text-terminal-accent-secondary font-normal';
   else if (warn) colorClass = 'text-terminal-accent-warn font-normal';
 
   return (
-    <div ref={ref} className={`text-small md:text-body leading-6 font-mono whitespace-pre-wrap ${colorClass}`} />
+    <DecodeText
+      text={value ? `${label}: ${value}` : label || ''}
+      autoHeight
+      speed={0.6}
+      scramble={6}
+      step={2}
+      className={`text-small md:text-body leading-6 font-mono whitespace-pre-wrap ${colorClass}`}
+    />
   );
 }
 
 function ProgressLine({ label }: { label: string }) {
+  const { allowMotion } = useMotionPolicy();
   const [pct, setPct] = useState(() => Math.floor(Math.random() * 20) + 75);
   const BARS = 15;
 
   useEffect(() => {
+    if (!allowMotion) return;
     // 슬립 모드이므로 천천히 변동하는 느낌
     const interval = setInterval(() => {
       setPct(prev => {
@@ -60,7 +60,7 @@ function ProgressLine({ label }: { label: string }) {
       });
     }, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [allowMotion]);
 
   const filled = Math.round((pct / 100) * BARS);
   const empty = BARS - filled;
@@ -76,6 +76,7 @@ function ProgressLine({ label }: { label: string }) {
 }
 
 export default function SleepScreen({ onWake }: SleepScreenProps) {
+  const { isReady: isMotionPolicyReady, allowMotion } = useMotionPolicy();
   const [waking, setWaking] = useState(false);
   const [time, setTime] = useState('');
   const [visibleItems, setVisibleItems] = useState<number[]>([]);
@@ -94,18 +95,23 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
   }, []);
 
   useEffect(() => {
-    const timers = SYSTEM_STATUS.map((item, i) => 
+    if (!isMotionPolicyReady) return;
+    if (!allowMotion) {
+      const timer = setTimeout(() => setVisibleItems(SYSTEM_STATUS.map((_, index) => index)), 0);
+      return () => clearTimeout(timer);
+    }
+    const timers = SYSTEM_STATUS.map((item, i) =>
       setTimeout(() => setVisibleItems(prev => [...prev, i]), item.delay || (i * 200))
     );
     return () => timers.forEach(clearTimeout);
-  }, []);
+  }, [allowMotion, isMotionPolicyReady]);
 
   const wake = useCallback(() => {
     if (wakeTriggered.current) return;
     wakeTriggered.current = true;
     setWaking(true);
-    wakeTimerRef.current = setTimeout(onWake, 1500);
-  }, [onWake]);
+    wakeTimerRef.current = setTimeout(onWake, allowMotion ? 1500 : 0);
+  }, [allowMotion, onWake]);
 
   useEffect(() => {
     return () => {
@@ -124,7 +130,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
       className="fixed inset-0 z-50 flex flex-col justify-center items-center px-4 sm:px-6 select-none bg-terminal-bg-base font-mono overflow-hidden"
       initial={{ opacity: 0 }}
       animate={waking ? { opacity: 0, filter: 'brightness(3) blur(12px)' } : { opacity: 1 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
+      transition={{ duration: allowMotion ? 0.8 : 0, ease: 'easeInOut' }}
       exit={{ opacity: 0 }}
     >
       {/* Scanline Effect - 부트 시퀀스보다 어둡게 */}
@@ -137,8 +143,8 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
         <motion.div
           className="text-5xl sm:text-6xl md:text-8xl font-bold mb-6 tracking-[0.15em] text-terminal-accent-primary drop-shadow-[0_0_8px_rgb(var(--color-accent-primary)/0.8)]"
           suppressHydrationWarning
-          animate={{ opacity: [0.6, 0.8, 0.6] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+          animate={allowMotion ? { opacity: [0.6, 0.8, 0.6] } : { opacity: 1 }}
+          transition={allowMotion ? { duration: 4, repeat: Infinity, ease: 'linear' } : { duration: 0 }}
         >
           {time}
         </motion.div>
@@ -149,9 +155,9 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
             <AnimatePresence key={i}>
               {visibleItems.includes(i) && (
                 <motion.div
-                  initial={{ opacity: 0, x: -10 }}
+                  initial={allowMotion ? { opacity: 0, x: -10 } : false}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: allowMotion ? 0.3 : 0 }}
                 >
                   {item.type === 'progress' ? (
                     <ProgressLine label={item.label} />
@@ -167,7 +173,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
           ))}
           
           {/* 하단 점멸 커서 */}
-          {!waking && (
+          {allowMotion && !waking && (
             <span className="cursor-blink text-small text-terminal-accent-primary">█</span>
           )}
         </div>
@@ -175,9 +181,9 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
         {/* Action Area */}
         {!waking ? (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={allowMotion ? { opacity: 0 } : false}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
+            transition={{ delay: allowMotion ? 1.5 : 0 }}
             className="mt-6"
           >
             <TerminalButton onClick={wake} variant="primary" className="px-6">
@@ -194,7 +200,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
                 className="absolute inset-0 bg-terminal-accent-primary"
                 initial={{ x: '-100%' }}
                 animate={{ x: '0%' }}
-                transition={{ duration: 1.2, ease: 'easeInOut' }}
+                transition={{ duration: allowMotion ? 1.2 : 0, ease: 'easeInOut' }}
               />
             </div>
           </div>

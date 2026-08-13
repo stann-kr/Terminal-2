@@ -1,9 +1,10 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { useScramble } from 'use-scramble';
 import TerminalButton from './TerminalButton';
+import DecodeText from './DecodeText';
 import { useLang, type Lang } from '@/lib/langContext';
+import { useMotionPolicy } from '@/lib/useMotionPolicy';
 
 interface TextItem { type: 'text'; text: string; delay: number; accent?: boolean; warn?: boolean; cyan?: boolean }
 interface ProgressItem { type: 'progress'; label: string; delay: number }
@@ -46,35 +47,31 @@ interface BootLineProps {
 }
 
 function BootLine({ text, accent, warn, cyan }: BootLineProps) {
-  const { ref } = useScramble({
-    text,
-    speed: 0.6,
-    scramble: 6,
-    step: 2,
-    range: [48, 90],
-    overdrive: false,
-    playOnMount: true,
-  });
-
   let colorClass = 'text-terminal-subdued font-normal';
   if (accent) colorClass = 'text-terminal-accent-primary drop-shadow-[0_0_8px_rgb(var(--color-accent-primary)/0.8)] font-bold';
   else if (cyan) colorClass = 'text-terminal-accent-secondary font-normal';
   else if (warn) colorClass = 'text-terminal-accent-warn font-normal';
 
   return (
-    <div
-      ref={ref}
+    <DecodeText
+      text={text}
+      autoHeight
+      speed={0.6}
+      scramble={6}
+      step={2}
       className={`text-small md:text-body leading-6 font-mono whitespace-pre-wrap ${colorClass}`}
     />
   );
 }
 
 function ProgressLine({ label }: { label: string }) {
+  const { allowMotion } = useMotionPolicy();
   const [pct, setPct] = useState(0);
   const DURATION = 600;
   const BARS = 20;
 
   useEffect(() => {
+    if (!allowMotion) return;
     let startTime: number | null = null;
     let rafId: number;
 
@@ -88,9 +85,10 @@ function ProgressLine({ label }: { label: string }) {
 
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
-  }, []);
+  }, [allowMotion]);
 
-  const filled = Math.round((pct / 100) * BARS);
+  const displayedPct = allowMotion ? pct : 100;
+  const filled = Math.round((displayedPct / 100) * BARS);
   const empty = BARS - filled;
 
   return (
@@ -98,7 +96,7 @@ function ProgressLine({ label }: { label: string }) {
       <span>{label} </span>
       <span className="text-terminal-accent-primary">{'█'.repeat(filled)}</span>
       <span className="text-terminal-muted/30">{'░'.repeat(empty)}</span>
-      <span className="text-terminal-muted ml-2">{pct}%</span>
+      <span className="text-terminal-muted ml-2">{displayedPct}%</span>
     </div>
   );
 }
@@ -121,6 +119,7 @@ function LangSelectPrompt({ onSelect }: LangSelectPromptProps) {
     const inactive = chosen !== null && chosen !== target;
     return (
       <button
+        type="button"
         onClick={() => handle(target)}
         disabled={chosen !== null}
         className={`font-mono text-small md:text-body tracking-widest px-3 py-1 border transition-colors cursor-pointer disabled:cursor-default ${
@@ -155,6 +154,7 @@ interface BootSequenceProps {
 
 export default function BootSequence({ onComplete }: BootSequenceProps) {
   const { setLang } = useLang();
+  const { isReady: isMotionPolicyReady, allowMotion } = useMotionPolicy();
   const [visiblePhase1, setVisiblePhase1] = useState<number[]>([]);
   const [showLangSelect, setShowLangSelect] = useState(false);
   const [selectedLang, setSelectedLang] = useState<Lang | null>(null);
@@ -169,25 +169,21 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
   const langTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const phase3TimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const doneTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const prefersReducedMotionRef = useRef(false);
-
   useEffect(() => {
-    prefersReducedMotionRef.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }, []);
-
-  useEffect(() => {
-    const t = setTimeout(() => setPowering(false), 700);
+    if (!isMotionPolicyReady) return;
+    const t = setTimeout(() => setPowering(false), allowMotion ? 700 : 0);
     return () => clearTimeout(t);
-  }, []);
+  }, [allowMotion, isMotionPolicyReady]);
 
   useEffect(() => {
-    if (powering) return;
+    if (powering || !isMotionPolicyReady) return;
 
-    // reduced-motion: 출력 지연 없이 즉시 다음 게이트(언어 선택) 표시
-    if (prefersReducedMotionRef.current) {
-      setVisiblePhase1(PHASE_1.map((_, i) => i));
-      setShowLangSelect(true);
-      return;
+    if (!allowMotion) {
+      const timer = setTimeout(() => {
+        setVisiblePhase1(PHASE_1.map((_, i) => i));
+        setShowLangSelect(true);
+      }, 0);
+      return () => clearTimeout(timer);
     }
 
     const timers = PHASE_1.map((item, i) =>
@@ -197,17 +193,18 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
     phase1TimersRef.current = timers;
     langTimerRef.current = langTimer;
     return () => { timers.forEach(clearTimeout); clearTimeout(langTimer); };
-  }, [powering]);
+  }, [allowMotion, isMotionPolicyReady, powering]);
 
   useEffect(() => {
-    if (!selectedLang) return;
+    if (!selectedLang || !isMotionPolicyReady) return;
     const phase3 = getPhase3(selectedLang);
 
-    // reduced-motion: 출력 지연 없이 즉시 다음 게이트(ENTER TERMINAL) 표시
-    if (prefersReducedMotionRef.current) {
-      setVisiblePhase3(phase3.map((_, i) => i));
-      setDone(true);
-      return;
+    if (!allowMotion) {
+      const timer = setTimeout(() => {
+        setVisiblePhase3(phase3.map((_, i) => i));
+        setDone(true);
+      }, 0);
+      return () => clearTimeout(timer);
     }
 
     const timers = phase3.map((item, i) =>
@@ -217,7 +214,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
     phase3TimersRef.current = timers;
     doneTimerRef.current = doneTimer;
     return () => { timers.forEach(clearTimeout); clearTimeout(doneTimer); };
-  }, [selectedLang]);
+  }, [allowMotion, isMotionPolicyReady, selectedLang]);
 
   /**
    * 진행 중인 출력 애니메이션을 건너뛰고 다음 인터랙션 포인트로 점프.
@@ -270,14 +267,14 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
     <motion.div
       className="fixed inset-0 z-50 flex flex-col justify-center items-center px-4 sm:px-6 overflow-hidden bg-terminal-bg-base font-mono"
       animate={powering ? { scaleY: 0.001, filter: 'brightness(0)' } : { scaleY: 1, filter: 'brightness(1)' }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
+      transition={{ duration: allowMotion ? 0.6 : 0, ease: 'easeOut' }}
       exit={{ opacity: 0, filter: 'brightness(3) blur(8px)', transition: { duration: 0.5 } }}
     >
       <div className="w-full sm:w-[700px] md:w-[800px]">
         {/* Phase 1 */}
         {PHASE_1.map((item, i) =>
           visiblePhase1.includes(i) ? (
-            <motion.div key={`p1-${i}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.05 }}>
+            <motion.div key={`p1-${i}`} initial={allowMotion ? { opacity: 0 } : false} animate={{ opacity: 1 }} transition={{ duration: allowMotion ? 0.05 : 0 }}>
               {item.type === 'progress' ? (
                 <ProgressLine label={item.label} />
               ) : (
@@ -292,7 +289,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
 
         {/* Phase 2: 언어 선택 프롬프트 */}
         {showLangSelect && !selectedLang && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
+          <motion.div initial={allowMotion ? { opacity: 0 } : false} animate={{ opacity: 1 }} transition={{ duration: allowMotion ? 0.2 : 0 }}>
             <LangSelectPrompt onSelect={handleLangSelect} />
           </motion.div>
         )}
@@ -300,7 +297,7 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
         {/* Phase 3 */}
         {phase3Items.map((item, i) =>
           visiblePhase3.includes(i) ? (
-            <motion.div key={`p3-${i}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.05 }}>
+            <motion.div key={`p3-${i}`} initial={allowMotion ? { opacity: 0 } : false} animate={{ opacity: 1 }} transition={{ duration: allowMotion ? 0.05 : 0 }}>
               {item.warn && <span className="text-terminal-accent-warn text-small font-mono">⚠ </span>}
               <BootLine text={item.text} accent={item.accent} warn={item.warn} cyan={item.cyan} />
             </motion.div>
@@ -308,13 +305,13 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
         )}
 
         {/* 커서 블링크 */}
-        {!powering && !done && (
+        {allowMotion && !powering && !done && (
           <span className="cursor-blink text-small text-terminal-accent-primary">█</span>
         )}
 
         {/* ENTER TERMINAL 버튼 */}
         {done && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6">
+          <motion.div initial={allowMotion ? { opacity: 0 } : false} animate={{ opacity: 1 }} className="mt-6">
             <TerminalButton onClick={() => onCompleteRef.current()} variant="primary" className="px-6">
               [ ENTER TERMINAL ]
             </TerminalButton>

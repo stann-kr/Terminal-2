@@ -1,110 +1,88 @@
-"use client";
-import type { CSSProperties } from "react";
-import DecodeText from "@/components/DecodeText";
-import { decode } from "@/lib/animationTokens";
-import { cn } from "@/lib/utils";
+'use client';
 
-// ─── 공통 Props ───────────────────────────────────────────────────────────────
+import { useEffect, type CSSProperties } from 'react';
+import DecodeText from '@/components/DecodeText';
+import { decode } from '@/lib/animationTokens';
+import { cn } from '@/lib/utils';
 
 interface TextProps {
   text: string;
   className?: string;
   style?: CSSProperties;
-  /** stagger 등에 활용 — 단위: ms */
   delay?: number;
-  as?: "span" | "p" | "div" | "h1" | "h2" | "h3";
+  as?: 'span' | 'p' | 'div' | 'h1' | 'h2' | 'h3';
   onComplete?: () => void;
-  /** height 측정 컨테이너 없이 직접 렌더 (고정 레이아웃 컨텍스트용) */
   autoHeight?: boolean;
+  cipher?: boolean;
 }
 
-// ─── Semantic Text 컴포넌트 ───────────────────────────────────────────────────
-// 내부적으로 DecodeText + animationTokens.decode 프리셋을 결합.
-// 추후 구현체를 교체해도 소비자 코드는 무변경.
-
-/** 메인 히어로 제목 (TERMINAL 타이틀 등) */
-export function TitleText({
-  as = "span",
-  className = "",
-  ...props
+function PlainText({
+  text,
+  className = '',
+  style,
+  as: Tag = 'span',
+  onComplete,
+  autoHeight = false,
 }: TextProps) {
+  useEffect(() => onComplete?.(), [onComplete]);
+
+  return (
+    <Tag
+      className={className}
+      style={{
+        whiteSpace: 'pre-wrap',
+        display: autoHeight ? 'block' : undefined,
+        ...style,
+      }}
+    >
+      {text}
+    </Tag>
+  );
+}
+
+/** Main brand title: the only default cipher surface. */
+export function TitleText({ as = 'span', className = '', ...props }: TextProps) {
   return (
     <DecodeText
       {...decode.title}
       as={as}
-      className={cn("text-h1 md:text-title", className)}
+      className={cn('text-h1 md:text-title', className)}
       {...props}
     />
   );
 }
 
-/** 페이지/섹션 제목 (PageHeader, 이벤트명 등) */
+/** Page titles may opt into cipher; all record/section headings stay plain. */
 export function HeadingText({
-  as = "h1",
-  className = "",
+  as = 'h1',
+  className = '',
+  cipher = false,
   ...props
 }: TextProps) {
-  return (
-    <DecodeText
-      {...decode.heading}
-      as={as}
-      className={cn("text-h2 md:text-h1", className)}
-      {...props}
-    />
+  const resolvedClassName = cn('text-h2 md:text-h1', className);
+  return cipher ? (
+    <DecodeText {...decode.heading} as={as} className={resolvedClassName} {...props} />
+  ) : (
+    <PlainText as={as} className={resolvedClassName} {...props} />
   );
 }
 
-/** 부제목/설명 (이벤트 부제, 설명 텍스트 등) */
-export function SubtitleText({ className = "", ...props }: TextProps) {
-  return (
-    <DecodeText
-      {...decode.subtitle}
-      className={cn("text-small md:text-body", className)}
-      {...props}
-    />
-  );
+export function SubtitleText({ className = '', ...props }: TextProps) {
+  return <PlainText className={cn('text-small md:text-body', className)} {...props} />;
 }
 
-/** 본문 텍스트 (Manifesto 등 긴 문단) — animateTextLength 프리셋 적용 */
-export function BodyText({ className = "", ...props }: TextProps) {
-  return (
-    <DecodeText
-      {...decode.body}
-      className={cn("text-small md:text-body leading-relaxed", className)}
-      {...props}
-    />
-  );
+export function BodyText({ className = '', ...props }: TextProps) {
+  return <PlainText className={cn('text-small md:text-body leading-relaxed', className)} {...props} />;
 }
 
-/** 라벨/경로/코드 (메뉴명, 경로, 짧은 식별자) */
-export function LabelText({ className = "", ...props }: TextProps) {
-  return (
-    <DecodeText
-      {...decode.label}
-      className={cn("text-caption md:text-small", className)}
-      {...props}
-    />
-  );
+export function LabelText({ className = '', ...props }: TextProps) {
+  return <PlainText className={cn('text-caption md:text-small', className)} {...props} />;
 }
 
-/** 메타 정보 (날짜, ID, 하단 상태) */
-export function MetaText({ className = "", ...props }: TextProps) {
-  return (
-    <DecodeText
-      {...decode.meta}
-      className={cn("text-caption md:text-small", className)}
-      {...props}
-    />
-  );
+export function MetaText({ className = '', ...props }: TextProps) {
+  return <PlainText className={cn('text-caption md:text-small', className)} {...props} />;
 }
 
-/** 실시간 데이터 (카운트다운, 메트릭 수치) — 초기 1회 스크램블 후 직접 DOM 업데이트 */
-export function DataText({ className = "", ...props }: TextProps) {
-  return (
-    <DecodeText
-      {...decode.data}
-      className={cn("text-small md:text-body", className)}
-      {...props}
-    />
-  );
+export function DataText({ className = '', ...props }: TextProps) {
+  return <PlainText className={cn('text-small md:text-body', className)} {...props} />;
 }

@@ -96,8 +96,8 @@ export default function GatePage() {
                         </div>
                         <div className="drop-shadow-[0_0_12px_rgb(var(--color-accent-secondary)/0.4)]">
                           <HeadingText
+                            as="h2"
                             text={upcomingEvent.session}
-                            as="span"
                             className="tracking-[0.15em] text-terminal-accent-secondary"
                           />
                         </div>

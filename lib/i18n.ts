@@ -48,6 +48,7 @@ export const commonKo = {
   signalUnstable: "⚠ 신호 링크 불안정",
   dbUnreachable: "데이터베이스 연결 실패 — 나중에 재시도",
   retry: "다시 시도",
+  skipToContent: "본문으로 건너뛰기",
   signalNetAria: "STANN OS 표면 간 이동",
 };
 
@@ -313,6 +314,7 @@ export const commonEn = {
   signalUnstable: "⚠ SIGNAL LINK UNSTABLE",
   dbUnreachable: "DATABASE UNREACHABLE — RETRY LATER",
   retry: "RETRY",
+  skipToContent: "SKIP TO CONTENT",
   signalNetAria: "Navigate between STANN OS surfaces",
 };
 

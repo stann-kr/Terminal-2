@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export default function NotFound() {
   return (
-    <div className="relative w-full min-h-screen flex flex-col items-center justify-center px-4 text-terminal-primary font-mono bg-terminal-bg-base">
+    <main id="main-content" tabIndex={-1} className="relative w-full min-h-screen flex flex-col items-center justify-center px-4 text-terminal-primary font-mono bg-terminal-bg-base">
       <div className="w-full max-w-[700px] space-y-6">
         {/* Return link */}
         <div className="mb-6">
@@ -38,6 +38,6 @@ export default function NotFound() {
           </p>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

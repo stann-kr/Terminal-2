@@ -24,9 +24,12 @@ export default function EntryController() {
   };
 
   return (
-    <AnimatePresence mode="wait">
-      {phase === 'boot' && <BootSequence key="boot" onComplete={handleBootComplete} />}
-      {phase === 'sleep' && <SleepScreen key="sleep" onWake={handleWake} />}
-    </AnimatePresence>
+    <main id="main-content" tabIndex={-1}>
+      <h1 className="sr-only">TERMINAL</h1>
+      <AnimatePresence mode="wait">
+        {phase === 'boot' && <BootSequence key="boot" onComplete={handleBootComplete} />}
+        {phase === 'sleep' && <SleepScreen key="sleep" onWake={handleWake} />}
+      </AnimatePresence>
+    </main>
   );
 }

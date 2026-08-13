@@ -52,7 +52,7 @@ export default function GlobalError({
     <html lang="ko">
       <head dangerouslySetInnerHTML={{ __html: headHtml }} />
       <body>
-        <div className="container">
+        <main className="container">
           <div className="label">TERMINAL / SYSTEM</div>
           <div className="title">[ CRITICAL ERROR ]</div>
           <div className="message">
@@ -62,7 +62,7 @@ export default function GlobalError({
             <div className="digest">ERR_DIGEST: {error.digest}</div>
           )}
           <Link href="/" className="restart">[ RESTART SESSION ]</Link>
-        </div>
+        </main>
       </body>
     </html>
   );
