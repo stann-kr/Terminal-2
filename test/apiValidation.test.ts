@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { readJsonBody } from '../lib/api/guards';
+import { isJsonContentType, readJsonBody } from '../lib/api/guards';
 import {
   isBoolean,
   isJsonObject,
   parsePositiveInteger,
+  parseEnumQuery,
+  parseIdentifierQuery,
 } from '../lib/api/validation';
 
 describe('public API runtime validation', () => {
@@ -24,6 +26,42 @@ describe('public API runtime validation', () => {
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.response.status).toBe(400);
     }
+  });
+
+  it('parses the JSON media type exactly', () => {
+    expect(isJsonContentType('application/json')).toBe(true);
+    expect(isJsonContentType('Application/JSON; charset=utf-8')).toBe(true);
+    expect(isJsonContentType('text/application/json')).toBe(false);
+    expect(isJsonContentType('application/jsonp')).toBe(false);
+  });
+
+  it('stops reading a streaming request after the byte limit', async () => {
+    const request = new Request('https://terminal.test/api', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode('{"value":"'));
+          controller.enqueue(new Uint8Array(64).fill(97));
+          controller.enqueue(new TextEncoder().encode('"}'));
+          controller.close();
+        },
+      }),
+      duplex: 'half',
+    } as RequestInit & { duplex: 'half' });
+
+    const result = await readJsonBody(request, 32);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.response.status).toBe(413);
+  });
+
+  it('validates enum and identifier query parameters without duplicates', () => {
+    const statuses = new Set(['UPCOMING', 'LIVE'] as const);
+    expect(parseEnumQuery(new URLSearchParams('status=UPCOMING'), 'status', statuses)).toBe('UPCOMING');
+    expect(parseEnumQuery(new URLSearchParams('status=INVALID'), 'status', statuses)).toBeNull();
+    expect(parseEnumQuery(new URLSearchParams('status=LIVE&status=UPCOMING'), 'status', statuses)).toBeNull();
+    expect(parseIdentifierQuery(new URLSearchParams('eventId=TRM-02'), 'eventId')).toBe('TRM-02');
+    expect(parseIdentifierQuery(new URLSearchParams('eventId=../../secret'), 'eventId')).toBeNull();
   });
 
   it('does not coerce boolean-like values', () => {

@@ -24,11 +24,15 @@ describe('public API contracts', () => {
   });
 
   it('keeps code-info POST-only, non-cacheable, and length-bounded', async () => {
-    const source = await readFile('app/api/gate/code-info/route.ts', 'utf8');
+    const [source, responseHelper] = await Promise.all([
+      readFile('app/api/gate/code-info/route.ts', 'utf8'),
+      readFile('lib/api/responses.ts', 'utf8'),
+    ]);
 
     expect(source).toContain('export async function POST');
     expect(source).not.toContain('export async function GET');
-    expect(source).toContain('"Cache-Control": "no-store"');
+    expect(source).toContain('noStoreJson');
+    expect(responseHelper).toContain("'Cache-Control': 'no-store'");
     expect(source).toContain('code.length > 64');
   });
 });

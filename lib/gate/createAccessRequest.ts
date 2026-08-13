@@ -30,9 +30,14 @@ export type ParseGateRequestResult =
 
 export interface ArtistAccessData {
   guestCode: string;
-  guestLimit: number | null;
+  guestLimit: number;
   name: string;
 }
+
+export type ArtistAccessInspection =
+  | { kind: 'unconfigured' }
+  | { kind: 'invalid' }
+  | { kind: 'configured'; data: ArtistAccessData };
 
 export interface UpcomingEventCandidate {
   rowId: string;
@@ -151,44 +156,45 @@ export function parseGateRequestBody(body: Record<string, unknown>): ParseGateRe
   };
 }
 
-export function parseArtistAccessData(rawData: string): ArtistAccessData | null {
+export function inspectArtistAccessData(rawData: string): ArtistAccessInspection {
   let data: unknown;
   try {
     data = JSON.parse(rawData);
   } catch {
-    return null;
+    return { kind: 'invalid' };
   }
 
-  if (!isJsonObject(data) || !isString(data.guestCode)) {
-    return null;
-  }
+  if (!isJsonObject(data)) return { kind: 'invalid' };
+  if (!Object.hasOwn(data, 'guestCode')) return { kind: 'unconfigured' };
+  if (!isString(data.guestCode)) return { kind: 'invalid' };
 
   const guestCode = data.guestCode.trim();
   if (!guestCode || guestCode.length > MAX_ACCESS_CODE_LENGTH) {
-    return null;
+    return { kind: 'invalid' };
   }
 
-  let guestLimit: number | null = null;
-  if (data.guestLimit !== undefined) {
-    if (
-      typeof data.guestLimit !== 'number'
-      || !Number.isSafeInteger(data.guestLimit)
-      || data.guestLimit < 0
-      || data.guestLimit > MAX_GUEST_LIMIT
-    ) {
-      return null;
-    }
-    guestLimit = data.guestLimit;
+  if (
+    typeof data.guestLimit !== 'number'
+    || !Number.isSafeInteger(data.guestLimit)
+    || data.guestLimit < 0
+    || data.guestLimit > MAX_GUEST_LIMIT
+  ) {
+    return { kind: 'invalid' };
   }
 
   if (!isString(data.name)) {
-    return null;
+    return { kind: 'invalid' };
   }
 
   const name = data.name.trim();
-  if (!name || name.length > 100) return null;
+  if (!name || name.length > 100) return { kind: 'invalid' };
 
-  return { guestCode, guestLimit, name };
+  return { kind: 'configured', data: { guestCode, guestLimit: data.guestLimit, name } };
+}
+
+export function parseArtistAccessData(rawData: string): ArtistAccessData | null {
+  const inspected = inspectArtistAccessData(rawData);
+  return inspected.kind === 'configured' ? inspected.data : null;
 }
 
 export const ACCESS_REQUEST_INSERT_SQL = `

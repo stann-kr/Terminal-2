@@ -1,7 +1,8 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/guards";
+import { enforceRateLimit } from "@/lib/api/abuseControl";
+import { noStoreJson } from "@/lib/api/responses";
 import { getDb } from "@/lib/db/client";
 import { artists, events } from "@/lib/db/schema";
 import {
@@ -11,7 +12,7 @@ import {
 import {
   createAccessRequestAtomically,
   normalizeAccessCode,
-  parseArtistAccessData,
+  inspectArtistAccessData,
   parseGateRequestBody,
   parseUpcomingEventCandidate,
   type UpcomingEventCandidate,
@@ -27,10 +28,14 @@ export async function POST(request: Request) {
 
     const requestInput = parseGateRequestBody(parsed.body);
     if (!requestInput.ok) {
-      return NextResponse.json({ error: requestInput.error }, { status: 400 });
+      return noStoreJson({ error: requestInput.error }, 400);
     }
 
     const { env } = getCloudflareContext();
+    const abuseDecision = await enforceRateLimit(env, 'gate-request', request);
+    if (!abuseDecision.ok) {
+      return noStoreJson({ error: abuseDecision.error }, abuseDecision.status);
+    }
     const db = getDb(env.DB);
     const now = new Date();
 
@@ -43,10 +48,10 @@ export async function POST(request: Request) {
       )[0];
 
     if (!upcomingEvent) {
-      return NextResponse.json({ error: "NO_UPCOMING_EVENT" }, { status: 404 });
+      return noStoreJson({ error: "NO_UPCOMING_EVENT" }, 404);
     }
     if (!getRequestWindowState(upcomingEvent.lifecycle, ACCESS_WINDOW_DAYS, now).isActive) {
-      return NextResponse.json({ error: "REQUEST_PERIOD_INACTIVE" }, { status: 403 });
+      return noStoreJson({ error: "REQUEST_PERIOD_INACTIVE" }, 403);
     }
 
     const artistRows = await db
@@ -55,13 +60,18 @@ export async function POST(request: Request) {
       .where(eq(artists.eventId, upcomingEvent.rowId))
       .all();
     const normalizedCode = normalizeAccessCode(requestInput.input.accessCode);
-    const matchingArtists = artistRows.flatMap((row) => {
-      const data = parseArtistAccessData(row.data);
-      return data && normalizeAccessCode(data.guestCode) === normalizedCode ? [{ row, data }] : [];
-    });
+    const accessRecords = artistRows.map((row) => ({ row, access: inspectArtistAccessData(row.data) }));
+    if (accessRecords.some(({ access }) => access.kind === 'invalid')) {
+      return noStoreJson({ error: "DATA_UNAVAILABLE" }, 503);
+    }
+    const matchingArtists = accessRecords.flatMap(({ row, access }) => (
+      access.kind === 'configured' && normalizeAccessCode(access.data.guestCode) === normalizedCode
+        ? [{ row, data: access.data }]
+        : []
+    ));
 
     if (matchingArtists.length !== 1) {
-      return NextResponse.json({ error: "INVALID_ACCESS_CODE" }, { status: 401 });
+      return noStoreJson({ error: "INVALID_ACCESS_CODE" }, 401);
     }
 
     const [{ row: matchedArtist, data: artistData }] = matchingArtists;
@@ -81,15 +91,15 @@ export async function POST(request: Request) {
     });
 
     if (result.status === "duplicate") {
-      return NextResponse.json({ error: "EMAIL_ALREADY_REGISTERED" }, { status: 409 });
+      return noStoreJson({ ok: true });
     }
     if (result.status === "guest_limit_reached") {
-      return NextResponse.json({ error: "GUEST_LIMIT_REACHED" }, { status: 409 });
+      return noStoreJson({ error: "GUEST_LIMIT_REACHED" }, 409);
     }
 
-    return NextResponse.json({ ok: true }, { status: 201 });
+    return noStoreJson({ ok: true }, 201);
   } catch {
     console.error("[POST /api/gate/request] internal error");
-    return NextResponse.json({ error: "INTERNAL_SERVER_ERROR" }, { status: 500 });
+    return noStoreJson({ error: "INTERNAL_SERVER_ERROR" }, 500);
   }
 }

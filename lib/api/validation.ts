@@ -27,3 +27,28 @@ export function parsePositiveInteger(value: string | null, max: number): number 
 export function hasOnlyKeys(object: JsonObject, allowedKeys: readonly string[]): boolean {
   return Object.keys(object).every((key) => allowedKeys.includes(key));
 }
+
+export function parseEnumQuery<T extends string>(
+  searchParams: URLSearchParams,
+  key: string,
+  allowed: ReadonlySet<T>,
+): T | null | undefined {
+  const values = searchParams.getAll(key);
+  if (values.length === 0) return undefined;
+  if (values.length !== 1 || !allowed.has(values[0] as T)) return null;
+  return values[0] as T;
+}
+
+export function parseIdentifierQuery(
+  searchParams: URLSearchParams,
+  key: string,
+  maxLength = 64,
+): string | null | undefined {
+  const values = searchParams.getAll(key);
+  if (values.length === 0) return undefined;
+  if (values.length !== 1) return null;
+  const value = values[0].trim();
+  return value.length > 0 && value.length <= maxLength && /^[A-Za-z0-9][A-Za-z0-9._:-]*$/.test(value)
+    ? value
+    : null;
+}

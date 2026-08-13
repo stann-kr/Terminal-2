@@ -19,7 +19,6 @@ export interface Artist {
   time: string;
   status: ArtistStatus;
   description?: ArtistDescription | string | string[];
-  guestLimit?: number;
 }
 
 export interface TerminalEvent {

@@ -16,6 +16,7 @@ export interface LogPage {
 export interface PostTransmitInput {
   handle: string
   message: string
+  idempotencyKey?: string
 }
 
 export const transmitKeys = {
@@ -30,10 +31,14 @@ export async function fetchTransmitLogs(page: number): Promise<LogPage> {
 }
 
 export async function postTransmitLog(input: PostTransmitInput): Promise<LogEntry> {
+  const idempotencyKey = input.idempotencyKey ?? crypto.randomUUID().replaceAll('-', '')
   const res = await fetch('/api/transmit', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(input),
+    headers: {
+      'Content-Type': 'application/json',
+      'Idempotency-Key': idempotencyKey,
+    },
+    body: JSON.stringify({ handle: input.handle, message: input.message }),
   })
   if (!res.ok) {
     const data = await res.json() as { error?: string }

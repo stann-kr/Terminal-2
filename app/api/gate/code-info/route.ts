@@ -1,22 +1,21 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
 import { readJsonBody } from "@/lib/api/guards";
+import { enforceRateLimit } from "@/lib/api/abuseControl";
+import { noStoreJson } from "@/lib/api/responses";
 import { hasOnlyKeys, isString } from "@/lib/api/validation";
 import { getDb } from "@/lib/db/client";
 import { artists, events } from "@/lib/db/schema";
 import { getEventDateTime } from "@/lib/eventLifecycle";
 import {
   normalizeAccessCode,
-  parseArtistAccessData,
+  inspectArtistAccessData,
   parseUpcomingEventCandidate,
   type UpcomingEventCandidate,
 } from "@/lib/gate/createAccessRequest";
 
-const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
-
 function json(body: { name: string | null } | { error: string }, status = 200) {
-  return NextResponse.json(body, { status, headers: NO_STORE_HEADERS });
+  return noStoreJson(body, status);
 }
 
 /**
@@ -50,6 +49,8 @@ export async function POST(request: Request) {
     }
 
     const { env } = getCloudflareContext();
+    const abuseDecision = await enforceRateLimit(env, 'code-info', request);
+    if (!abuseDecision.ok) return json({ error: abuseDecision.error }, abuseDecision.status);
     const db = getDb(env.DB);
 
     // UPCOMING 이벤트 조회
@@ -74,10 +75,15 @@ export async function POST(request: Request) {
       .all();
 
     const normalizedCode = normalizeAccessCode(code);
-    const matchingArtists = artistRows.flatMap((row) => {
-      const data = parseArtistAccessData(row.data);
-      return data && normalizeAccessCode(data.guestCode) === normalizedCode ? [{ row, data }] : [];
-    });
+    const accessRecords = artistRows.map((row) => ({ row, access: inspectArtistAccessData(row.data) }));
+    if (accessRecords.some(({ access }) => access.kind === 'invalid')) {
+      return json({ error: "VERIFICATION_UNAVAILABLE" }, 503);
+    }
+    const matchingArtists = accessRecords.flatMap(({ row, access }) => (
+      access.kind === 'configured' && normalizeAccessCode(access.data.guestCode) === normalizedCode
+        ? [{ row, data: access.data }]
+        : []
+    ));
 
     if (matchingArtists.length !== 1) {
       return json({ name: null });
@@ -86,6 +92,6 @@ export async function POST(request: Request) {
     return json({ name: matchingArtists[0].data.name });
   } catch {
     console.error("[POST /api/gate/code-info] internal error");
-    return json({ error: "INTERNAL_SERVER_ERROR" }, 500);
+    return json({ error: "VERIFICATION_UNAVAILABLE" }, 503);
   }
 }

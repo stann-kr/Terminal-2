@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedHeight from '@/components/ui/AnimatedHeight';
@@ -33,6 +33,7 @@ export default function TransmitPage() {
   const [sent, setSent] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState('');
+  const idempotencyKeyRef = useRef<string | null>(null);
 
   const {
     data: logPage,
@@ -67,6 +68,7 @@ export default function TransmitPage() {
       setFieldErrors({});
       setFormError('');
       setSent(true);
+      idempotencyKeyRef.current = null;
       setCurrentPage(1);
       queryClient.invalidateQueries({ queryKey: transmitKeys.all });
       setTimeout(() => setSent(false), 2500);
@@ -100,7 +102,12 @@ export default function TransmitPage() {
 
     setFieldErrors({});
     setFormError('');
-    submitLog({ handle: handle.trim(), message: message.trim() });
+    idempotencyKeyRef.current ??= crypto.randomUUID().replaceAll('-', '');
+    submitLog({
+      handle: handle.trim(),
+      message: message.trim(),
+      idempotencyKey: idempotencyKeyRef.current,
+    });
   };
 
   const { logs = [], total = 0, totalPages = 1 } = logPage ?? {};
@@ -122,6 +129,7 @@ export default function TransmitPage() {
                 onChange={e => {
                   setHandle(e.target.value);
                   setNodeId(e.target.value);
+                  idempotencyKeyRef.current = null;
                   clearFieldError('handle');
                 }}
                 placeholder={t.transmit.placeholderAlias}
@@ -149,6 +157,7 @@ export default function TransmitPage() {
                 value={message}
                 onChange={e => {
                   setMessage(e.target.value);
+                  idempotencyKeyRef.current = null;
                   clearFieldError('message');
                 }}
                 placeholder={t.transmit.placeholderMsg}

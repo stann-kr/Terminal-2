@@ -4,6 +4,7 @@ import {
   MARKETING_INSERT_SQL,
   classifyRejectedAccessRequest,
   createAccessRequestAtomically,
+  inspectArtistAccessData,
   normalizeAccessCode,
   parseArtistAccessData,
   parseGateRequestBody,
@@ -73,6 +74,15 @@ describe('artist access data validation', () => {
     }))).toEqual({ guestCode: 'CODE-1', guestLimit: 25, name: 'Artist Name' });
   });
 
+  it('distinguishes missing access configuration from malformed configured data', () => {
+    expect(inspectArtistAccessData(JSON.stringify({ name: 'Public Artist' }))).toEqual({
+      kind: 'unconfigured',
+    });
+    expect(inspectArtistAccessData(JSON.stringify({ guestCode: 'CODE', name: 'Artist' }))).toEqual({
+      kind: 'invalid',
+    });
+  });
+
   it.each([
     '{',
     JSON.stringify({ guestCode: 123, guestLimit: 1 }),
@@ -80,6 +90,7 @@ describe('artist access data validation', () => {
     JSON.stringify({ guestCode: 'CODE', guestLimit: -1 }),
     JSON.stringify({ guestCode: 'CODE', guestLimit: 1.5 }),
     JSON.stringify({ guestCode: 'CODE', guestLimit: 10_001 }),
+    JSON.stringify({ guestCode: 'CODE', name: 'Artist' }),
     JSON.stringify({ guestCode: 'CODE', guestLimit: 1 }),
     JSON.stringify({ guestCode: 'CODE', guestLimit: 1, name: '' }),
   ])('fails closed for malformed artist JSON: %s', (data) => {
