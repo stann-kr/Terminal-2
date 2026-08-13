@@ -2,6 +2,27 @@
 
 공개 가능한 결과 중심 변경 요약이다. 항목은 일자 단위이며 최신 항목을 위에 둔다.
 
+## 2026-08-13 — 접근성·공개 API·성능·검증 계층 강화
+
+### Added
+
+- route별 metadata, skip link와 고유 main landmark, Node/jsdom 테스트 project, Next·Worker HTTP smoke, 임시 D1 migration smoke와 secret 없는 validation CI를 추가했다.
+- 공개 이벤트/아티스트 runtime decoder, 공통 rate-limit/Turnstile 검증 인터페이스, PII-safe log와 Transmit idempotency 계약을 추가했다.
+- Gate와 Lineup 선택 상태를 URL query와 browser history에 동기화했다.
+
+### Changed
+
+- 의미 텍스트는 서버 HTML부터 최종 문자열로 렌더링하고 cipher는 대표 타이틀로 제한했다.
+- 전역 WebGL을 Home hero 조건부 dynamic enhancement로 격리하고 Status의 3D realtime 표시는 접근 가능한 정적 레지스트리로 바꿨다.
+- Home 이벤트 CTA·semantic directory와 즉시 사용 가능한 intro skip을 추가하고, 근거 없는 build/uptime/realtime 표기를 제거했다.
+- 공개 민감 응답을 no-store로 통일하고 게스트 정원 누락을 fail-closed로 처리했다. Signal·Gate 중복 제출은 식별 정보를 노출하지 않는 성공 응답을 사용한다.
+- ordinary Docker dev 환경에서 Cloudflare 배포 자격 증명 전달을 제거했다.
+
+### Fixed
+
+- 신청/코드 검증의 loading·invalid·inactive·unavailable 상태를 분리하고 세 공개 폼의 label, field error, live region과 오류 focus를 복구했다.
+- reduced-motion/save-data/hidden 상태에서 비필수 timer·scramble·Canvas가 계속 동작하던 문제를 정리했다.
+
 ## 2026-08-11 — 공개 API와 런타임 신뢰 경계 정비
 
 ### Security
@@ -232,7 +253,7 @@
 
 ### Added
 
-- Cloudflare Workers와 D1 기반 배포 인프라를 구성하고 CI/CD를 연결했다.
+- Cloudflare Workers와 D1 기반 배포 인프라 및 수동 deploy workflow를 구성했다.
 - 노드 식별자 자동 부여, 게이트 접근 요청 페이지, 카운트다운, 전송 로그 페이지네이션을 추가했다.
 
 ### Changed

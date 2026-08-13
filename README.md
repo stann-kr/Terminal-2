@@ -39,12 +39,18 @@ http://localhost:3005
 Run these before treating the project as healthy:
 
 ```bash
-npm run lint
+npm audit --omit=dev
 npm test
+npm run lint
 npm run typecheck
 npm run build
+npm run smoke:http
 npm run build:worker
+npm run test:d1
+npx wrangler deploy --dry-run
 ```
+
+For Worker HTTP smoke, run `npm run cf:preview` and then run `SMOKE_BASE_URL=http://127.0.0.1:8787 SMOKE_API=1 npm run smoke:http` in another terminal.
 
 `npm run build` intentionally runs `scripts/check-token-sync.mjs` first through the `prebuild` hook. This confirms the local STANN OS token copy at `app/stann-os.css` matches the expected canonical token hash.
 
@@ -107,7 +113,7 @@ These routes accept public writes and must be protected by validation, body guar
 - `POST /api/signal`
 - `POST /api/transmit`
 
-Current baseline guards include JSON content-type and payload-size checks. Rate limiting / Turnstile / stronger abuse controls should still be added before broad public launch.
+Current local contracts include exact JSON media-type and streaming byte guards, runtime DTO validation, a Cloudflare rate-limit binding interface, and a server-side Turnstile validator. Broad public launch still requires the real binding/secret, client token flow, and verified Signal unsubscribe/retention operations.
 
 ## Documentation
 

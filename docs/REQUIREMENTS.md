@@ -12,22 +12,25 @@
 * **Apple Silicon 최적화 Docker 환경:** Docker는 로컬/dev 또는 prod-like smoke 용도로 사용한다. 공개 배포의 정본 artifact는 `@opennextjs/cloudflare` Worker bundle이다.
 * **DB 연동:** Cloudflare D1 바인딩(`DB`) 및 Drizzle ORM을 활용한 데이터 관리.
 * **텍스트 레이아웃 측정:** `@chenglou/pretext`로 디코딩 전 멀티라인 텍스트 치수를 계산하여 레이아웃 이동을 줄임.
-* **UI/컴포넌트 설계:** 모든 값은 가급적 하드코딩을 피하고, 모듈화된 Tailwind CSS 클래스 혹은 설정 변수를 재활용.
+* **UI/컴포넌트 설계:** 의미 텍스트와 상태는 서버 HTML부터 읽을 수 있어야 하며, cipher/WebGL은 콘텐츠를 대체하지 않는 점진적 향상으로만 사용한다.
+* **접근성:** route마다 하나의 `main`, skip link, 고유 title/h1을 제공하고 폼 label·오류·focus·reduced-motion 계약을 유지한다.
 
 ## 3. 기능 요구 사항
 * HOME: STANN OS LIVE 진입, 이벤트 카운트다운/elapsed 상태, 모듈 디렉토리 제공.
 * GATE: upcoming/archive 이벤트 정보, 상세 위치/세션 정보, request 진입 제공.
 * REQUEST: access code 검증, 게스트 신청, 개인정보/마케팅 동의 저장.
 * LINEUP: 이벤트별 아티스트/도크/상태 표시.
-* STATUS: 세션/노드/텔레메트리 상태 표시.
-* TRANSMIT: 방문자 로그 작성/조회.
+* STATUS: 이벤트 레지스트리 기반 세션 요약과 정적 노드 시각화 표시. 실제 telemetry 또는 realtime 상태로 표현하지 않는다.
+* TRANSMIT: idempotency key 기반 방문자 로그 작성/조회.
 * SIGNAL: 이벤트 신호 수신 채널 등록.
 * LINK: STANN OS HUB / ARCHIVE / LIVE 및 외부 채널 연결.
 
 ## 4. 검증 및 배포 게이트
-* 최소 로컬 검증: `npm run lint`, `npm test`, `npm run typecheck`, `npm run build`, `npm run build:worker`.
+* 최소 로컬 검증: `npm ci`, `npm audit --omit=dev`, `npm test`, `npm run lint`, `npm run typecheck`, `npm run build`, `npm run smoke:http`, `npm run build:worker`, Worker HTTP smoke, `npm run test:d1`, Wrangler dry-run.
 * `deploy`는 Worker 배포만 수행한다. D1 migration apply는 별도 단계로 명시적으로 실행/검증해야 한다.
-* 공개 POST API(`/api/gate/request`, `/api/signal`, `/api/transmit`)는 JSON content-type/payload-size guard를 유지하고, public launch 전 rate limit/Turnstile 등 abuse control을 추가해야 한다.
+* 공개 API는 정확한 JSON media type, streaming byte limit, runtime DTO, no-store 민감 응답과 PII-safe log 계약을 유지한다.
+* rate-limit/Turnstile 검증 인터페이스는 로컬에서 테스트하지만, 실제 binding·secret과 Signal verification/unsubscribe/retention 운영이 없으면 public-release ready가 아니다.
+* push, PR, deploy, remote D1 migration과 production secret/config/data는 별도 승인 대상이다.
 
 ## 5. 데이터베이스 구조 (Schema)
 * **Flexible JSON Model:** `events`, `artists` 테이블은 고정 컬럼 대신 `data` JSON 컬럼을 활용하여 데이터 속성 변경에 유연하게 대응함.
@@ -36,3 +39,4 @@
     * `artists`: 출연진 정보 (프로필, 소개글 등).
     * `access_requests`: 입장 신청 내역 (개인정보, 인스타그램 ID 등).
     * `transmit_logs`: 메시지 전송 로그. 신규 입력과 공개 응답은 핸들러·메시지·시각만 사용하며 레거시 디바이스 식별 컬럼은 공개하지 않음.
+    * `signal`: 이벤트 소식 구독 채널. 현재 저장 계약만 존재하며 ownership verification·unsubscribe·retention lifecycle은 release gate다.
