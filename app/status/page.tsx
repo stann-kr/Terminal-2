@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import TerminalPanel from '@/components/TerminalPanel';
 import StatusMetric from './StatusMetric';
-import GlobeMapDynamic from './GlobeMapDynamic';
+import NodeMap from './NodeMap';
 import PageLayout, { itemVariants } from '@/components/PageLayout';
 import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
@@ -69,8 +69,8 @@ export default function StatusPage() {
 
       {/* Node Map */}
       <motion.div variants={itemVariants} className="mb-6">
-        <TerminalPanel title="GALACTIC_NODE_MAP — REALTIME" accent="alert">
-          <GlobeMapDynamic />
+        <TerminalPanel title="GALACTIC_NODE_MAP — STATIC REGISTRY" accent="alert">
+          <NodeMap />
         </TerminalPanel>
       </motion.div>
 

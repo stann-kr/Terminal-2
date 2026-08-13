@@ -152,7 +152,7 @@ export default function GatePage() {
                   <button
                     key={ev.id}
                     onClick={() => setSelectedArchive(ev.id)}
-                    className={`w-full text-left px-4 py-3 border cursor-pointer transition-all duration-200 font-mono ${
+                    className={`w-full text-left px-4 py-3 border cursor-pointer transition-[color,border-color,background-color] duration-200 font-mono ${
                       effectiveArchiveId === ev.id
                         ? "border-terminal-accent-alert/50 bg-terminal-accent-alert/10"
                         : "border-terminal-accent-primary/15 bg-terminal-bg-panel hover:bg-terminal-accent-primary/5"

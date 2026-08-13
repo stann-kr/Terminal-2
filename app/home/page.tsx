@@ -67,7 +67,7 @@ export default function HomePage() {
   return (
     <PageLayout>
       {/* Header */}
-      <div className="mb-6 text-center">
+      <div id="home-ambient-anchor" className="mb-6 text-center">
         <motion.div
           variants={itemVariants}
           className="flex font-mono text-pico tracking-widest mb-1 sm:mb-3 text-terminal-muted overflow-hidden px-6 sm:px-10 md:px-16"

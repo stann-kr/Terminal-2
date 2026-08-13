@@ -63,7 +63,7 @@ export default function ArtistRow({ artist: a }: Props) {
         } : undefined}
       >
         {/* Mobile */}
-        <div className={`md:hidden px-4 py-4 border transition-all duration-200 space-y-2 ${borderClass} ${hoverClass}`}>
+        <div className={`md:hidden px-4 py-4 border transition-[border-color,background-color] duration-200 space-y-2 ${borderClass} ${hoverClass}`}>
           <div className="flex items-baseline justify-between gap-2">
             <span className={`font-bold tracking-wider leading-tight font-mono min-w-0 ${nameColorClass} ${nameGlowClass}`}>
               <SubtitleText text={a.name} autoHeight />
@@ -87,7 +87,7 @@ export default function ArtistRow({ artist: a }: Props) {
         </div>
 
         {/* Desktop */}
-        <div className={`hidden md:grid grid-cols-12 gap-2 px-4 py-4 border transition-all duration-200 ${borderClass} ${hoverClass} items-center`}>
+        <div className={`hidden md:grid grid-cols-12 gap-2 px-4 py-4 border transition-[border-color,background-color] duration-200 ${borderClass} ${hoverClass} items-center`}>
           <span className="col-span-1 font-mono text-terminal-muted"><MetaText text={a.id} /></span>
           <span className={`col-span-3 font-bold tracking-wider font-mono ${nameColorClass} ${nameGlowClass}`}>
             <SubtitleText text={a.name} />

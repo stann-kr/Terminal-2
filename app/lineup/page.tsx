@@ -80,7 +80,7 @@ export default function LineupPage() {
                 <button
                   key={ev.id}
                   onClick={() => setSelectedId(ev.id)}
-                  className={`w-full text-left px-4 py-3 border border-terminal-accent-primary/20 cursor-pointer transition-all duration-200 font-mono ${baseColorClasses}`}
+                  className={`w-full text-left px-4 py-3 border border-terminal-accent-primary/20 cursor-pointer transition-[color,border-color,background-color] duration-200 font-mono ${baseColorClasses}`}
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div>
