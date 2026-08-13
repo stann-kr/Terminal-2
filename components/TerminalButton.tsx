@@ -33,7 +33,7 @@ export function getTerminalButtonClassName(
   className = '',
 ) {
   const v = variantClassMap[variant];
-  return `whitespace-nowrap cursor-pointer font-mono text-small tracking-widest uppercase px-5 py-2.5 transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 flex items-center justify-center border active:translate-y-px ${v.base} ${v.hover} disabled:opacity-40 disabled:cursor-not-allowed ${className}`;
+  return `min-h-11 whitespace-nowrap cursor-pointer font-mono text-small tracking-widest uppercase px-5 py-2.5 transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 flex items-center justify-center border active:translate-y-px ${v.base} ${v.hover} disabled:opacity-40 disabled:cursor-not-allowed ${className}`;
 }
 
 export default function TerminalButton({

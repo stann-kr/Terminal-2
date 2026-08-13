@@ -34,16 +34,16 @@
 
     --color-text-primary: 214 229 237;
     --color-text-subdued: 140 155 165;
-    --color-text-muted: 90 100 110;
+    --color-text-muted: 112 124 134;
 
     /* Semantic Accents - Monochromatic & Sterile */
     --color-accent-primary: 214 229 237;   /* Icy Blue (포스터 메인 컬러와 동일) */
     --color-accent-secondary: 140 155 165; /* Muted Icy Blue (투명도/명도로 계층 구분) */
-    --color-accent-tertiary: 90 100 110;   /* Dark Icy Blue */
+    --color-accent-tertiary: 112 124 134;  /* AA-readable Dark Icy Blue */
     
     /* Status Colors — STANN OS 상태색 역할(stann-os.css E섹션)과 값 일치
        alert = --os-status-alert(#b34747 = 179 71 71) · warn = --os-status-warn(#b39847 = 179 152 71) */
-    --color-accent-alert: 179 71 71;       /* Muted Red (채도 빠진 건조한 빨강) */
+    --color-accent-alert: 205 88 88;       /* AA-readable muted red */
     --color-accent-warn: 179 152 71;       /* Muted Gold (채도 빠진 건조한 노랑) */
 
     /* ─── Typography Scale ──────────────────────────────────────────────────── */

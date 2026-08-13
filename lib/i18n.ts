@@ -61,8 +61,10 @@ export const homeKo = {
   noEvents: "표시할 이벤트가 없습니다.",
   nextEntry: "다음 발사 —",
   lastEntry: "지난 발사 —",
+  viewEvent: "▶ 이벤트 보기",
+  viewArchive: "▶ 아카이브 보기",
   rootDir: "▶ 루트 디렉토리 — /terminal/",
-  moduleCount: "7 모듈",
+  moduleCount: (count: number) => `${count} 모듈`,
 };
 
 // ─────────────────────────────────────────────
@@ -323,8 +325,10 @@ export const homeEn = {
   noEvents: "NO EVENTS AVAILABLE.",
   nextEntry: "NEXT LAUNCH —",
   lastEntry: "LAST LAUNCH —",
+  viewEvent: "▶ VIEW EVENT",
+  viewArchive: "▶ VIEW ARCHIVE",
   rootDir: "▶ ROOT DIRECTORY — /terminal/",
-  moduleCount: "7 MODULES",
+  moduleCount: (count: number) => `${count} MODULES`,
 };
 
 export const gateEn = {

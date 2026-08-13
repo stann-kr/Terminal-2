@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import PageLayout, { itemVariants } from "@/components/PageLayout";
@@ -13,11 +12,13 @@ import EventDetail from "./EventDetail";
 import { useT } from "@/lib/langContext";
 import { fetchEvents, eventKeys } from "@/lib/queries/events";
 import { getArchivedOrElapsedEvents, getFutureUpcomingEvent } from "@/lib/eventLifecycle";
+import { useUrlQueryState } from "@/lib/useUrlQueryState";
 
 export default function GatePage() {
   const t = useT();
-  const [tab, setTab] = useState<"upcoming" | "archive">("upcoming");
-  const [selectedArchive, setSelectedArchive] = useState("");
+  const [viewQuery, setViewQuery] = useUrlQueryState('view');
+  const [selectedArchive, setSelectedArchive] = useUrlQueryState('event');
+  const tab = viewQuery === 'archive' ? 'archive' : 'upcoming';
 
   const { data: events = [], isLoading: loading, isError: error, refetch } = useQuery({
     queryKey: eventKeys.list(),
@@ -26,7 +27,9 @@ export default function GatePage() {
 
   const upcomingEvent = getFutureUpcomingEvent(events);
   const archivedEvents = getArchivedOrElapsedEvents(events);
-  const effectiveArchiveId = selectedArchive || archivedEvents[0]?.id || "";
+  const effectiveArchiveId = archivedEvents.some((event) => event.id === selectedArchive)
+    ? selectedArchive
+    : archivedEvents[0]?.id || "";
   const selectedEvent =
     tab === "upcoming"
       ? upcomingEvent
@@ -44,13 +47,18 @@ export default function GatePage() {
 
       {/* Tab switcher */}
       <motion.div variants={itemVariants} className="mb-6">
-        <div className="inline-flex p-1 gap-1 bg-terminal-bg-overlay/50 border border-terminal-accent-primary/15">
+        <div
+          className="inline-flex p-1 gap-1 bg-terminal-bg-overlay/50 border border-terminal-accent-primary/15"
+          role="group"
+          aria-label="Event view"
+        >
           {(["upcoming", "archive"] as const).map((tabKey) => (
             <TerminalButton
               key={tabKey}
               variant={tab === tabKey ? "primary" : "ghost"}
               className="px-4 py-1.5 text-micro"
-              onClick={() => setTab(tabKey)}
+              onClick={() => setViewQuery(tabKey === 'archive' ? 'archive' : '')}
+              aria-pressed={tab === tabKey}
             >
               {tabKey === "upcoming" ? t.gate.tabUpcoming : t.gate.tabArchive}
             </TerminalButton>
@@ -141,7 +149,11 @@ export default function GatePage() {
               className="space-y-4"
             >
               {/* Archive session list */}
-              <div className="space-y-2">
+              <div
+                className="space-y-2"
+                role={archivedEvents.length > 0 ? 'list' : undefined}
+                aria-label={archivedEvents.length > 0 ? 'Archived events' : undefined}
+              >
                 {archivedEvents.length === 0 ? (
                   <TerminalPanel title="ARCHIVE_STATUS" accent="alert">
                     <div className="text-center py-4 font-mono text-terminal-muted" role="status" aria-live="polite">
@@ -149,32 +161,31 @@ export default function GatePage() {
                     </div>
                   </TerminalPanel>
                 ) : archivedEvents.map((ev) => (
-                  <button
-                    key={ev.id}
-                    onClick={() => setSelectedArchive(ev.id)}
-                    className={`w-full text-left px-4 py-3 border cursor-pointer transition-[color,border-color,background-color] duration-200 font-mono ${
-                      effectiveArchiveId === ev.id
-                        ? "border-terminal-accent-alert/50 bg-terminal-accent-alert/10"
-                        : "border-terminal-accent-primary/15 bg-terminal-bg-panel hover:bg-terminal-accent-primary/5"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <div className={`font-bold tracking-wider ${effectiveArchiveId === ev.id ? "text-terminal-accent-alert" : "text-terminal-primary"}`}>
-                          <SubtitleText autoHeight text={ev.session} />
+                  <div key={ev.id} role="listitem">
+                    <button
+                      onClick={() => setSelectedArchive(ev.id)}
+                      aria-current={effectiveArchiveId === ev.id ? 'true' : undefined}
+                      className={`w-full text-left px-4 py-3 border cursor-pointer transition-[color,border-color,background-color] duration-200 font-mono ${
+                        effectiveArchiveId === ev.id
+                          ? "border-terminal-accent-alert/50 bg-terminal-accent-alert/10"
+                          : "border-terminal-accent-primary/15 bg-terminal-bg-panel hover:bg-terminal-accent-primary/5"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <div className={`font-bold tracking-wider ${effectiveArchiveId === ev.id ? "text-terminal-accent-alert" : "text-terminal-primary"}`}>
+                            <SubtitleText autoHeight text={ev.session} />
+                          </div>
+                          <div className="mt-0.5 text-terminal-subdued">
+                            <MetaText text={`${ev.subtitle} · ${ev.date.replace(/-/g, ".")}`} />
+                          </div>
                         </div>
-                        <div className="mt-0.5 text-terminal-subdued">
-                          <MetaText text={`${ev.subtitle} · ${ev.date.replace(/-/g, ".")}`} />
+                        <div className="tracking-wider shrink-0 text-terminal-muted flex items-center">
+                          <LabelText autoHeight text={t.gate.archivedLabel} />
                         </div>
                       </div>
-                      <div className="tracking-wider shrink-0 text-terminal-muted flex items-center">
-                        <LabelText
-                          autoHeight
-                          text={t.gate.archivedLabel}
-                        />
-                      </div>
-                    </div>
-                  </button>
+                    </button>
+                  </div>
                 ))}
               </div>
 

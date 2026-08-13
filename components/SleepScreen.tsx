@@ -110,7 +110,7 @@ export default function SleepScreen({ onWake }: SleepScreenProps) {
     if (wakeTriggered.current) return;
     wakeTriggered.current = true;
     setWaking(true);
-    wakeTimerRef.current = setTimeout(onWake, allowMotion ? 1500 : 0);
+    wakeTimerRef.current = setTimeout(onWake, allowMotion ? 350 : 0);
   }, [allowMotion, onWake]);
 
   useEffect(() => {

@@ -11,14 +11,14 @@ interface ProgressItem { type: 'progress'; label: string; delay: number }
 type BootItem = TextItem | ProgressItem;
 
 const PHASE_1: BootItem[] = [
-  { type: 'text',     text: 'TERMINAL BIOS v2.2.0 [2026-05-08]',          delay: 0 },
-  { type: 'text',     text: 'MEMORY TEST: 0KB ... 524288KB OK',             delay: 100 },
-  { type: 'text',     text: 'DETECTING MASTER CLOCK... FOUND [IRQ=9]',      delay: 200 },
-  { type: 'progress', label: 'LOADING CORE MODULES',                         delay: 350 },
-  { type: 'text',     text: 'MOUNTING FRAME_DRAGGING.SYS......... OK',       delay: 1000 },
-  { type: 'text',     text: 'LOADING DSP_CORE.DLL................. OK',       delay: 1100 },
-  { type: 'text',     text: 'CONNECTING TO FAUST_SERVER........... OK',       delay: 1200 },
-  { type: 'text',     text: 'INITIALIZING LOCALE MODULE........... OK',       delay: 1350 },
+  { type: 'text',     text: 'TERMINAL INTERFACE // VISUAL BOOT SEQUENCE',    delay: 0 },
+  { type: 'text',     text: 'DISPLAY CHANNEL........................ READY',   delay: 100 },
+  { type: 'text',     text: 'INPUT CHANNEL.......................... READY',   delay: 200 },
+  { type: 'progress', label: 'LOADING INTERFACE MODULES',                     delay: 350 },
+  { type: 'text',     text: 'MOUNTING VISUAL FRAME.................. OK',       delay: 1000 },
+  { type: 'text',     text: 'LOADING EVENT DIRECTORY............... OK',       delay: 1100 },
+  { type: 'text',     text: 'PREPARING ACCESS REQUEST CHANNEL...... OK',       delay: 1200 },
+  { type: 'text',     text: 'INITIALIZING LOCALE MODULE............ OK',       delay: 1350 },
   { type: 'text',     text: 'LOCALE CONFIGURATION REQUIRED',                 delay: 1450, warn: true },
 ];
 
@@ -30,7 +30,7 @@ const getPhase3 = (lang: Lang): TextItem[] => [
   { type: 'text', text: 'FILTERING ANALOG NOISE (SECTOR 01)... 100% PURGED',        delay: 500 },
   { type: 'text', text: 'CALIBRATING TRAJECTORY TO HELIOPAUSE. SYNC OK',            delay: 800 },
   { type: 'text', text: 'MOUNTING /dev/snd/pcmC0D0p........... OK',                 delay: 1000 },
-  { type: 'text', text: 'AUTHENTICATING ACCESS CREDENTIALS.... GRANTED',            delay: 1200 },
+  { type: 'text', text: 'ACCESS REQUEST CHANNEL................. READY',             delay: 1200 },
   { type: 'text', text: 'WARNING: DEEP SPACE ENTRY APPROACHING',                    delay: 1400, warn: true },
   { type: 'text', text: 'SPAWNING TERMINAL PROCESS [PID:0x02]. OK',                 delay: 1600 },
   { type: 'text', text: '──────────────────────────────────────────',               delay: 1750 },
@@ -223,7 +223,12 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
    * 언어 선택 자체는 스킵 대상이 아님(자동 선택 금지) — 호출 시점은 리스너 effect에서 가드.
    */
   const skipToNextGate = () => {
-    if (powering) return;
+    if (powering) {
+      setPowering(false);
+      setVisiblePhase1(PHASE_1.map((_, i) => i));
+      setShowLangSelect(true);
+      return;
+    }
 
     if (!selectedLang) {
       phase1TimersRef.current.forEach(clearTimeout);
@@ -270,6 +275,13 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
       transition={{ duration: allowMotion ? 0.6 : 0, ease: 'easeOut' }}
       exit={{ opacity: 0, filter: 'brightness(3) blur(8px)', transition: { duration: 0.5 } }}
     >
+      <TerminalButton
+        onClick={skipToNextGate}
+        variant="ghost"
+        className="absolute right-4 top-4 z-10 px-3 text-caption"
+      >
+        [ SKIP INTRO ]
+      </TerminalButton>
       <div className="w-full sm:w-[700px] md:w-[800px]">
         {/* Phase 1 */}
         {PHASE_1.map((item, i) =>

@@ -92,7 +92,7 @@ export default function StatusPage() {
               <MetaText text={t.status.noSessions} />
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-4" role="list" aria-label={t.status.sessionLogTitle}>
               {/* 데스크탑 헤더 */}
               <div className="hidden md:grid grid-cols-12 gap-2 pb-2 border-b border-terminal-accent-primary/15 font-mono">
                 <span className="col-span-2 text-terminal-muted"><LabelText text={t.status.colSession} /></span>
@@ -109,7 +109,7 @@ export default function StatusPage() {
                 const artistCount = event.artists.length;
 
                 return (
-                  <div key={event.id} className="border-b border-terminal-accent-primary/10 pb-4 last:border-0 last:pb-0">
+                  <div key={event.id} role="listitem" className="border-b border-terminal-accent-primary/10 pb-4 last:border-0 last:pb-0">
                     {/* Mobile */}
                     <div className="md:hidden space-y-1.5 font-mono">
                       <div className="flex items-baseline justify-between gap-2">

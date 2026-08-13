@@ -11,6 +11,7 @@ describe('shared accessible controls', () => {
 
     expect(html).toContain('<a');
     expect(html).toContain('href="/gate/request"');
+    expect(html).toContain('min-h-11');
     expect(html).not.toContain('<button');
   });
 
