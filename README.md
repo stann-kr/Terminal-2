@@ -21,15 +21,17 @@ terminal-2 is the STANN OS LIVE surface for `https://terminal.stann.kr`.
 
 ## Local development
 
+Node.js 22 or newer is required.
+
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
 Default dev URL:
 
 ```text
-http://localhost:3000
+http://localhost:3005
 ```
 
 ## Verification
@@ -37,35 +39,48 @@ http://localhost:3000
 Run these before treating the project as healthy:
 
 ```bash
+npm audit --omit=dev
+npm test
 npm run lint
 npm run typecheck
 npm run build
+npm run smoke:http
 npm run build:worker
+npm run test:d1
+npx wrangler deploy --env production --dry-run
 ```
+
+For Worker HTTP smoke, run `npm run cf:preview` and then run `SMOKE_BASE_URL=http://127.0.0.1:8787 SMOKE_API=1 npm run smoke:http` in another terminal.
 
 `npm run build` intentionally runs `scripts/check-token-sync.mjs` first through the `prebuild` hook. This confirms the local STANN OS token copy at `app/stann-os.css` matches the expected canonical token hash.
 
+`npm ci` applies and verifies the bundled `use-scramble` security patch. The same check runs after a regular `npm install`.
+
 ## Cloudflare / OpenNext
 
-Build a Cloudflare Worker bundle:
+Build an environment-specific Cloudflare Worker bundle:
 
 ```bash
-npm run build:worker
+npm run build:worker:development
+npm run build:worker:production
 ```
 
-Run local Cloudflare preview:
+Run the development configuration in a local Cloudflare preview:
 
 ```bash
 npm run cf:preview
 ```
 
-Deploy:
+Deployment targets are explicit:
 
 ```bash
-npm run deploy
+npm run deploy:development
+npm run deploy:production
 ```
 
-Important: D1 migrations are not automatically applied by `npm run deploy`. Apply and verify migrations as a separate deployment step before or alongside Worker deployment.
+Cloudflare Workers Builds is the only automatic deployment path. A `dev` push deploys the fixed `terminal-2-dev` Worker and a `main` push deploys the production `terminal-2` Worker. GitHub Actions performs validation only.
+
+Important: production deployment requires separate approval. D1 migrations, secrets, bindings, and routes are not automatically changed by Worker code deployment and must be applied and verified as separate operations.
 
 ## D1
 
@@ -81,6 +96,11 @@ D1 binding name:
 ```text
 DB
 ```
+
+Remote databases are separated by environment:
+
+- development: `terminal-db-dev`
+- production: `terminal-db`
 
 Local migration apply example:
 
@@ -102,7 +122,7 @@ These routes accept public writes and must be protected by validation, body guar
 - `POST /api/signal`
 - `POST /api/transmit`
 
-Current baseline guards include JSON content-type and payload-size checks. Rate limiting / Turnstile / stronger abuse controls should still be added before broad public launch.
+Current local contracts include exact JSON media-type and streaming byte guards, runtime DTO validation, a Cloudflare rate-limit binding interface, and a server-side Turnstile validator. Broad public launch still requires the real binding/secret, client token flow, and verified Signal unsubscribe/retention operations.
 
 ## Documentation
 

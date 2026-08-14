@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import AnimatedHeight from "@/components/ui/AnimatedHeight";
 import DirectoryLink from "@/components/DirectoryLink";
+import TerminalButton from "@/components/TerminalButton";
+import TerminalActionLink from "@/components/TerminalActionLink";
 import PageLayout, { itemVariants } from "@/components/PageLayout";
 import {
   TitleText,
@@ -31,7 +33,7 @@ export default function HomePage() {
     { href: "/link",     label: "Link",     description: t.dirDesc.link,     accent: "primary" as const },
   ];
 
-  const { data: events = [], isError: eventError } = useQuery({
+  const { data: events = [], isLoading: isEventLoading, isError: eventError, refetch } = useQuery({
     queryKey: eventKeys.list(),
     queryFn: fetchEvents,
   });
@@ -66,7 +68,7 @@ export default function HomePage() {
   return (
     <PageLayout>
       {/* Header */}
-      <div className="mb-6 text-center">
+      <div id="home-ambient-anchor" className="mb-6 text-center">
         <motion.div
           variants={itemVariants}
           className="flex font-mono text-pico tracking-widest mb-1 sm:mb-3 text-terminal-muted overflow-hidden px-6 sm:px-10 md:px-16"
@@ -111,7 +113,11 @@ export default function HomePage() {
         variants={itemVariants}
         className="mb-8 border py-6 px-4 border-terminal-accent-primary/20 bg-terminal-bg-panel"
       >
-        {eventError ? (
+        {isEventLoading ? (
+          <div className="text-center py-4 font-mono text-terminal-muted" role="status" aria-live="polite">
+            <LabelText autoHeight text={t.home.loading} />
+          </div>
+        ) : eventError ? (
           <div className="text-center py-4 space-y-2">
             <div className="font-bold tracking-widest text-terminal-accent-alert font-mono">
               <LabelText
@@ -125,6 +131,13 @@ export default function HomePage() {
                 text={t.common.dbUnreachable}
               />
             </div>
+            <div className="flex justify-center">
+              <TerminalButton variant="ghost" onClick={() => void refetch()}>{t.common.retry}</TerminalButton>
+            </div>
+          </div>
+        ) : events.length === 0 ? (
+          <div className="text-center py-4 font-mono text-terminal-muted" role="status" aria-live="polite">
+            <MetaText autoHeight text={t.home.noEvents} />
           </div>
         ) : (
           <>
@@ -157,17 +170,30 @@ export default function HomePage() {
             <AnimatedHeight show={!!eventDate}>
               {eventDate && <CountdownBlock targetDate={eventDate} />}
             </AnimatedHeight>
+            {displayEvent && (
+              <div className="mt-5 flex justify-center">
+                <TerminalActionLink
+                  href={isElapsed
+                    ? `/gate?view=archive&event=${encodeURIComponent(displayEvent.id)}`
+                    : '/gate'}
+                  variant={isElapsed ? 'ghost' : 'primary'}
+                >
+                  {isElapsed ? t.home.viewArchive : t.home.viewEvent}
+                </TerminalActionLink>
+              </div>
+            )}
           </>
         )}
       </motion.div>
 
       {/* Directory */}
-      <motion.div
+      <motion.nav
         variants={itemVariants}
         className="border border-terminal-accent-primary/20 bg-terminal-bg-panel"
+        aria-labelledby="home-directory-title"
       >
         <div className="px-4 py-2 border-b flex items-center justify-between border-terminal-accent-primary/15 bg-terminal-bg-overlay/40">
-          <span className="text-micro sm:text-small tracking-widest text-terminal-accent-primary">
+          <span id="home-directory-title" className="text-micro sm:text-small tracking-widest text-terminal-accent-primary">
             <LabelText
               autoHeight
               text={t.home.rootDir}
@@ -176,17 +202,19 @@ export default function HomePage() {
           <span className="text-micro sm:text-small text-terminal-muted">
             <LabelText
               autoHeight
-              text={t.home.moduleCount}
+              text={t.home.moduleCount(DIRS.length)}
             />
           </span>
         </div>
 
-        {DIRS.map((dir, i) => (
-          <div key={dir.href}>
-            <DirectoryLink {...dir} index={i + 1} />
-          </div>
-        ))}
-      </motion.div>
+        <ul className="list-none m-0 p-0">
+          {DIRS.map((dir, i) => (
+            <li key={dir.href}>
+              <DirectoryLink {...dir} index={i + 1} />
+            </li>
+          ))}
+        </ul>
+      </motion.nav>
 
       {/* Footer */}
       <motion.div
@@ -194,7 +222,7 @@ export default function HomePage() {
         className="mt-6 flex items-center justify-between text-micro sm:text-caption text-terminal-muted font-mono"
       >
         <span>
-          <MetaText text="KERNEL 2.2.0-heliopause_build" autoHeight />
+          <MetaText text="TERMINAL · SEOUL" autoHeight />
         </span>
         <LangToggle />
       </motion.div>

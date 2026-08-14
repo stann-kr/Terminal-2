@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { DataText, MetaText } from '@/components/ui/TerminalText';
+import { useMotionPolicy } from '@/lib/useMotionPolicy';
 
 interface Props {
   targetDate: Date;
@@ -77,12 +78,18 @@ const accentStyles: Record<string, AccentStyle> = {
 };
 
 export default function CountdownBlock({ targetDate, accent = 'primary', compact = false }: Props) {
+  const { allowMotion, isDocumentVisible } = useMotionPolicy();
   const [delta, setDelta] = useState<TimeDelta>(() => getTimeDelta(targetDate));
 
   useEffect(() => {
+    if (!isDocumentVisible) return;
+    const frame = requestAnimationFrame(() => setDelta(getTimeDelta(targetDate)));
     const interval = setInterval(() => setDelta(getTimeDelta(targetDate)), 1000);
-    return () => clearInterval(interval);
-  }, [targetDate]);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearInterval(interval);
+    };
+  }, [isDocumentVisible, targetDate]);
 
   const blocks = [
     { label: 'DAYS',    val: String(delta.d).padStart(2, '0') },
@@ -107,7 +114,7 @@ export default function CountdownBlock({ targetDate, accent = 'primary', compact
   return (
     <motion.div
       suppressHydrationWarning={true}
-      initial={{ y: 8 }}
+      initial={allowMotion ? { y: 8 } : false}
       animate={{ y: 0 }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
     >

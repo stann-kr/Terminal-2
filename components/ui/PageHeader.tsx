@@ -37,6 +37,7 @@ export default function PageHeader({ path, title, accent = 'primary', variants =
       </div>
       <HeadingText
         text={title}
+        cipher
         autoHeight
         className={`font-orbit text-heading md:text-h2 font-bold tracking-[0.2em] ${accentClass}`}
       />

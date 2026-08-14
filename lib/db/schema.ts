@@ -31,7 +31,7 @@ export const transmitLogs = sqliteTable("transmit_logs", {
   message: text("message").notNull(),
   ts: text("ts").notNull(),
   createdAt: text("created_at").notNull(),
-  deviceId: text("device_id"),  // NODE-ID 원본 (alias 변경과 무관하게 유지)
+  deviceId: text("device_id"),  // 레거시 nullable 컬럼. 신규 입력·공개 응답에서는 사용하지 않음.
 });
 
 // ──────────────────────────────────────────────────────────

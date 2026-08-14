@@ -2,6 +2,58 @@
 
 공개 가능한 결과 중심 변경 요약이다. 항목은 일자 단위이며 최신 항목을 위에 둔다.
 
+## 2026-08-14 — Cloudflare development/production 환경 분리
+
+### Changed
+
+- Wrangler development/production 환경을 고정 Worker와 분리 D1 binding으로 명시하고 build·preview·deploy command가 항상 target environment를 지정하도록 변경했다.
+- Cloudflare Workers Builds를 유일한 자동 배포 경로로 정리하고 GitHub Actions는 validation만 담당하도록 경계를 분리했다.
+- `dev`는 development Worker, `main`은 production Worker를 대상으로 하며 production deploy와 D1 migration·secret·binding·route 변경은 독립 승인 단계로 유지한다.
+
+## 2026-08-13 — 접근성·공개 API·성능·검증 계층 강화
+
+### Added
+
+- route별 metadata, skip link와 고유 main landmark, Node/jsdom 테스트 project, Next·Worker HTTP smoke, 임시 D1 migration smoke와 secret 없는 validation CI를 추가했다.
+- 공개 이벤트/아티스트 runtime decoder, 공통 rate-limit/Turnstile 검증 인터페이스, PII-safe log와 Transmit idempotency 계약을 추가했다.
+- Gate와 Lineup 선택 상태를 URL query와 browser history에 동기화했다.
+
+### Changed
+
+- 의미 텍스트는 서버 HTML부터 최종 문자열로 렌더링하고 cipher는 대표 타이틀로 제한했다.
+- 전역 WebGL을 Home hero 조건부 dynamic enhancement로 격리하고 Status의 3D realtime 표시는 접근 가능한 정적 레지스트리로 바꿨다.
+- Home 이벤트 CTA·semantic directory와 즉시 사용 가능한 intro skip을 추가하고, 근거 없는 build/uptime/realtime 표기를 제거했다.
+- 공개 민감 응답을 no-store로 통일하고 게스트 정원 누락을 fail-closed로 처리했다. Signal·Gate 중복 제출은 식별 정보를 노출하지 않는 성공 응답을 사용한다.
+- ordinary Docker dev 환경에서 Cloudflare 배포 자격 증명 전달을 제거했다.
+
+### Fixed
+
+- 신청/코드 검증의 loading·invalid·inactive·unavailable 상태를 분리하고 세 공개 폼의 label, field error, live region과 오류 focus를 복구했다.
+- reduced-motion/save-data/hidden 상태에서 비필수 timer·scramble·Canvas가 계속 동작하던 문제를 정리했다.
+
+## 2026-08-11 — 공개 API와 런타임 신뢰 경계 정비
+
+### Security
+
+- `use-scramble`의 텍스트 전용 DOM 쓰기 패치를 일반 npm 설치와 Docker 설치 모두에서 적용·검증하도록 고정했다.
+- 콘텐츠 보안 정책과 프레이밍 차단 등 기본 보안 응답 헤더를 추가하고 프레임워크 식별 헤더를 제거했다.
+- 공개 JSON API가 입력 타입과 허용 필드, 본문 크기를 데이터베이스 접근 전에 검증하도록 강화했다.
+- 게스트 신청의 이메일 중복·아티스트별 정원 판정과 선택적 마케팅 등록을 하나의 D1 배치로 처리하도록 고정했다.
+- 인증 코드는 URL에 남지 않는 POST 본문으로만 확인하고 응답 캐시를 금지했다.
+- 전송 로그 공개 응답과 신규 저장 입력에서 디바이스 식별자를 제외했다.
+
+### Changed
+
+- TypeScript 오류를 무시하던 프로덕션 빌드 설정을 제거했다.
+- 로컬 개발과 Docker의 기본 포트를 3005로 통일했다.
+- Node 환경의 Vitest 실행 계약을 추가했다.
+- 종료 시각이 지난 `UPCOMING` 이벤트를 응답 시점에 보관 상태로 판정하고, 미래 이벤트는 시작 시각순으로 제공한다.
+
+### Fixed
+
+- 동시 구독 요청이 이메일 고유 제약에서 500으로 바뀌던 경쟁 조건을 409 중복 응답으로 안정화했다.
+- 인증 코드 연속 입력에서 이전 응답이 최신 입력 상태를 덮어쓸 수 있던 요청 경쟁을 차단했다.
+
 ## 2026-07-28 — 공개·비공개 문서 레이어 정리
 
 ### Docs
@@ -209,7 +261,7 @@
 
 ### Added
 
-- Cloudflare Workers와 D1 기반 배포 인프라를 구성하고 CI/CD를 연결했다.
+- Cloudflare Workers와 D1 기반 배포 인프라 및 수동 deploy workflow를 구성했다.
 - 노드 식별자 자동 부여, 게이트 접근 요청 페이지, 카운트다운, 전송 로그 페이지네이션을 추가했다.
 
 ### Changed

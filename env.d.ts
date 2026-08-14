@@ -7,6 +7,11 @@
 declare global {
   interface CloudflareEnv {
     DB: D1Database;
+    PUBLIC_RATE_LIMITER?: {
+      limit(input: { key: string }): Promise<{ success: boolean }>;
+    };
+    TURNSTILE_SECRET_KEY?: string;
+    TURNSTILE_EXPECTED_HOSTNAME?: string;
   }
 }
 
