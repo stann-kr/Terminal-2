@@ -24,8 +24,11 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
-.env*.local
-.env
+.env*
+!.env.example
+!.env.sample
+.dev.vars*
+!.dev.vars.example
 
 # vercel
 .vercel
@@ -39,7 +42,12 @@ next-env.d.ts
 .open-next/
 dist/
 
-# agent-local 설정; 공통 AGENTS.md, CLAUDE.md, .projectdocs.json은 추적한다
+# ProjectDocs local-only instructions
+/.projectdocs.json
+/AGENTS.md
+/CLAUDE.md
+
+# agent-local 설정
 /WORK_LOG.md
 .agents/
 .claude/
