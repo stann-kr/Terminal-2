@@ -32,13 +32,14 @@ export default function PageHeader({ path, title, accent = 'primary', variants =
   const accentClass = accentClassMap[accent] || accentClassMap.primary;
   return (
     <motion.div variants={variants} className="mb-8 font-mono">
-      <div className="text-small tracking-widest mb-1 text-terminal-muted">
-        <LabelText text={path} autoHeight />
+      <div className="text-small tracking-label mb-1 text-terminal-muted">
+        <LabelText text={`[ ${path.toUpperCase()} ]`} autoHeight />
       </div>
       <HeadingText
         text={title}
+        cipher
         autoHeight
-        className={`text-heading md:text-h2 font-bold tracking-[0.2em] ${accentClass}`}
+        className={`font-orbit text-heading md:text-h2 font-bold tracking-[0.2em] ${accentClass}`}
       />
     </motion.div>
   );

@@ -4,16 +4,19 @@ import { LabelText } from '@/components/ui/TerminalText';
 
 interface FormFieldProps {
   label: string;
+  htmlFor?: string;
   children: ReactNode;
 }
 
 /** 폼 필드 래퍼 — 라벨(LabelText) + 입력 요소(input/textarea) 쌍 */
-export function FormField({ label, children }: FormFieldProps) {
+export function FormField({ label, htmlFor, children }: FormFieldProps) {
+  const LabelTag = htmlFor ? 'label' : 'div';
+
   return (
     <div>
-      <div className="mb-1.5 tracking-widest font-mono text-terminal-subdued">
+      <LabelTag htmlFor={htmlFor} className="mb-1.5 block tracking-widest font-mono text-terminal-subdued">
         <LabelText text={label} autoHeight />
-      </div>
+      </LabelTag>
       {children}
     </div>
   );

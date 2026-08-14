@@ -3,10 +3,14 @@ module.exports = {
   content: ["./{app,components,libs,pages,hooks}/**/*.{html,js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      letterSpacing: {
+        label: 'var(--os-tracking)', // 0.14em — STANN OS 모노 라벨 자간
+      },
       fontFamily: {
         'pixie': ['ProcrastinatingPixie', 'monospace'],
         'orbit': ['Orbit', 'monospace'],
-        'mono': ['Orbit', 'var(--font-space-mono)', 'monospace'],
+        // 모노 = 라벨/메타 글루 (STANN OS — JetBrains Mono). 타이틀은 font-orbit으로 핀
+        'mono': ['var(--font-jetbrains)', 'JetBrains Mono', 'monospace'],
       },
       fontSize: {
         pico:    ['var(--text-pico)',    { lineHeight: '1.2' }],

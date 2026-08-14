@@ -8,14 +8,12 @@ import PageHeader from '@/components/ui/PageHeader';
 import { useT } from '@/lib/langContext';
 
 const SYSTEM_INFO = [
-  { key: 'PLATFORM_ID',    val: 'TERMINAL-SYS' },
-  { key: 'BUILD',          val: '2.2.0-HELIOPAUSE' },
-  { key: 'LOCATION',       val: 'FAUST / SEOUL-KR' },
-  { key: 'FOUNDED',        val: '2025 // CYCLE 1' },
-  { key: 'UPTIME',         val: 'SYSTEM INITIALIZING...' },
-  { key: 'EVENTS_RUN',     val: '01 SESSION ARCHIVED' },
-  { key: 'SIGNAL_REACH',   val: 'HELIOPAUSE OUTSKIRTS' },
-  { key: 'STATUS',         val: 'WARP DRIVE ENGAGED' },
+  { key: 'PLATFORM_ID',  val: 'TERMINAL' },
+  { key: 'SURFACE',      val: 'STANN OS LIVE' },
+  { key: 'LOCATION',     val: 'SEOUL-KR' },
+  { key: 'MODE',         val: 'EVENT DISCOVERY / ACCESS' },
+  { key: 'DATA_SOURCE',  val: 'EVENT REGISTRY' },
+  { key: 'STATUS',       val: 'PUBLIC INTERFACE' },
 ];
 
 export default function AboutPage() {

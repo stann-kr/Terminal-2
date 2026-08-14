@@ -1,30 +1,35 @@
 "use client";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import PageLayout, { itemVariants } from "@/components/PageLayout";
 import { LabelText, SubtitleText, MetaText, HeadingText } from "@/components/ui/TerminalText";
 import ReturnLink from "@/components/ui/ReturnLink";
 import PageHeader from "@/components/ui/PageHeader";
+import TerminalPanel from "@/components/TerminalPanel";
 import TerminalButton from "@/components/TerminalButton";
+import TerminalActionLink from "@/components/TerminalActionLink";
 import EventDetail from "./EventDetail";
 import { useT } from "@/lib/langContext";
 import { fetchEvents, eventKeys } from "@/lib/queries/events";
+import { getArchivedOrElapsedEvents, getFutureUpcomingEvent } from "@/lib/eventLifecycle";
+import { useUrlQueryState } from "@/lib/useUrlQueryState";
 
 export default function GatePage() {
   const t = useT();
-  const [tab, setTab] = useState<"upcoming" | "archive">("upcoming");
-  const [selectedArchive, setSelectedArchive] = useState("");
+  const [viewQuery, setViewQuery] = useUrlQueryState('view');
+  const [selectedArchive, setSelectedArchive] = useUrlQueryState('event');
+  const tab = viewQuery === 'archive' ? 'archive' : 'upcoming';
 
-  const { data: events = [], isLoading: loading, isError: error } = useQuery({
+  const { data: events = [], isLoading: loading, isError: error, refetch } = useQuery({
     queryKey: eventKeys.list(),
     queryFn: fetchEvents,
   });
 
-  const upcomingEvent = events.find((e) => e.status === "UPCOMING") || events[0] || null;
-  const archivedEvents = events.filter((e) => e.status === "ARCHIVED");
-  const effectiveArchiveId = selectedArchive || archivedEvents[0]?.id || "";
+  const upcomingEvent = getFutureUpcomingEvent(events);
+  const archivedEvents = getArchivedOrElapsedEvents(events);
+  const effectiveArchiveId = archivedEvents.some((event) => event.id === selectedArchive)
+    ? selectedArchive
+    : archivedEvents[0]?.id || "";
   const selectedEvent =
     tab === "upcoming"
       ? upcomingEvent
@@ -42,13 +47,18 @@ export default function GatePage() {
 
       {/* Tab switcher */}
       <motion.div variants={itemVariants} className="mb-6">
-        <div className="inline-flex p-1 gap-1 bg-terminal-bg-overlay/50 border border-terminal-accent-primary/15">
+        <div
+          className="inline-flex p-1 gap-1 bg-terminal-bg-overlay/50 border border-terminal-accent-primary/15"
+          role="group"
+          aria-label="Event view"
+        >
           {(["upcoming", "archive"] as const).map((tabKey) => (
             <TerminalButton
               key={tabKey}
               variant={tab === tabKey ? "primary" : "ghost"}
               className="px-4 py-1.5 text-micro"
-              onClick={() => setTab(tabKey)}
+              onClick={() => setViewQuery(tabKey === 'archive' ? 'archive' : '')}
+              aria-pressed={tab === tabKey}
             >
               {tabKey === "upcoming" ? t.gate.tabUpcoming : t.gate.tabArchive}
             </TerminalButton>
@@ -68,6 +78,9 @@ export default function GatePage() {
           <div className="text-terminal-muted font-mono">
             <MetaText text={t.common.dbUnreachable} />
           </div>
+          <div className="flex justify-center">
+            <TerminalButton variant="ghost" onClick={() => void refetch()}>{t.common.retry}</TerminalButton>
+          </div>
         </motion.div>
       ) : (
         <AnimatePresence mode="wait">
@@ -80,7 +93,7 @@ export default function GatePage() {
               transition={{ duration: 0.15 }}
               className="space-y-4"
             >
-              {upcomingEvent && (
+              {upcomingEvent ? (
                 <>
                   {/* Event header - 정보 가독성 유지 */}
                   <div className="border border-terminal-accent-secondary/30 px-4 py-4 bg-terminal-bg-panel">
@@ -91,8 +104,8 @@ export default function GatePage() {
                         </div>
                         <div className="drop-shadow-[0_0_12px_rgb(var(--color-accent-secondary)/0.4)]">
                           <HeadingText
+                            as="h2"
                             text={upcomingEvent.session}
-                            as="span"
                             className="tracking-[0.15em] text-terminal-accent-secondary"
                           />
                         </div>
@@ -112,13 +125,18 @@ export default function GatePage() {
                   <EventDetail event={upcomingEvent} showCountdown />
 
                   <div className="text-center pt-2">
-                    <Link href="/gate/request">
-                      <TerminalButton className="px-8" variant="primary">
-                        {t.gate.requestBtn}
-                      </TerminalButton>
-                    </Link>
+                    <TerminalActionLink href="/gate/request" className="inline-flex px-8" variant="primary">
+                      {t.gate.requestBtn}
+                    </TerminalActionLink>
                   </div>
                 </>
+              ) : (
+                <TerminalPanel title="REQUEST_STATUS" accent="alert">
+                  <div className="text-center py-6 space-y-2 font-mono">
+                    <LabelText text={t.request.noEvent} />
+                    <MetaText text={t.request.eventElapsed} />
+                  </div>
+                </TerminalPanel>
               )}
             </motion.div>
           ) : (
@@ -131,34 +149,43 @@ export default function GatePage() {
               className="space-y-4"
             >
               {/* Archive session list */}
-              <div className="space-y-2">
-                {archivedEvents.map((ev) => (
-                  <button
-                    key={ev.id}
-                    onClick={() => setSelectedArchive(ev.id)}
-                    className={`w-full text-left px-4 py-3 border cursor-pointer transition-all duration-200 font-mono ${
-                      effectiveArchiveId === ev.id
-                        ? "border-terminal-accent-alert/50 bg-terminal-accent-alert/10"
-                        : "border-terminal-accent-primary/15 bg-terminal-bg-panel hover:bg-terminal-accent-primary/5"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <div className={`font-bold tracking-wider ${effectiveArchiveId === ev.id ? "text-terminal-accent-alert" : "text-terminal-primary"}`}>
-                          <SubtitleText autoHeight text={ev.session} />
-                        </div>
-                        <div className="mt-0.5 text-terminal-subdued">
-                          <MetaText text={`${ev.subtitle} · ${ev.date.replace(/-/g, ".")}`} />
-                        </div>
-                      </div>
-                      <div className="tracking-wider shrink-0 text-terminal-muted flex items-center">
-                        <LabelText
-                          autoHeight
-                          text={t.gate.archivedLabel}
-                        />
-                      </div>
+              <div
+                className="space-y-2"
+                role={archivedEvents.length > 0 ? 'list' : undefined}
+                aria-label={archivedEvents.length > 0 ? 'Archived events' : undefined}
+              >
+                {archivedEvents.length === 0 ? (
+                  <TerminalPanel title="ARCHIVE_STATUS" accent="alert">
+                    <div className="text-center py-4 font-mono text-terminal-muted" role="status" aria-live="polite">
+                      <MetaText text={t.gate.noArchive} />
                     </div>
-                  </button>
+                  </TerminalPanel>
+                ) : archivedEvents.map((ev) => (
+                  <div key={ev.id} role="listitem">
+                    <button
+                      onClick={() => setSelectedArchive(ev.id)}
+                      aria-current={effectiveArchiveId === ev.id ? 'true' : undefined}
+                      className={`w-full text-left px-4 py-3 border cursor-pointer transition-[color,border-color,background-color] duration-200 font-mono ${
+                        effectiveArchiveId === ev.id
+                          ? "border-terminal-accent-alert/50 bg-terminal-accent-alert/10"
+                          : "border-terminal-accent-primary/15 bg-terminal-bg-panel hover:bg-terminal-accent-primary/5"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <div className={`font-bold tracking-wider ${effectiveArchiveId === ev.id ? "text-terminal-accent-alert" : "text-terminal-primary"}`}>
+                            <SubtitleText autoHeight text={ev.session} />
+                          </div>
+                          <div className="mt-0.5 text-terminal-subdued">
+                            <MetaText text={`${ev.subtitle} · ${ev.date.replace(/-/g, ".")}`} />
+                          </div>
+                        </div>
+                        <div className="tracking-wider shrink-0 text-terminal-muted flex items-center">
+                          <LabelText autoHeight text={t.gate.archivedLabel} />
+                        </div>
+                      </div>
+                    </button>
+                  </div>
                 ))}
               </div>
 

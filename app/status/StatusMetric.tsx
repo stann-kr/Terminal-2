@@ -44,7 +44,8 @@ export default function StatusMetric({ label, value, unit, accent = 'primary', d
     <div
       className={`border text-center py-5 px-3 bg-terminal-bg-panel transition-colors duration-300 ${accentClasses.split(' ')[0]}`}
     >
-      <div className={`text-2xl font-bold mb-1 font-mono ${accentClasses.split(' ').slice(1).join(' ')}`}>
+      {/* 메트릭 큰 수치 — 디스플레이 성격: font-orbit 핀 (CountdownBlock과 동일 처리) */}
+      <div className={`text-2xl font-bold mb-1 font-orbit ${accentClasses.split(' ').slice(1).join(' ')}`}>
         <DataText text={value} />
       </div>
       <div className={`text-caption md:text-small mb-2 font-mono ${labelColorClass}`}>

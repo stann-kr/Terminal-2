@@ -21,6 +21,7 @@ export const itemVariants: Variants = {
 // speed: 텍스트가 디코딩되는 속도 (높을수록 빠름)
 // scramble: 스크램블 문자 수 (텍스트 길이에 반비례)
 // animateTextLength: 빈 값에서 텍스트 길이가 채워지는 방식 (페이지 전환 플래시 방지)
+// STANN OS 정본 --os-decode-speed(80ms/char)에 체감 근사하는 use-scramble 단위 프리셋
 
 export const decode = {
   /** 메인 히어로 제목 — TERMINAL 타이틀 등 */

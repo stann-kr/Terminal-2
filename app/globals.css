@@ -1,4 +1,4 @@
-@import url("https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css");
+@import "./stann-os.css";
 
 @font-face {
   font-family: 'ProcrastinatingPixie';
@@ -34,15 +34,16 @@
 
     --color-text-primary: 214 229 237;
     --color-text-subdued: 140 155 165;
-    --color-text-muted: 90 100 110;
+    --color-text-muted: 112 124 134;
 
     /* Semantic Accents - Monochromatic & Sterile */
     --color-accent-primary: 214 229 237;   /* Icy Blue (포스터 메인 컬러와 동일) */
     --color-accent-secondary: 140 155 165; /* Muted Icy Blue (투명도/명도로 계층 구분) */
-    --color-accent-tertiary: 90 100 110;   /* Dark Icy Blue */
+    --color-accent-tertiary: 112 124 134;  /* AA-readable Dark Icy Blue */
     
-    /* Status Colors - Muted & Desaturated */
-    --color-accent-alert: 179 71 71;       /* Muted Red (채도 빠진 건조한 빨강) */
+    /* Status Colors — STANN OS 상태색 역할(stann-os.css E섹션)과 값 일치
+       alert = --os-status-alert(#b34747 = 179 71 71) · warn = --os-status-warn(#b39847 = 179 152 71) */
+    --color-accent-alert: 205 88 88;       /* AA-readable muted red */
     --color-accent-warn: 179 152 71;       /* Muted Gold (채도 빠진 건조한 노랑) */
 
     /* ─── Typography Scale ──────────────────────────────────────────────────── */
@@ -78,5 +79,47 @@
   }
   .text-shadow-glow-tertiary {
     text-shadow: 0 0 16px rgb(var(--color-accent-tertiary) / 0.4);
+  }
+}
+
+/* 셀렉션 — 액센트 배경 (STANN OS 불변 글루) */
+::selection {
+  background: rgb(var(--color-accent-primary));
+  color: rgb(var(--color-bg-base));
+}
+
+/* 포커스 가시화 — STANN OS 불변 글루 (canon: 2px accent, offset 2px) */
+:focus-visible {
+  outline: 2px solid rgb(var(--color-accent-primary));
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  transform: translateY(calc(-100% - 2rem));
+  border: 1px solid rgb(var(--color-accent-primary));
+  background: rgb(var(--color-bg-base));
+  color: rgb(var(--color-text-primary));
+  padding: 0.75rem 1rem;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 0.875rem;
+  transition: transform 120ms ease-out;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* reduced-motion 전역 가드 (STANN OS 공통 — 디코드·스캔라인·CRT 즉시 표시 폴백) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

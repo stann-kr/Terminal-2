@@ -1,0 +1,42 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm audit --omit=dev
+      - run: npm test
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+      - name: Next HTTP smoke
+        run: |
+          npm start > /tmp/terminal-next.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          npm run smoke:http
+      - run: npm run build:worker
+      - name: Prepare local Worker D1
+        run: npx wrangler d1 migrations apply terminal-db-dev --local --env development
+      - name: Worker HTTP smoke
+        run: |
+          npm run cf:preview > /tmp/terminal-worker.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          SMOKE_BASE_URL=http://127.0.0.1:8787 SMOKE_API=1 npm run smoke:http
+      - run: npm run test:d1
+      - run: npx wrangler deploy --env production --dry-run

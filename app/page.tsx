@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
 import { hasVisited, markVisited } from '@/lib/visitState';
@@ -9,13 +9,8 @@ import SleepScreen from '@/components/SleepScreen';
 type Phase = 'loading' | 'boot' | 'sleep' | 'done';
 
 export default function EntryController() {
-  const [phase, setPhase] = useState<Phase>('loading');
+  const [phase, setPhase] = useState<Phase>(() => (hasVisited() ? 'sleep' : 'boot'));
   const router = useRouter();
-
-  useEffect(() => {
-    const visited = hasVisited();
-    setPhase(visited ? 'sleep' : 'boot');
-  }, []);
 
   const handleBootComplete = () => {
     markVisited();
@@ -28,14 +23,13 @@ export default function EntryController() {
     router.push('/home');
   };
 
-  if (phase === 'loading') {
-    return <div className="fixed inset-0 bg-terminal-bg-base" />;
-  }
-
   return (
-    <AnimatePresence mode="wait">
-      {phase === 'boot' && <BootSequence key="boot" onComplete={handleBootComplete} />}
-      {phase === 'sleep' && <SleepScreen key="sleep" onWake={handleWake} />}
-    </AnimatePresence>
+    <main id="main-content" tabIndex={-1}>
+      <h1 className="sr-only">TERMINAL</h1>
+      <AnimatePresence mode="wait">
+        {phase === 'boot' && <BootSequence key="boot" onComplete={handleBootComplete} />}
+        {phase === 'sleep' && <SleepScreen key="sleep" onWake={handleWake} />}
+      </AnimatePresence>
+    </main>
   );
 }

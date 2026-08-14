@@ -24,8 +24,11 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
-.env*.local
-.env
+.env*
+!.env.example
+!.env.sample
+.dev.vars*
+!.dev.vars.example
 
 # vercel
 .vercel
@@ -39,12 +42,22 @@ next-env.d.ts
 .open-next/
 dist/
 
-# ai agents context
+# ProjectDocs local-only instructions
+/.projectdocs.json
+/AGENTS.md
+/CLAUDE.md
+
+# agent-local 설정
+/WORK_LOG.md
 .agents/
+.claude/
+.codex/
 build_log.txt
 
-# private
-.docs/private/
+# 프로젝트 문서 정책
+# docs/ = GitHub에 올릴 공개 프로젝트 문서
+# .docs/ = 개인 작업 및 재진입 문서 (GitHub 업로드 금지)
+/.docs/
 # git worktrees
 .worktrees/
 

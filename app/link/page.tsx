@@ -11,6 +11,7 @@ export default function LinkPage() {
   const t = useT();
 
   const LINKS = [
+    { href: 'https://stann.kr',                         label: 'STANN OS Hub',         description: t.link.descriptions.stannHub,      accent: 'primary' as const },
     { href: 'https://lumo.stann.kr',                    label: 'Stann Lumo Web',       description: t.link.descriptions.stannWeb,     accent: 'primary' as const },
     { href: 'https://www.instagram.com/stannlumo/',     label: 'Stann Lumo Instagram', description: t.link.descriptions.stannInsta,    accent: 'primary' as const },
     { href: 'https://www.instagram.com/terminal_hub/',  label: 'Terminal Instagram',   description: t.link.descriptions.terminalInsta, accent: 'primary' as const },

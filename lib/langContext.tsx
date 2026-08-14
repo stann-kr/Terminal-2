@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { getLang, setLang as storeLang, type Lang } from '@/lib/lang';
 import { i18n } from '@/lib/i18n';
 
@@ -16,7 +16,12 @@ export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>('ko');
 
   useEffect(() => {
-    setLangState(getLang());
+    const timer = window.setTimeout(() => {
+      const storedLang = getLang();
+      setLangState(storedLang);
+      document.documentElement.lang = storedLang;
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const setLang = (l: Lang) => {
