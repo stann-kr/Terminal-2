@@ -197,4 +197,4 @@ const { mutate } = useMutation({
 - **Docker 패키지 설치:** `docker-compose.yml`의 `node_modules`는 anonymous volume이다. Docker 환경의 패키지 변경은 실행 중인 컨테이너에서 수행하고 이미지 재빌드 여부를 함께 판단한다.
 - **공개 API 보호:** `PUBLIC_RATE_LIMITER`와 Turnstile Siteverify validator의 로컬 계약은 구현돼 있다. 실제 Cloudflare binding/secret과 client token flow가 연결되기 전에는 public-release ready로 판정하지 않는다.
 - **검증 계층:** Vitest는 Node와 jsdom project를 분리한다. `scripts/http-smoke.mjs`는 route title/main/SSR text/cache/WebGL initial graph를, `scripts/verify-local-d1.mjs`는 빈 임시 D1에 9개 Wrangler migration과 FK/index를 검증한다.
-- **CI와 배포:** `.github/workflows/validate.yml`은 secret 없이 install/audit/test/lint/typecheck/build/Next·Worker smoke/D1/dry-run을 실행한다. deploy workflow는 별도이며 자동 trigger가 비활성화돼 있다.
+- **CI와 배포:** `.github/workflows/validate.yml`은 secret 없이 install/audit/test/lint/typecheck/build/Next·Worker smoke/D1/production-env dry-run을 실행한다. Cloudflare Workers Builds가 `dev`의 `terminal-2-dev`와 `main`의 `terminal-2`를 각각 자동 배포하며, Worker code deploy와 D1 migration·secret·binding·route 변경은 분리한다.

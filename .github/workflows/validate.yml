@@ -37,4 +37,4 @@ jobs:
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           SMOKE_BASE_URL=http://127.0.0.1:8787 SMOKE_API=1 npm run smoke:http
       - run: npm run test:d1
-      - run: npx wrangler deploy --dry-run
+      - run: npx wrangler deploy --env production --dry-run

@@ -2,6 +2,14 @@
 
 공개 가능한 결과 중심 변경 요약이다. 항목은 일자 단위이며 최신 항목을 위에 둔다.
 
+## 2026-08-14 — Cloudflare development/production 환경 분리
+
+### Changed
+
+- Wrangler development/production 환경을 고정 Worker와 분리 D1 binding으로 명시하고 build·preview·deploy command가 항상 target environment를 지정하도록 변경했다.
+- Cloudflare Workers Builds를 유일한 자동 배포 경로로 정리하고 GitHub Actions는 validation만 담당하도록 경계를 분리했다.
+- `dev`는 development Worker, `main`은 production Worker를 대상으로 하며 production deploy와 D1 migration·secret·binding·route 변경은 독립 승인 단계로 유지한다.
+
 ## 2026-08-13 — 접근성·공개 API·성능·검증 계층 강화
 
 ### Added

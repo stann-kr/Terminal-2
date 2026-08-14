@@ -47,7 +47,7 @@ npm run build
 npm run smoke:http
 npm run build:worker
 npm run test:d1
-npx wrangler deploy --dry-run
+npx wrangler deploy --env production --dry-run
 ```
 
 For Worker HTTP smoke, run `npm run cf:preview` and then run `SMOKE_BASE_URL=http://127.0.0.1:8787 SMOKE_API=1 npm run smoke:http` in another terminal.
@@ -58,25 +58,29 @@ For Worker HTTP smoke, run `npm run cf:preview` and then run `SMOKE_BASE_URL=htt
 
 ## Cloudflare / OpenNext
 
-Build a Cloudflare Worker bundle:
+Build an environment-specific Cloudflare Worker bundle:
 
 ```bash
-npm run build:worker
+npm run build:worker:development
+npm run build:worker:production
 ```
 
-Run local Cloudflare preview:
+Run the development configuration in a local Cloudflare preview:
 
 ```bash
 npm run cf:preview
 ```
 
-Deploy:
+Deployment targets are explicit:
 
 ```bash
-npm run deploy
+npm run deploy:development
+npm run deploy:production
 ```
 
-Important: D1 migrations are not automatically applied by `npm run deploy`. Apply and verify migrations as a separate deployment step before or alongside Worker deployment.
+Cloudflare Workers Builds is the only automatic deployment path. A `dev` push deploys the fixed `terminal-2-dev` Worker and a `main` push deploys the production `terminal-2` Worker. GitHub Actions performs validation only.
+
+Important: production deployment requires separate approval. D1 migrations, secrets, bindings, and routes are not automatically changed by Worker code deployment and must be applied and verified as separate operations.
 
 ## D1
 
@@ -92,6 +96,11 @@ D1 binding name:
 ```text
 DB
 ```
+
+Remote databases are separated by environment:
+
+- development: `terminal-db-dev`
+- production: `terminal-db`
 
 Local migration apply example:
 

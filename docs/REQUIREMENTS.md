@@ -26,11 +26,12 @@
 * LINK: STANN OS HUB / ARCHIVE / LIVE 및 외부 채널 연결.
 
 ## 4. 검증 및 배포 게이트
-* 최소 로컬 검증: `npm ci`, `npm audit --omit=dev`, `npm test`, `npm run lint`, `npm run typecheck`, `npm run build`, `npm run smoke:http`, `npm run build:worker`, Worker HTTP smoke, `npm run test:d1`, Wrangler dry-run.
-* `deploy`는 Worker 배포만 수행한다. D1 migration apply는 별도 단계로 명시적으로 실행/검증해야 한다.
+* 최소 로컬 검증: `npm ci`, `npm audit --omit=dev`, `npm test`, `npm run lint`, `npm run typecheck`, `npm run build`, `npm run smoke:http`, `npm run build:worker`, Worker HTTP smoke, `npm run test:d1`, production environment Wrangler dry-run.
+* Cloudflare Workers Builds가 유일한 자동 배포 주체다. `dev`는 고정 development Worker, `main`은 production Worker를 대상으로 하며 GitHub Actions는 validation만 수행한다.
+* Worker code deploy는 D1 migration, secret, binding, route와 분리한다. production deploy와 모든 remote D1 migration은 별도 승인·검증 대상이다.
 * 공개 API는 정확한 JSON media type, streaming byte limit, runtime DTO, no-store 민감 응답과 PII-safe log 계약을 유지한다.
 * rate-limit/Turnstile 검증 인터페이스는 로컬에서 테스트하지만, 실제 binding·secret과 Signal verification/unsubscribe/retention 운영이 없으면 public-release ready가 아니다.
-* push, PR, deploy, remote D1 migration과 production secret/config/data는 별도 승인 대상이다.
+* push, PR, production deploy, remote D1 migration과 production secret/config/data는 별도 승인 대상이다.
 
 ## 5. 데이터베이스 구조 (Schema)
 * **Flexible JSON Model:** `events`, `artists` 테이블은 고정 컬럼 대신 `data` JSON 컬럼을 활용하여 데이터 속성 변경에 유연하게 대응함.
