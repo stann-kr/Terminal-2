@@ -51,6 +51,10 @@
 // accent 종류: secondary | tertiary | alert | warn | primary
 ```
 
+- `FieldError`는 필드의 `aria-describedby` 대상과 alert semantics를 제공한다.
+- `useFieldErrors`는 validation error의 첫 필드로 focus를 이동하며 Signal·Gate Request·Transmit가 같은 계약을 사용한다.
+- 제목이 있는 `TerminalPanel`은 기본적으로 labelled `section`과 `h2`를 렌더링하고, 중첩 panel은 `headingLevel={3}`을 사용한다.
+
 ---
 
 ## 3. Page Transition 및 `DecodeText` 렌더링 (Cipher Decode 시스템)
@@ -60,16 +64,17 @@
 ### 3.1 통합 컴포넌트 `<DecodeText>` 및 `<TerminalText>` 분석
 
 - **위치:** `components/DecodeText.tsx`, `components/ui/TerminalText.tsx`
-- **핵심 역할:** 최종 문자열을 서버 HTML과 접근성 트리에 먼저 렌더링하고, 허용된 대표 타이틀에서만 aria-hidden 시각 layer를 cipher로 갱신한다.
+- **핵심 역할:** 최종 문자열을 서버 HTML에 먼저 렌더링하고 안정적인 `aria-label`을 유지한 채 같은 DOM node의 시각 문자열에만 cipher를 적용한다.
 - **시맨틱 추상화 (`TerminalText.tsx`):**
   - `TitleText`와 명시적으로 `cipher`를 켠 heading 외의 본문·라벨·메타·데이터는 plain semantic text로 렌더링한다.
+  - `DecodeText` 직접 사용은 사용자 motion 정책을 따르는 비필수 boot/sleep 화면으로 제한한다.
   - 제공 컴포넌트: `TitleText` (히어로), `HeadingText` (섹션 제목), `SubtitleText` (부제), `BodyText` (본문), `LabelText` (시스템 라벨), `MetaText` (메타데이터), `DataText` (실시간 데이터).
 - **주요 동적 속성 및 토큰화 (`lib/animationTokens.ts`):**
   - 각 시맨틱 컴포넌트는 `animationTokens.ts`에 정의된 프리셋을 참조하여 동작함.
   - `useMotionPolicy`는 reduced-motion, save-data, document visibility를 live 구독한다. 정책이 motion을 허용하지 않으면 최종 문자열을 즉시 유지하고 timer/RAF/Canvas를 실행하지 않는다.
 - **레이아웃 보존 기술 (Layout Shift 방지):**
-  - 텍스트 길이가 변할 때 생기는 줄바꿈과 레이아웃 이동을 줄이기 위해 `@chenglou/pretext`의 DOM-less 텍스트 측정을 사용한다. 자기 크기 관찰로 인한 피드백 루프를 피하도록 `ResizeObserver` 대신 `window.resize`와 `requestAnimationFrame`으로 재측정한다.
-  - 컨테이너에 `overflow: hidden` 및 `height`, `min-height` 트랜지션을 동시 적용하여 텍스트의 동적 줄바꿈이 박스 크기를 급격하게 확장시키는 현상을 마스킹 처리함.
+  - 최종 문자열을 실제 DOM child로 먼저 렌더링해 브라우저 레이아웃과 접근성 트리가 같은 내용을 사용한다.
+  - 펼침 영역은 `AnimatedHeight`가 내부 콘텐츠의 실제 높이를 관찰하며, cipher는 최종 접근성 이름을 바꾸지 않는 시각적 향상으로만 실행한다.
 
 ### 3.2 페이지 구조 (PageLayout & Transition)
 
@@ -127,7 +132,9 @@ Cloudflare D1의 제약 사항과 개발 생산성을 고려하여, 핵심 비�
 
 ### 6.3 `access_requests` 및 `transmit_logs`
 - 이들은 트랜잭션 성격이 강하므로 전통적인 관계형 컬럼 구조를 유지하여 쿼리 성능과 데이터 무결성을 확보함.
+- Gate의 payload·event/access-code·request-window rule은 `lib/gate/createAccessRequest.ts`와 `requestPolicy.ts`, raw SQL과 atomic D1 batch는 `d1AccessRequestRepository.ts`, HTTP transport와 response mapping은 API route가 각각 소유한다.
 - 게스트 신청은 기존 `(event_id, email)` 고유 인덱스와 D1 배치 안의 조건부 INSERT를 함께 사용해 중복 이메일·아티스트별 정원·선택적 마케팅 등록을 한 경계에서 판정한다.
+- Gate Request와 Signal의 신규·중복 성공은 모두 `200 { ok: true }`와 `no-store`를 반환해 등록 여부를 노출하지 않는다.
 - 전송 로그의 신규 입력과 공개 DTO는 디바이스 식별자를 수집하거나 노출하지 않는다. 기존 nullable 컬럼은 호환성을 위해 유지한다.
 - 이벤트·아티스트 JSON은 public runtime decoder를 통과한 필드만 DTO로 반환하며 access code, guest limit과 저장 전용 필드는 노출하지 않는다.
 - 게스트 코드가 설정된 아티스트의 `guestLimit`은 bounded integer 필수값이다. 누락·오염 시 무제한으로 해석하지 않고 availability 오류로 닫는다.

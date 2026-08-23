@@ -2,6 +2,21 @@
 
 공개 가능한 결과 중심 변경 요약이다. 항목은 일자 단위이며 최신 항목을 위에 둔다.
 
+## 2026-08-23 — Gate capability와 접근성 경계 정리
+
+### Changed
+
+- Gate의 신청 기간·upcoming event·access-code rule과 D1 atomic repository를 분리하고 Request·code-info route가 같은 domain 판정을 사용하도록 정리했다.
+- Gate Request의 지원되지 않던 기타 초대자 입력을 제거하고, 서버가 확인한 아티스트 identity만 읽기 전용으로 표시하도록 변경했다.
+- 세 공개 폼의 field error와 첫 오류 focus 계약을 공유하고, 제목이 있는 Terminal panel을 labelled section과 heading으로 렌더링한다.
+- Docker build context에서 local env·private 문서·generated output을 제외하고, ESLint·Vitest가 source와 실제 test discovery를 기준으로 실패하도록 설정을 정리했다.
+- 사용하지 않는 정적 이벤트 사본·boot context·legacy CRT/accent alias와 과거 텍스트 측정 의존성을 제거했다.
+
+### Fixed
+
+- Gate Request와 Signal의 신규·중복 성공 응답을 동일한 `200 { ok: true }`와 `no-store`로 맞춰 제출 결과가 HTTP status로 구분되지 않게 했다.
+- `TerminalButton`이 `aria-pressed` 등 native button 속성을 실제 DOM에 전달하도록 수정했다.
+
 ## 2026-08-14 — Cloudflare development/production 환경 분리
 
 ### Changed

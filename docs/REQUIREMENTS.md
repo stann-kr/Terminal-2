@@ -11,7 +11,7 @@
 ## 2. 주요 아키텍처 원칙
 * **Apple Silicon 최적화 Docker 환경:** Docker는 로컬/dev 또는 prod-like smoke 용도로 사용한다. 공개 배포의 정본 artifact는 `@opennextjs/cloudflare` Worker bundle이다.
 * **DB 연동:** Cloudflare D1 바인딩(`DB`) 및 Drizzle ORM을 활용한 데이터 관리.
-* **텍스트 레이아웃 측정:** `@chenglou/pretext`로 디코딩 전 멀티라인 텍스트 치수를 계산하여 레이아웃 이동을 줄임.
+* **텍스트 렌더링:** 최종 문자열을 서버 HTML에 먼저 렌더링하고, 브라우저 레이아웃을 정본으로 유지한 채 대표 제목과 비필수 boot/sleep 화면에만 cipher를 점진적으로 적용함.
 * **UI/컴포넌트 설계:** 의미 텍스트와 상태는 서버 HTML부터 읽을 수 있어야 하며, cipher/WebGL은 콘텐츠를 대체하지 않는 점진적 향상으로만 사용한다.
 * **접근성:** route마다 하나의 `main`, skip link, 고유 title/h1을 제공하고 폼 label·오류·focus·reduced-motion 계약을 유지한다.
 
