@@ -137,7 +137,7 @@ Cloudflare D1의 제약 사항과 개발 생산성을 고려하여, 핵심 비�
 - 게스트 신청은 기존 `(event_id, email)` 고유 인덱스와 D1 배치 안의 조건부 INSERT를 함께 사용해 중복 이메일·아티스트별 정원·선택적 마케팅 등록을 한 경계에서 판정한다.
 - Gate Request와 Signal의 신규·중복 성공은 모두 `200 { ok: true }`와 `no-store`를 반환해 등록 여부를 노출하지 않는다.
 - 전송 로그의 신규 입력과 공개 DTO는 디바이스 식별자를 수집하거나 노출하지 않는다. 기존 nullable 컬럼은 호환성을 위해 유지한다.
-- 초기 migration의 `transmit_logs.created_at` integer/nullable 행은 repository에서 ISO 문자열로 정규화하고, 신규 ISO text 행과 함께 epoch 기준으로 정렬한다.
+- repository는 전환 기간의 integer/nullable `transmit_logs.created_at`을 읽을 수 있지만, 10번째 migration인 `0009_normalize_transmit_created_at.sql`은 지원되는 레거시 값을 ISO 문자열로 변환하고 물리 컬럼을 `TEXT NOT NULL`로 재구성한다. development와 production remote 적용은 서로 독립된 승인·검증 단계다.
 - 이벤트·아티스트 JSON은 public runtime decoder를 통과한 필드만 DTO로 반환하며 access code, guest limit과 저장 전용 필드는 노출하지 않는다.
 - 게스트 코드가 설정된 아티스트의 `guestLimit`은 bounded integer 필수값이다. 누락·오염 시 무제한으로 해석하지 않고 availability 오류로 닫는다.
 - Transmit POST는 16–128자의 `Idempotency-Key`를 요구하며 같은 key/payload 재시도는 기존 공개 DTO를 반환한다.
@@ -205,5 +205,6 @@ const { mutate } = useMutation({
 - **빌드 환경:** `package.json`의 build 스크립트가 `cross-env NODE_ENV=production next build`로 production 모드를 고정한다. 이 보장은 `_global-error`와 `_not-found` 프리렌더링에 필요하다.
 - **Docker 패키지 설치:** `docker-compose.yml`의 `node_modules`는 anonymous volume이다. Docker 환경의 패키지 변경은 실행 중인 컨테이너에서 수행하고 이미지 재빌드 여부를 함께 판단한다.
 - **공개 API 보호:** `PUBLIC_RATE_LIMITER`와 Turnstile Siteverify validator의 로컬 계약은 구현돼 있다. 실제 Cloudflare binding/secret과 client token flow가 연결되기 전에는 public-release ready로 판정하지 않는다.
-- **검증 계층:** Vitest는 Node와 jsdom project를 분리한다. `scripts/http-smoke.mjs`는 route title/main/SSR text/cache/WebGL initial graph를, `scripts/verify-local-d1.mjs`는 빈 임시 D1에 9개 Wrangler migration, FK/index 컬럼, Gate·Signal 조건부 insert와 Transmit idempotency/혼합 timestamp 정렬을 검증한다.
-- **CI와 배포:** `.github/workflows/validate.yml`은 secret 없이 install/audit/test/lint/typecheck/build/Next·Worker smoke/D1/production-env dry-run을 실행한다. Cloudflare Workers Builds가 `dev`의 `terminal-2-dev`와 `main`의 `terminal-2`를 각각 자동 배포하며, Worker code deploy와 D1 migration·secret·binding·route 변경은 분리한다.
+- **Migration history:** repository history는 `0000`부터 `0009`까지 10개다. `scripts/check-migration-history.mjs`는 연속·고유 SQL prefix, journal tag 1:1, snapshot 1:1과 `id`/`prevId` chain, lock의 exact path + SHA-256을 검증한다. 기존 SQL·snapshot은 append-only이며 새 migration은 명시적 safe `--name`을 받는 `npm run db:generate -- --name <name>`만 사용한다. wrapper는 임시 디렉터리에서 생성 결과를 검사해 journal + 다음 SQL + 다음 snapshot만 반영하고 lock을 원자적으로 갱신한다. raw `drizzle-kit generate`는 허용하지 않는다.
+- **검증 계층:** Vitest는 Node와 jsdom project를 분리한다. `scripts/http-smoke.mjs`는 route title/main/SSR text/cache/WebGL initial graph를, `scripts/verify-local-d1.mjs`는 빈 임시 D1에 10개 Wrangler migration, FK/index 컬럼, Gate·Signal 조건부 insert와 Transmit idempotency/ISO timestamp 정렬을 검증한다.
+- **CI와 배포:** `.github/workflows/validate.yml`은 secret 없이 install/audit/migration-history/test/lint/typecheck/build/Next·Worker smoke/D1/production-env dry-run을 실행한다. Cloudflare Workers Builds가 `dev`의 `terminal-2-dev`와 `main`의 `terminal-2`를 각각 자동 배포하며, Worker code deploy와 D1 migration·secret·binding·route 변경은 분리한다. development와 production remote migration은 각각 `--env development`와 `--env production`으로 list/apply/사후 검증하며 한 환경의 결과를 다른 환경의 증거로 사용하지 않는다.

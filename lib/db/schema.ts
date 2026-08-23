@@ -23,7 +23,7 @@ export const artists = sqliteTable("artists", {
 });
 
 // ──────────────────────────────────────────────────────────
-// transmit_logs 테이블 (구조 고정 — 변경 없음)
+// transmit_logs 테이블 — created_at은 UTC ISO-8601 TEXT NOT NULL 정본
 // ──────────────────────────────────────────────────────────
 export const transmitLogs = sqliteTable("transmit_logs", {
   id: text("id").primaryKey(),
