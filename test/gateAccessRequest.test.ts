@@ -1,15 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import {
-  ACCESS_REQUEST_INSERT_SQL,
-  MARKETING_INSERT_SQL,
-  classifyRejectedAccessRequest,
-  createAccessRequestAtomically,
   inspectArtistAccessData,
   normalizeAccessCode,
   parseArtistAccessData,
   parseGateRequestBody,
   parseUpcomingEventCandidate,
+  findUpcomingGateEvent,
+  isGateRequestWindowActive,
+  resolveArtistAccessCode,
 } from '../lib/gate/createAccessRequest';
+import {
+  ACCESS_REQUEST_INSERT_SQL,
+  MARKETING_INSERT_SQL,
+  classifyRejectedAccessRequest,
+  createAccessRequestAtomically,
+} from '../lib/gate/d1AccessRequestRepository';
 
 const validBody = {
   accessCode: '  ARTIST-01  ',
@@ -111,6 +116,40 @@ describe('artist access data validation', () => {
       JSON.stringify({ date: '2026-08-12', time: '23:00 KST', status: 'UPCOMING' }),
       now,
     )?.rowId).toBe('future');
+  });
+
+  it('selects stored event lifecycle and request-window state through one Gate domain owner', () => {
+    const now = new Date('2026-08-01T12:00:00+09:00');
+    const event = findUpcomingGateEvent([
+      { id: 'invalid', data: '{' },
+      {
+        id: 'later',
+        data: JSON.stringify({ date: '2026-08-20', time: '23:00 KST', status: 'UPCOMING' }),
+      },
+      {
+        id: 'next',
+        data: JSON.stringify({ date: '2026-08-10', time: '23:00 KST', status: 'UPCOMING' }),
+      },
+    ], now);
+
+    expect(event?.rowId).toBe('next');
+    expect(event && isGateRequestWindowActive(event, now)).toBe(true);
+  });
+
+  it('uses one access-code resolution for Gate request and code-info consumers', () => {
+    expect(resolveArtistAccessCode([
+      {
+        id: 'artist-1',
+        data: JSON.stringify({ guestCode: ' CODE-1 ', guestLimit: 5, name: ' Artist One ' }),
+      },
+    ], 'code-1')).toEqual({
+      kind: 'match',
+      artistId: 'artist-1',
+      data: { guestCode: 'CODE-1', guestLimit: 5, name: 'Artist One' },
+    });
+    expect(resolveArtistAccessCode([
+      { id: 'artist-1', data: JSON.stringify({ guestCode: 'CODE-1', name: 'Broken' }) },
+    ], 'code-1')).toEqual({ kind: 'unavailable' });
   });
 });
 

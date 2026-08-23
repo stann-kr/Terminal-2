@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     const id = generateId('sig');
     const createdAt = new Date().toISOString();
 
-    const created = await db
+    await db
       .insert(signal)
       .values({
         id,
@@ -67,11 +67,7 @@ export async function POST(request: Request) {
       .returning({ id: signal.id })
       .get();
 
-    if (!created) {
-      return noStoreJson({ ok: true });
-    }
-
-    return noStoreJson({ ok: true }, 201);
+    return noStoreJson({ ok: true });
   } catch (error) {
     safeLogError('signal.create_failed', { error });
     return noStoreJson({ error: "INTERNAL_SERVER_ERROR" }, 500);

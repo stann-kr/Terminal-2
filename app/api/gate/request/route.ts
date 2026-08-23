@@ -6,20 +6,16 @@ import { noStoreJson } from "@/lib/api/responses";
 import { getDb } from "@/lib/db/client";
 import { artists, events } from "@/lib/db/schema";
 import {
-  getEventDateTime,
-  getRequestWindowState,
-} from "@/lib/eventLifecycle";
-import {
   createAccessRequestAtomically,
-  normalizeAccessCode,
-  inspectArtistAccessData,
+} from "@/lib/gate/d1AccessRequestRepository";
+import {
+  findUpcomingGateEvent,
+  isGateRequestWindowActive,
   parseGateRequestBody,
-  parseUpcomingEventCandidate,
-  type UpcomingEventCandidate,
+  resolveArtistAccessCode,
 } from "@/lib/gate/createAccessRequest";
 import { generateId } from "@/lib/utils/id";
 
-const ACCESS_WINDOW_DAYS = 30;
 /** POST /api/gate/request */
 export async function POST(request: Request) {
   try {
@@ -40,17 +36,12 @@ export async function POST(request: Request) {
     const now = new Date();
 
     const eventRows = await db.select().from(events).all();
-    const upcomingEvent = eventRows
-      .map((row) => parseUpcomingEventCandidate(row.id, row.data, now))
-      .filter((candidate): candidate is UpcomingEventCandidate => candidate !== null)
-      .sort(
-        (a, b) => getEventDateTime(a.lifecycle).getTime() - getEventDateTime(b.lifecycle).getTime(),
-      )[0];
+    const upcomingEvent = findUpcomingGateEvent(eventRows, now);
 
     if (!upcomingEvent) {
       return noStoreJson({ error: "NO_UPCOMING_EVENT" }, 404);
     }
-    if (!getRequestWindowState(upcomingEvent.lifecycle, ACCESS_WINDOW_DAYS, now).isActive) {
+    if (!isGateRequestWindowActive(upcomingEvent, now)) {
       return noStoreJson({ error: "REQUEST_PERIOD_INACTIVE" }, 403);
     }
 
@@ -59,45 +50,35 @@ export async function POST(request: Request) {
       .from(artists)
       .where(eq(artists.eventId, upcomingEvent.rowId))
       .all();
-    const normalizedCode = normalizeAccessCode(requestInput.input.accessCode);
-    const accessRecords = artistRows.map((row) => ({ row, access: inspectArtistAccessData(row.data) }));
-    if (accessRecords.some(({ access }) => access.kind === 'invalid')) {
+    const accessCodeResult = resolveArtistAccessCode(artistRows, requestInput.input.accessCode);
+    if (accessCodeResult.kind === 'unavailable') {
       return noStoreJson({ error: "DATA_UNAVAILABLE" }, 503);
     }
-    const matchingArtists = accessRecords.flatMap(({ row, access }) => (
-      access.kind === 'configured' && normalizeAccessCode(access.data.guestCode) === normalizedCode
-        ? [{ row, data: access.data }]
-        : []
-    ));
-
-    if (matchingArtists.length !== 1) {
+    if (accessCodeResult.kind === 'not_found') {
       return noStoreJson({ error: "INVALID_ACCESS_CODE" }, 401);
     }
 
-    const [{ row: matchedArtist, data: artistData }] = matchingArtists;
     const result = await createAccessRequestAtomically(env.DB, {
       id: generateId("req"),
       signalId: generateId("sig"),
       eventId: upcomingEvent.rowId,
-      artistId: matchedArtist.id,
-      invitedBy: artistData.name,
+      artistId: accessCodeResult.artistId,
+      invitedBy: accessCodeResult.data.name,
       name: requestInput.input.name,
       email: requestInput.input.email,
       instagram: requestInput.input.instagram,
       privacyConsent: requestInput.input.privacyConsent,
       marketingConsent: requestInput.input.marketingConsent,
-      guestLimit: artistData.guestLimit,
+      guestLimit: accessCodeResult.data.guestLimit,
       createdAt: now.toISOString(),
     });
 
-    if (result.status === "duplicate") {
-      return noStoreJson({ ok: true });
-    }
+    if (result.status === "duplicate") return noStoreJson({ ok: true });
     if (result.status === "guest_limit_reached") {
       return noStoreJson({ error: "GUEST_LIMIT_REACHED" }, 409);
     }
 
-    return noStoreJson({ ok: true }, 201);
+    return noStoreJson({ ok: true });
   } catch {
     console.error("[POST /api/gate/request] internal error");
     return noStoreJson({ error: "INTERNAL_SERVER_ERROR" }, 500);
