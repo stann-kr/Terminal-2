@@ -1,15 +1,17 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { eq } from "drizzle-orm";
 import { readJsonBody } from "@/lib/api/guards";
 import { enforceRateLimit } from "@/lib/api/abuseControl";
 import { noStoreJson } from "@/lib/api/responses";
 import { hasOnlyKeys, isString } from "@/lib/api/validation";
 import { getDb } from "@/lib/db/client";
-import { artists, events } from "@/lib/db/schema";
 import {
   findUpcomingGateEvent,
   resolveArtistAccessCode,
 } from "@/lib/gate/createAccessRequest";
+import {
+  listGateArtistRowsByEvent,
+  listGateEventRows,
+} from "@/lib/gate/d1GateReadRepository";
 
 function json(body: { name: string | null } | { error: string }, status = 200) {
   return noStoreJson(body, status);
@@ -21,7 +23,7 @@ function json(body: { name: string | null } | { error: string }, status = 200) {
  * guestCode 자체는 노출하지 않으며, 코드 유효 여부도 명시하지 않음.
  *
  * @body code - 인증 코드
- * @returns { name: string | null }; returns a no-store 500 error when verification is unavailable
+ * @returns { name: string | null }; returns a no-store 503 error when verification is unavailable
  */
 export async function POST(request: Request) {
   try {
@@ -50,7 +52,7 @@ export async function POST(request: Request) {
     if (!abuseDecision.ok) return json({ error: abuseDecision.error }, abuseDecision.status);
     const db = getDb(env.DB);
 
-    const eventRows = await db.select().from(events).all();
+    const eventRows = await listGateEventRows(db);
     const now = new Date();
     const upcomingEvent = findUpcomingGateEvent(eventRows, now);
 
@@ -58,11 +60,7 @@ export async function POST(request: Request) {
       return json({ name: null });
     }
 
-    const artistRows = await db
-      .select()
-      .from(artists)
-      .where(eq(artists.eventId, upcomingEvent.rowId))
-      .all();
+    const artistRows = await listGateArtistRowsByEvent(db, upcomingEvent.rowId);
 
     const accessCodeResult = resolveArtistAccessCode(artistRows, code);
     if (accessCodeResult.kind === 'unavailable') {

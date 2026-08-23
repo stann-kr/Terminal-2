@@ -1,13 +1,15 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { eq } from "drizzle-orm";
 import { readJsonBody } from "@/lib/api/guards";
 import { enforceRateLimit } from "@/lib/api/abuseControl";
 import { noStoreJson } from "@/lib/api/responses";
 import { getDb } from "@/lib/db/client";
-import { artists, events } from "@/lib/db/schema";
 import {
   createAccessRequestAtomically,
 } from "@/lib/gate/d1AccessRequestRepository";
+import {
+  listGateArtistRowsByEvent,
+  listGateEventRows,
+} from "@/lib/gate/d1GateReadRepository";
 import {
   findUpcomingGateEvent,
   isGateRequestWindowActive,
@@ -35,7 +37,7 @@ export async function POST(request: Request) {
     const db = getDb(env.DB);
     const now = new Date();
 
-    const eventRows = await db.select().from(events).all();
+    const eventRows = await listGateEventRows(db);
     const upcomingEvent = findUpcomingGateEvent(eventRows, now);
 
     if (!upcomingEvent) {
@@ -45,11 +47,7 @@ export async function POST(request: Request) {
       return noStoreJson({ error: "REQUEST_PERIOD_INACTIVE" }, 403);
     }
 
-    const artistRows = await db
-      .select()
-      .from(artists)
-      .where(eq(artists.eventId, upcomingEvent.rowId))
-      .all();
+    const artistRows = await listGateArtistRowsByEvent(db, upcomingEvent.rowId);
     const accessCodeResult = resolveArtistAccessCode(artistRows, requestInput.input.accessCode);
     if (accessCodeResult.kind === 'unavailable') {
       return noStoreJson({ error: "DATA_UNAVAILABLE" }, 503);
