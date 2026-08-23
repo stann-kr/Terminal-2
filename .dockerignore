@@ -1,0 +1,69 @@
+# Version-control metadata
+.git
+.git/**
+.gitignore
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Framework, worker, build, and cache output
+.next/
+**/.next/
+.open-next/
+**/.open-next/
+.wrangler/
+**/.wrangler/
+out/
+**/out/
+dist/
+**/dist/
+build/
+**/build/
+coverage/
+**/coverage/
+.cache/
+**/.cache/
+.turbo/
+**/.turbo/
+.parcel-cache/
+**/.parcel-cache/
+.vite/
+**/.vite/
+.eslintcache
+*.tsbuildinfo
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+*.local
+*.local.*
+*.pem
+
+# Private project and agent-local documents
+.docs/
+**/.docs/
+.projectdocs.json
+AGENTS.md
+**/AGENTS.md
+CLAUDE.md
+**/CLAUDE.md
+WORK_LOG.md
+**/WORK_LOG.md
+.agents/
+**/.agents/
+.claude/
+**/.claude/
+.codex/
+**/.codex/
+.worktrees/
+**/.worktrees/
+
+# Local logs and operating-system files
+.DS_Store
+*.log
+build_log.txt

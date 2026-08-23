@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@chenglou/pretext": "^0.0.8",
     "@opennextjs/cloudflare": "^1.18.1",
     "@react-three/fiber": "9.3.0",
     "@react-three/postprocessing": "^3.0.4",
@@ -23,7 +22,6 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260812.1",
-    "@eslint/eslintrc": "^3.3.5",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.4",
@@ -61,7 +59,6 @@
     "smoke:http": "node scripts/http-smoke.mjs",
     "test": "vitest run",
     "test:d1": "node scripts/verify-local-d1.mjs",
-    "test:run": "vitest run",
     "typecheck": "tsc --noEmit",
     "postinstall": "patch-package --error-on-fail && node scripts/verify-use-scramble-patch.mjs"
   },

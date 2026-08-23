@@ -5,7 +5,7 @@ import { HeadingText, LabelText } from '@/components/ui/TerminalText';
 interface PageHeaderProps {
   path: string;
   title: string;
-  accent?: 'primary' | 'secondary' | 'alert' | 'warn' | 'tertiary' | 'amber' | 'cyan' | 'hot' | 'gold' | 'purple';
+  accent?: 'primary' | 'secondary' | 'alert' | 'warn' | 'tertiary';
   variants?: Variants;
 }
 
@@ -20,12 +20,6 @@ const accentClassMap: Record<NonNullable<PageHeaderProps['accent']>, string> = {
   alert:     'text-terminal-accent-alert text-shadow-glow-alert',
   warn:      'text-terminal-accent-warn text-shadow-glow-warn',
   tertiary:  'text-terminal-accent-tertiary text-shadow-glow-tertiary',
-  /* Legacy mapping */
-  amber:  'text-terminal-accent-primary text-shadow-glow-primary',
-  cyan:   'text-terminal-accent-secondary text-shadow-glow-secondary',
-  hot:    'text-terminal-accent-alert text-shadow-glow-alert',
-  gold:   'text-terminal-accent-warn text-shadow-glow-warn',
-  purple: 'text-terminal-accent-tertiary',
 };
 
 export default function PageHeader({ path, title, accent = 'primary', variants = defaultVariants }: PageHeaderProps) {

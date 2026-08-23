@@ -57,10 +57,6 @@ export function getArchivedOrElapsedEvents(
     .sort((a, b) => getEventDateTime(b).getTime() - getEventDateTime(a).getTime());
 }
 
-export function getLatestEvent(events: TerminalEvent[]): TerminalEvent | null {
-  return [...events].sort((a, b) => getEventDateTime(b).getTime() - getEventDateTime(a).getTime())[0] ?? null;
-}
-
 export interface RequestWindowState {
   daysUntil: number;
   isActive: boolean;

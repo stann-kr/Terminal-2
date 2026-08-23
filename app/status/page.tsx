@@ -49,21 +49,18 @@ export default function StatusPage() {
           value={String(archivedCount).padStart(2, '0')}
           unit={t.status.unitArchived}
           accent="alert"
-          delay={0.2}
         />
         <StatusMetric
           label={t.status.labelNextLaunch}
           value={nextLaunchValue}
           unit={nextLaunchUnit}
           accent="secondary"
-          delay={0.3}
         />
         <StatusMetric
           label={t.status.labelArtistNodes}
           value={String(confirmedCount).padStart(2, '0')}
           unit={t.status.unitConfirmed}
           accent="primary"
-          delay={0.4}
         />
       </motion.div>
 

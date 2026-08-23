@@ -4,8 +4,7 @@ interface Props {
   label: string;
   value: string;
   unit: string;
-  accent?: 'primary' | 'secondary' | 'alert' | 'warn' | 'tertiary' | 'amber' | 'cyan' | 'hot' | 'green' | 'gold';
-  delay?: number;
+  accent?: 'primary' | 'secondary' | 'alert' | 'warn' | 'tertiary';
 }
 
 const accentClassMap = {
@@ -14,12 +13,6 @@ const accentClassMap = {
   alert:     'border-terminal-accent-alert/25 text-terminal-accent-alert drop-shadow-[0_0_12px_rgb(var(--color-accent-alert)/0.4)]',
   warn:      'border-terminal-accent-warn/25 text-terminal-accent-warn drop-shadow-[0_0_12px_rgb(var(--color-accent-warn)/0.4)]',
   tertiary:  'border-terminal-accent-tertiary/25 text-terminal-accent-tertiary drop-shadow-[0_0_12px_rgb(var(--color-accent-tertiary)/0.4)]',
-  /* Legacy mapping */
-  amber: 'border-terminal-accent-primary/25 text-terminal-accent-primary drop-shadow-[0_0_12px_rgb(var(--color-accent-primary)/0.4)]',
-  cyan:  'border-terminal-accent-secondary/25 text-terminal-accent-secondary drop-shadow-[0_0_12px_rgb(var(--color-accent-secondary)/0.4)]',
-  hot:   'border-terminal-accent-alert/25 text-terminal-accent-alert drop-shadow-[0_0_12px_rgb(var(--color-accent-alert)/0.4)]',
-  green: 'border-terminal-accent-primary/25 text-terminal-accent-primary drop-shadow-[0_0_12px_rgb(var(--color-accent-primary)/0.4)]',
-  gold:  'border-terminal-accent-warn/25 text-terminal-accent-warn drop-shadow-[0_0_12px_rgb(var(--color-accent-warn)/0.4)]',
 };
 
 const labelColorMap = {
@@ -28,15 +21,9 @@ const labelColorMap = {
   alert:     'text-terminal-accent-alert/50',
   warn:      'text-terminal-accent-warn/50',
   tertiary:  'text-terminal-accent-tertiary/50',
-  /* Legacy mapping */
-  amber: 'text-terminal-accent-primary/50',
-  cyan:  'text-terminal-accent-secondary/50',
-  hot:   'text-terminal-accent-alert/50',
-  green: 'text-terminal-accent-primary/50',
-  gold:  'text-terminal-accent-warn/50',
 };
 
-export default function StatusMetric({ label, value, unit, accent = 'primary', delay = 0 }: Props) {
+export default function StatusMetric({ label, value, unit, accent = 'primary' }: Props) {
   const accentClasses = accentClassMap[accent] || accentClassMap.primary;
   const labelColorClass = labelColorMap[accent] || labelColorMap.primary;
 
