@@ -11,13 +11,14 @@ import PageLayout, { itemVariants } from '@/components/PageLayout';
 import { LabelText, SubtitleText, MetaText, DataText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
+import FieldError from '@/components/ui/FieldError';
 import { FormField, inputClassBase, inputAccentClass } from '@/components/ui/FormField';
+import { useFieldErrors, type FieldErrorMap } from '@/components/ui/useFieldErrors';
 import { getNodeId, setNodeId } from '@/lib/nodeId';
 import { useT } from '@/lib/langContext';
 import { fetchTransmitLogs, postTransmitLog, transmitKeys } from '@/lib/queries/transmit';
 
 type TransmitField = 'handle' | 'message';
-type FieldErrors = Partial<Record<TransmitField, string>>;
 
 function formatLocalTime(isoStr: string): string {
   const d = new Date(isoStr);
@@ -31,7 +32,7 @@ export default function TransmitPage() {
   const [handle, setHandle] = useState(() => getNodeId());
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const { fieldErrors, setFieldErrors, clearFieldError, showFieldErrors } = useFieldErrors<TransmitField>('transmit');
   const [formError, setFormError] = useState('');
   const idempotencyKeyRef = useRef<string | null>(null);
 
@@ -46,20 +47,6 @@ export default function TransmitPage() {
     queryFn: () => fetchTransmitLogs(currentPage),
     placeholderData: keepPreviousData,
   });
-
-  const clearFieldError = (field: TransmitField) => {
-    setFieldErrors(current => {
-      if (!current[field]) return current;
-      const { [field]: _cleared, ...remaining } = current;
-      return remaining;
-    });
-  };
-
-  const showFieldErrors = (errors: FieldErrors) => {
-    setFieldErrors(errors);
-    const firstField = Object.keys(errors)[0] as TransmitField | undefined;
-    if (firstField) requestAnimationFrame(() => document.getElementById(`transmit-${firstField}`)?.focus());
-  };
 
   const { mutate: submitLog, isPending: isSubmitting } = useMutation({
     mutationFn: postTransmitLog,
@@ -89,7 +76,7 @@ export default function TransmitPage() {
     e.preventDefault();
     if (isSubmitting) return;
 
-    const errors: FieldErrors = {};
+    const errors: FieldErrorMap<TransmitField> = {};
     if (!handle.trim()) errors.handle = t.transmit.errors.required;
     if (!message.trim()) errors.message = t.transmit.errors.required;
     else if (message.length > 280) errors.message = t.transmit.errors.tooLong;
@@ -118,7 +105,7 @@ export default function TransmitPage() {
       <PageHeader path="/terminal/transmit" title="TRANSMIT.LOG" accent="primary" variants={itemVariants} />
 
       <motion.div variants={itemVariants} className="mb-8">
-        <TerminalPanel title="VISITOR_LOG — NODE_SYNC" accent="alert">
+        <TerminalPanel title="VISITOR_LOG — NODE_SYNC" accent="alert" headingLevel={2}>
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
             <FormField label={t.transmit.labelAlias} htmlFor="transmit-handle">
               <input
@@ -165,7 +152,7 @@ export default function TransmitPage() {
                 required
                 aria-required="true"
                 aria-invalid={Boolean(fieldErrors.message)}
-                aria-describedby={fieldErrors.message ? 'transmit-message-error' : 'transmit-message-count'}
+                aria-describedby={fieldErrors.message ? 'transmit-message-error transmit-message-count' : 'transmit-message-count'}
                 maxLength={280}
                 rows={3}
                 className={`${inputClassBase} ${inputAccentClass.primary} resize-none`}
@@ -194,7 +181,7 @@ export default function TransmitPage() {
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <TerminalPanel title={isInitialLoad ? t.transmit.logSyncing : t.transmit.logTitle(total)} accent="primary">
+        <TerminalPanel title={isInitialLoad ? t.transmit.logSyncing : t.transmit.logTitle(total)} accent="primary" headingLevel={2}>
           <div className="space-y-4">
             <AnimatedHeight>
               <AnimatePresence mode="popLayout" initial={false}>
@@ -240,13 +227,5 @@ export default function TransmitPage() {
         </TerminalPanel>
       </motion.div>
     </PageLayout>
-  );
-}
-
-function FieldError({ id, message }: { id: string; message: string }) {
-  return (
-    <div id={id} className="font-mono text-terminal-accent-alert" role="alert">
-      <MetaText text={message} />
-    </div>
   );
 }

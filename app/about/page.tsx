@@ -26,7 +26,7 @@ export default function AboutPage() {
 
         {/* Manifesto */}
         <motion.div variants={itemVariants} className="mb-6">
-          <TerminalPanel title="MANIFESTO_v1.txt" accent="green">
+          <TerminalPanel title="MANIFESTO_v1.txt" accent="primary">
             <div className="space-y-1">
               {t.manifesto.map((line, i) => (
                 <div key={i}>

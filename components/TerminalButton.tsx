@@ -1,16 +1,12 @@
 'use client';
-import { ReactNode, MouseEvent } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { LabelText } from './ui/TerminalText';
 
 export type TerminalButtonVariant = 'primary' | 'ghost' | 'danger';
 
-interface TerminalButtonProps {
+interface TerminalButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   children: ReactNode;
-  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
   variant?: TerminalButtonVariant;
-  className?: string;
-  disabled?: boolean;
-  type?: 'button' | 'submit';
 }
 
 const variantClassMap: Record<TerminalButtonVariant, { base: string; hover: string }> = {
@@ -37,13 +33,16 @@ export function getTerminalButtonClassName(
 }
 
 export default function TerminalButton({
-  children, onClick, variant = 'primary', className = '', disabled, type = 'button',
+  children,
+  variant = 'primary',
+  className = '',
+  type = 'button',
+  ...buttonProps
 }: TerminalButtonProps) {
   return (
     <button
       type={type}
-      onClick={onClick}
-      disabled={disabled}
+      {...buttonProps}
       className={getTerminalButtonClassName(variant, className)}
     >
       {typeof children === 'string' ? (

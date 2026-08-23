@@ -10,7 +10,9 @@ import SubmitButton from '@/components/SubmitButton';
 import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import ConsentCheckbox from '@/components/ui/ConsentCheckbox';
 import ConsentBlock from '@/components/ui/ConsentBlock';
+import FieldError from '@/components/ui/FieldError';
 import { FormField, inputClassBase, inputAccentClass } from '@/components/ui/FormField';
+import { useFieldErrors, type FieldErrorMap } from '@/components/ui/useFieldErrors';
 import { useT } from '@/lib/langContext';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,33 +25,18 @@ interface FormState {
 }
 
 type SignalField = 'email' | 'instagram' | 'consent';
-type FieldErrors = Partial<Record<SignalField, string>>;
 
 export default function SignalPage() {
   const t = useT();
   const [form, setForm] = useState<FormState>({ email: '', instagram: '', consent: false });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const { fieldErrors, setFieldErrors, clearFieldError, showFieldErrors } = useFieldErrors<SignalField>('signal');
   const [formError, setFormError] = useState('');
   const submittingRef = useRef(false);
 
-  const clearFieldError = (field: SignalField) => {
-    setFieldErrors(current => {
-      if (!current[field]) return current;
-      const { [field]: _cleared, ...remaining } = current;
-      return remaining;
-    });
-  };
-
-  const showFieldErrors = (errors: FieldErrors) => {
-    setFieldErrors(errors);
-    const firstField = Object.keys(errors)[0] as SignalField | undefined;
-    if (firstField) requestAnimationFrame(() => document.getElementById(`signal-${firstField}`)?.focus());
-  };
-
-  const validateForm = (): FieldErrors => {
-    const errors: FieldErrors = {};
+  const validateForm = (): FieldErrorMap<SignalField> => {
+    const errors: FieldErrorMap<SignalField> = {};
     if (!form.email.trim()) errors.email = t.signal.errors.ALL_FIELDS_REQUIRED;
     else if (!EMAIL_PATTERN.test(form.email.trim())) errors.email = t.signal.errors.INVALID_EMAIL_FORMAT;
     if (!form.instagram.trim()) errors.instagram = t.signal.errors.ALL_FIELDS_REQUIRED;
@@ -124,7 +111,7 @@ export default function SignalPage() {
 
       {submitted ? (
         <motion.div variants={itemVariants} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <TerminalPanel title="REQUEST_COMMITTED" accent="tertiary">
+          <TerminalPanel title="REQUEST_COMMITTED" accent="tertiary" headingLevel={2}>
             <div className="text-center py-6 space-y-2" role="status" aria-live="polite" aria-atomic="true">
               <div className="font-bold tracking-widest font-mono text-terminal-accent-tertiary">
                 <LabelText text={t.signal.committed} />
@@ -138,7 +125,7 @@ export default function SignalPage() {
       ) : (
         <div className="space-y-4">
           <motion.div variants={itemVariants}>
-            <TerminalPanel title="SIGNAL_BRIEF" accent="tertiary">
+            <TerminalPanel title="SIGNAL_BRIEF" accent="tertiary" headingLevel={2}>
               <div className="space-y-1.5">
                 {t.signal.description.map((line, index) => (
                   <div key={index} className="font-mono text-terminal-subdued tracking-wide">
@@ -150,7 +137,7 @@ export default function SignalPage() {
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <TerminalPanel title="SIGNAL_SUBSCRIPTION" accent="tertiary">
+            <TerminalPanel title="SIGNAL_SUBSCRIPTION" accent="tertiary" headingLevel={2}>
               <form onSubmit={handleSubmit} noValidate className="space-y-4">
                 <FormField label={t.signal.labelEmail} htmlFor="signal-email">
                   <input
@@ -233,13 +220,5 @@ export default function SignalPage() {
         </div>
       )}
     </PageLayout>
-  );
-}
-
-function FieldError({ id, message }: { id: string; message: string }) {
-  return (
-    <div id={id} className="font-mono text-terminal-accent-alert" role="alert">
-      <MetaText text={message} />
-    </div>
   );
 }
