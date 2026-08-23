@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
   createAccessRequestAtomically: vi.fn(),
+  createSignalSubscription: vi.fn(),
   enforceRateLimit: vi.fn(),
   getCloudflareContext: vi.fn(),
   getDb: vi.fn(),
@@ -18,6 +19,9 @@ vi.mock('@/lib/db/client', () => ({ getDb: mocks.getDb }));
 vi.mock('@/lib/utils/id', () => ({ generateId: mocks.generateId }));
 vi.mock('@/lib/gate/d1AccessRequestRepository', () => ({
   createAccessRequestAtomically: mocks.createAccessRequestAtomically,
+}));
+vi.mock('@/lib/signal/createSignalSubscription', () => ({
+  createSignalSubscription: mocks.createSignalSubscription,
 }));
 
 const requestBody = {
@@ -98,35 +102,14 @@ describe('opaque public success responses', () => {
     const { POST } = await import('../app/api/signal/route');
     mocks.getCloudflareContext.mockReturnValue({ env: { DB: {} } });
     mocks.enforceRateLimit.mockResolvedValue({ ok: true });
-    mocks.generateId.mockReturnValue('generated-id');
 
-    function createSignalDb(created: { id: string } | undefined) {
-      return {
-        insert() {
-          return {
-            values() {
-              return {
-                onConflictDoNothing() {
-                  return {
-                    returning() {
-                      return { get: async () => created };
-                    },
-                  };
-                },
-              };
-            },
-          };
-        },
-      };
-    }
-
-    mocks.getDb.mockReturnValueOnce(createSignalDb({ id: 'signal-1' }));
+    mocks.createSignalSubscription.mockResolvedValueOnce({ status: 'created' });
     const created = await responseDetails(await POST(new Request('https://terminal.test/api/signal', {
       method: 'POST',
       body: JSON.stringify({ email: 'guest@example.com', instagram: '@guest.name', consent: true }),
       headers: { 'content-type': 'application/json' },
     })));
-    mocks.getDb.mockReturnValueOnce(createSignalDb(undefined));
+    mocks.createSignalSubscription.mockResolvedValueOnce({ status: 'duplicate' });
     const duplicate = await responseDetails(await POST(new Request('https://terminal.test/api/signal', {
       method: 'POST',
       body: JSON.stringify({ email: 'guest@example.com', instagram: '@guest.name', consent: true }),

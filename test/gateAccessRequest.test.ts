@@ -11,10 +11,10 @@ import {
 } from '../lib/gate/createAccessRequest';
 import {
   ACCESS_REQUEST_INSERT_SQL,
-  MARKETING_INSERT_SQL,
   classifyRejectedAccessRequest,
   createAccessRequestAtomically,
 } from '../lib/gate/d1AccessRequestRepository';
+import { GATE_SIGNAL_SUBSCRIPTION_INSERT_SQL } from '../lib/signal/d1SignalSubscriptionRepository';
 
 const validBody = {
   accessCode: '  ARTIST-01  ',
@@ -210,8 +210,10 @@ describe('atomic access request statement contract', () => {
   });
 
   it('only inserts marketing after the request id exists and tolerates subscriber conflicts', () => {
-    expect(MARKETING_INSERT_SQL).toMatch(/EXISTS[\s\S]*FROM access_requests[\s\S]*WHERE id = \?/);
-    expect(MARKETING_INSERT_SQL).toContain('ON CONFLICT(email) DO NOTHING');
+    expect(GATE_SIGNAL_SUBSCRIPTION_INSERT_SQL).toMatch(
+      /EXISTS[\s\S]*FROM access_requests[\s\S]*WHERE id = \?/,
+    );
+    expect(GATE_SIGNAL_SUBSCRIPTION_INSERT_SQL).toContain('ON CONFLICT(email) DO NOTHING');
   });
 
   it('classifies duplicate email before capacity', () => {
@@ -238,7 +240,7 @@ describe('atomic access request statement contract', () => {
     });
     expect(prepared).toHaveLength(3);
     expect(prepared[0].sql).toBe(ACCESS_REQUEST_INSERT_SQL);
-    expect(prepared[1].sql).toBe(MARKETING_INSERT_SQL);
+    expect(prepared[1].sql).toBe(GATE_SIGNAL_SUBSCRIPTION_INSERT_SQL);
   });
 
   it('runs the follow-up classifier after a duplicate zero-change insert', async () => {

@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import TerminalPanel from '@/components/TerminalPanel';
-import PageLayout, { itemVariants } from '@/components/PageLayout';
+import PageLayout, { itemVariants } from '@/components/shell/PageLayout';
 import { BodyText, LabelText, SubtitleText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';

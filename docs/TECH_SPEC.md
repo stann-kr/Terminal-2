@@ -78,7 +78,7 @@
 
 ### 3.2 페이지 구조 (PageLayout & Transition)
 
-- **페이지 공통 래퍼:** `components/PageLayout.tsx` 및 `components/PageTransition.tsx`
+- **페이지 공통 래퍼:** `components/shell/PageLayout.tsx` 및 `components/shell/PageTransition.tsx`
 - **동작 원리:** route wrapper는 opacity 전환 없이 scroll 위치만 복원한다. `PageLayout`의 8px item reveal은 사용자 motion 설정을 따르며 의미 텍스트를 숨기지 않는다.
 - **landmark:** `PageLayout`이 유일한 `main#main-content`를 소유하고 전역 skip link의 목적지가 된다.
 
@@ -133,9 +133,11 @@ Cloudflare D1의 제약 사항과 개발 생산성을 고려하여, 핵심 비�
 ### 6.3 `access_requests` 및 `transmit_logs`
 - 이들은 트랜잭션 성격이 강하므로 전통적인 관계형 컬럼 구조를 유지하여 쿼리 성능과 데이터 무결성을 확보함.
 - Gate의 payload·event/access-code·request-window rule은 `lib/gate/createAccessRequest.ts`와 `requestPolicy.ts`, raw SQL과 atomic D1 batch는 `d1AccessRequestRepository.ts`, HTTP transport와 response mapping은 API route가 각각 소유한다.
+- Signal의 공통 입력 규칙·D1 구독 statement·생성 orchestration은 `lib/signal/`, Transmit의 공개 contract·입력/domain·D1 repository·client는 `lib/transmit/`이 소유하며 각 API route는 transport와 abuse/response mapping만 담당한다.
 - 게스트 신청은 기존 `(event_id, email)` 고유 인덱스와 D1 배치 안의 조건부 INSERT를 함께 사용해 중복 이메일·아티스트별 정원·선택적 마케팅 등록을 한 경계에서 판정한다.
 - Gate Request와 Signal의 신규·중복 성공은 모두 `200 { ok: true }`와 `no-store`를 반환해 등록 여부를 노출하지 않는다.
 - 전송 로그의 신규 입력과 공개 DTO는 디바이스 식별자를 수집하거나 노출하지 않는다. 기존 nullable 컬럼은 호환성을 위해 유지한다.
+- 초기 migration의 `transmit_logs.created_at` integer/nullable 행은 repository에서 ISO 문자열로 정규화하고, 신규 ISO text 행과 함께 epoch 기준으로 정렬한다.
 - 이벤트·아티스트 JSON은 public runtime decoder를 통과한 필드만 DTO로 반환하며 access code, guest limit과 저장 전용 필드는 노출하지 않는다.
 - 게스트 코드가 설정된 아티스트의 `guestLimit`은 bounded integer 필수값이다. 누락·오염 시 무제한으로 해석하지 않고 availability 오류로 닫는다.
 - Transmit POST는 16–128자의 `Idempotency-Key`를 요구하며 같은 key/payload 재시도는 기존 공개 DTO를 반환한다.
@@ -174,8 +176,8 @@ t.dirDesc.gate               // 디렉토리 설명
 - `retry: 1` — 실패 시 1회 자동 재시도
 
 ### Query Key 팩토리 패턴
-- `lib/queries/events.ts` — `eventKeys.list()` → home·lineup·gate·status가 동일 키를 참조해 캐시 공유
-- `lib/queries/transmit.ts` — `transmitKeys.list(page)` → 페이지 번호별 독립 캐시
+- `lib/events/client.ts` — `eventKeys.list()` → home·lineup·gate·status가 동일 키를 참조해 캐시 공유
+- `lib/transmit/client.ts` — `transmitKeys.list(page)` → 페이지 번호별 독립 캐시
 
 ### 사용 패턴
 ```tsx
@@ -203,5 +205,5 @@ const { mutate } = useMutation({
 - **빌드 환경:** `package.json`의 build 스크립트가 `cross-env NODE_ENV=production next build`로 production 모드를 고정한다. 이 보장은 `_global-error`와 `_not-found` 프리렌더링에 필요하다.
 - **Docker 패키지 설치:** `docker-compose.yml`의 `node_modules`는 anonymous volume이다. Docker 환경의 패키지 변경은 실행 중인 컨테이너에서 수행하고 이미지 재빌드 여부를 함께 판단한다.
 - **공개 API 보호:** `PUBLIC_RATE_LIMITER`와 Turnstile Siteverify validator의 로컬 계약은 구현돼 있다. 실제 Cloudflare binding/secret과 client token flow가 연결되기 전에는 public-release ready로 판정하지 않는다.
-- **검증 계층:** Vitest는 Node와 jsdom project를 분리한다. `scripts/http-smoke.mjs`는 route title/main/SSR text/cache/WebGL initial graph를, `scripts/verify-local-d1.mjs`는 빈 임시 D1에 9개 Wrangler migration과 FK/index를 검증한다.
+- **검증 계층:** Vitest는 Node와 jsdom project를 분리한다. `scripts/http-smoke.mjs`는 route title/main/SSR text/cache/WebGL initial graph를, `scripts/verify-local-d1.mjs`는 빈 임시 D1에 9개 Wrangler migration, FK/index 컬럼, Gate·Signal 조건부 insert와 Transmit idempotency/혼합 timestamp 정렬을 검증한다.
 - **CI와 배포:** `.github/workflows/validate.yml`은 secret 없이 install/audit/test/lint/typecheck/build/Next·Worker smoke/D1/production-env dry-run을 실행한다. Cloudflare Workers Builds가 `dev`의 `terminal-2-dev`와 `main`의 `terminal-2`를 각각 자동 배포하며, Worker code deploy와 D1 migration·secret·binding·route 변경은 분리한다.

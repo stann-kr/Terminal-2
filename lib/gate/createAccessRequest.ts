@@ -1,6 +1,6 @@
 import { hasOnlyKeys, isBoolean, isJsonObject, isString } from '../api/validation';
-import type { EventStatus, TerminalEvent } from '../eventData';
-import { getEffectiveEventStatus, getEventDateTime, getRequestWindowState } from '../eventLifecycle';
+import type { EventStatus, TerminalEvent } from '../events/types';
+import { getEffectiveEventStatus, getEventDateTime, getRequestWindowState } from '../events/lifecycle';
 import { ACCESS_WINDOW_DAYS } from './requestPolicy';
 
 const MAX_ACCESS_CODE_LENGTH = 64;

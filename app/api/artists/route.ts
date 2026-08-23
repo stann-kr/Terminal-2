@@ -2,7 +2,7 @@ import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { parseIdentifierQuery } from '@/lib/api/validation';
-import { parsePublicArtistRow } from '@/lib/api/publicEventDtos';
+import { parsePublicArtistRow } from '@/lib/events/publicDtos';
 import { getDb } from '@/lib/db/client';
 import { artists } from '@/lib/db/schema';
 

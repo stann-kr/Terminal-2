@@ -6,7 +6,7 @@ import AnimatedHeight from "@/components/ui/AnimatedHeight";
 import DirectoryLink from "@/components/DirectoryLink";
 import TerminalButton from "@/components/TerminalButton";
 import TerminalActionLink from "@/components/TerminalActionLink";
-import PageLayout, { itemVariants } from "@/components/PageLayout";
+import PageLayout, { itemVariants } from "@/components/shell/PageLayout";
 import {
   TitleText,
   SubtitleText,
@@ -14,11 +14,11 @@ import {
   LabelText,
   MetaText,
 } from "@/components/ui/TerminalText";
-import CountdownBlock from "@/components/ui/CountdownBlock";
+import CountdownBlock from "@/components/events/CountdownBlock";
 import LangToggle from "@/components/ui/LangToggle";
 import { useT } from "@/lib/langContext";
-import { fetchEvents, eventKeys } from "@/lib/queries/events";
-import { getArchivedOrElapsedEvents, getEventDateTime, getFutureUpcomingEvent } from "@/lib/eventLifecycle";
+import { fetchEvents, eventKeys } from "@/lib/events/client";
+import { getArchivedOrElapsedEvents, getEventDateTime, getFutureUpcomingEvent } from "@/lib/events/lifecycle";
 
 export default function HomePage() {
   const t = useT();

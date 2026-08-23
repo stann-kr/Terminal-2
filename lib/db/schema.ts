@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 // ──────────────────────────────────────────────────────────
 // events 테이블
@@ -37,32 +37,42 @@ export const transmitLogs = sqliteTable("transmit_logs", {
 // ──────────────────────────────────────────────────────────
 // access_requests 테이블 — Gate 게스트 신청
 // ──────────────────────────────────────────────────────────
-export const accessRequests = sqliteTable("access_requests", {
-  id: text("id").primaryKey(),
-  eventId: text("event_id")
-    .notNull()
-    .references(() => events.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
-  instagram: text("instagram").notNull(),
-  artistId: text("artist_id").references(() => artists.id),
-  invitedBy: text("invited_by"),
-  privacyConsent: integer("privacy_consent", { mode: "boolean" }).notNull(),
-  marketingConsent: integer("marketing_consent", { mode: "boolean" }).notNull().default(false),
-  createdAt: text("created_at").notNull(),
-});
+export const accessRequests = sqliteTable(
+  "access_requests",
+  {
+    id: text("id").primaryKey(),
+    eventId: text("event_id")
+      .notNull()
+      .references(() => events.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    instagram: text("instagram").notNull(),
+    artistId: text("artist_id").references(() => artists.id),
+    invitedBy: text("invited_by"),
+    privacyConsent: integer("privacy_consent", { mode: "boolean" }).notNull(),
+    marketingConsent: integer("marketing_consent", { mode: "boolean" }).notNull().default(false),
+    createdAt: text("created_at").notNull(),
+  },
+  (table) => [
+    uniqueIndex("access_requests_event_email_idx").on(table.eventId, table.email),
+  ],
+);
 
 // ──────────────────────────────────────────────────────────
 // signal 테이블 — Signal 구독자
 // ──────────────────────────────────────────────────────────
-export const signal = sqliteTable("signal", {
-  id: text("id").primaryKey(),
-  name: text("name"),
-  email: text("email").notNull(),
-  instagram: text("instagram").notNull(),
-  source: text("source").notNull(),
-  createdAt: text("created_at").notNull(),
-});
+export const signal = sqliteTable(
+  "signal",
+  {
+    id: text("id").primaryKey(),
+    name: text("name"),
+    email: text("email").notNull(),
+    instagram: text("instagram").notNull(),
+    source: text("source").notNull(),
+    createdAt: text("created_at").notNull(),
+  },
+  (table) => [uniqueIndex("signal_email_idx").on(table.email)],
+);
 
 // 타입 추론
 export type EventRow = typeof events.$inferSelect;

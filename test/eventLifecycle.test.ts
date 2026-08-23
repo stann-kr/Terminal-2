@@ -3,8 +3,8 @@ import {
   getEffectiveEventStatus,
   getFutureUpcomingEvent,
   getRequestWindowState,
-} from '../lib/eventLifecycle';
-import type { EventStatus, TerminalEvent } from '../lib/eventData';
+} from '../lib/events/lifecycle';
+import type { EventStatus, TerminalEvent } from '../lib/events/types';
 
 function event(id: string, date: string, time: string, status: EventStatus): TerminalEvent {
   return {

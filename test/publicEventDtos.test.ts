@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parsePublicArtistRow, parsePublicEventRow } from '../lib/api/publicEventDtos';
+import { parsePublicArtistRow, parsePublicEventRow } from '../lib/events/publicDtos';
 
 const artistData = {
   name: 'ARTIST',

@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedHeight from '@/components/ui/AnimatedHeight';
-import PageLayout, { itemVariants } from '@/components/PageLayout';
+import PageLayout, { itemVariants } from '@/components/shell/PageLayout';
 import { LabelText, SubtitleText, MetaText, HeadingText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
@@ -10,7 +10,7 @@ import TerminalButton from '@/components/TerminalButton';
 import TerminalPanel from '@/components/TerminalPanel';
 import ArtistRow from './ArtistRow';
 import { useT } from '@/lib/langContext';
-import { fetchEvents, eventKeys } from '@/lib/queries/events';
+import { fetchEvents, eventKeys } from '@/lib/events/client';
 import { useUrlQueryState } from '@/lib/useUrlQueryState';
 
 export default function LineupPage() {

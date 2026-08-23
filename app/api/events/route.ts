@@ -1,11 +1,11 @@
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { NextResponse } from 'next/server';
 import { parseEnumQuery } from '@/lib/api/validation';
-import { parsePublicArtistRow, parsePublicEventRow } from '@/lib/api/publicEventDtos';
+import { parsePublicArtistRow, parsePublicEventRow } from '@/lib/events/publicDtos';
 import { getDb } from '@/lib/db/client';
 import { artists, events } from '@/lib/db/schema';
-import { getEventDateTime, withEffectiveEventStatus } from '@/lib/eventLifecycle';
-import type { EventStatus } from '@/lib/eventData';
+import { getEventDateTime, withEffectiveEventStatus } from '@/lib/events/lifecycle';
+import type { EventStatus } from '@/lib/events/types';
 
 const EVENT_STATUSES = new Set<EventStatus>(['UPCOMING', 'LIVE', 'ARCHIVED']);
 

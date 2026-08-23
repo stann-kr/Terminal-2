@@ -1,4 +1,4 @@
-import type { EventStatus, TerminalEvent } from './eventData';
+import type { EventStatus, TerminalEvent } from './types';
 
 const KST_SUFFIX = ' KST';
 

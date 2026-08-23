@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import PageLayout, { itemVariants } from '@/components/PageLayout';
+import PageLayout, { itemVariants } from '@/components/shell/PageLayout';
 import PageHeader from '@/components/ui/PageHeader';
 import ReturnLink from '@/components/ui/ReturnLink';
 import TerminalPanel from '@/components/TerminalPanel';

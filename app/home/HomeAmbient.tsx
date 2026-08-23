@@ -1,8 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 import { Component, type ErrorInfo, type ReactNode, useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { shouldRenderHomeAmbient } from '@/lib/ambientPolicy';
+import { shouldRenderHomeAmbient } from './ambientPolicy';
 import { useMotionPolicy } from '@/lib/useMotionPolicy';
 
 const ParticleField = dynamic(() => import('./ParticleField'), {
@@ -35,13 +34,7 @@ function supportsWebGL(): boolean {
   }
 }
 
-export default function ParticleFieldDynamic() {
-  const pathname = usePathname();
-
-  return pathname === '/home' ? <HomeAmbient /> : null;
-}
-
-function HomeAmbient() {
+export default function HomeAmbient() {
   const motionPolicy = useMotionPolicy();
   const [heroVisible, setHeroVisible] = useState(false);
   const [webglAvailable, setWebglAvailable] = useState(false);
@@ -69,7 +62,6 @@ function HomeAmbient() {
   }, []);
 
   if (!shouldRenderHomeAmbient({
-    pathname: '/home',
     allowMotion: motionPolicy.allowMotion,
     heroVisible,
     webglAvailable,

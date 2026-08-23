@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
-import { toPublicTransmitLog } from '../lib/api/publicDtos';
+import { toPublicTransmitLog } from '../lib/transmit/contract';
 
 describe('public API contracts', () => {
   it('does not expose deviceId from transmit records', () => {
@@ -21,6 +21,27 @@ describe('public API contracts', () => {
       createdAt: '2026-08-11T03:00:00.000Z',
     });
     expect('deviceId' in response).toBe(false);
+  });
+
+  it('normalizes legacy epoch and missing created_at values at the public boundary', () => {
+    const expectedCreatedAt = '2026-08-11T03:00:00.000Z';
+    const legacyEpochSeconds = Date.parse(expectedCreatedAt) / 1_000;
+
+    expect(toPublicTransmitLog({
+      id: 'legacy-epoch',
+      handle: 'NODE',
+      message: 'hello',
+      ts: '2026.08.11 / 12:00',
+      createdAt: legacyEpochSeconds,
+    }).createdAt).toBe(expectedCreatedAt);
+
+    expect(toPublicTransmitLog({
+      id: 'legacy-null',
+      handle: 'NODE',
+      message: 'hello',
+      ts: '2026.08.11 / 12:00',
+      createdAt: null,
+    }).createdAt).toBe(expectedCreatedAt);
   });
 
   it('keeps code-info POST-only, non-cacheable, and length-bounded', async () => {

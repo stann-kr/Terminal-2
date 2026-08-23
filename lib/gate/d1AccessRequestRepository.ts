@@ -1,4 +1,5 @@
 import { isJsonObject } from '../api/validation';
+import { prepareGateSignalSubscriptionInsert } from '../signal/d1SignalSubscriptionRepository';
 
 export const ACCESS_REQUEST_INSERT_SQL = `
   INSERT INTO access_requests (
@@ -28,25 +29,6 @@ export const ACCESS_REQUEST_INSERT_SQL = `
     ) < ?
   )
   ON CONFLICT(event_id, email) DO NOTHING
-`;
-
-export const MARKETING_INSERT_SQL = `
-  INSERT INTO signal (
-    id,
-    name,
-    email,
-    instagram,
-    source,
-    created_at
-  )
-  SELECT ?, ?, ?, ?, 'gate', ?
-  WHERE ? = 1
-    AND EXISTS (
-      SELECT 1
-      FROM access_requests
-      WHERE id = ?
-    )
-  ON CONFLICT(email) DO NOTHING
 `;
 
 const REJECTION_STATE_SQL = `
@@ -145,15 +127,15 @@ export async function createAccessRequestAtomically(
     input.artistId,
     input.guestLimit,
   );
-  const marketingStatement = database.prepare(MARKETING_INSERT_SQL).bind(
-    input.signalId,
-    input.name,
-    input.email,
-    input.instagram,
-    input.createdAt,
-    input.marketingConsent ? 1 : 0,
-    input.id,
-  );
+  const marketingStatement = prepareGateSignalSubscriptionInsert(database, {
+    id: input.signalId,
+    accessRequestId: input.id,
+    name: input.name,
+    email: input.email,
+    instagram: input.instagram,
+    marketingConsent: input.marketingConsent,
+    createdAt: input.createdAt,
+  });
   const rejectionStateStatement = database.prepare(REJECTION_STATE_SQL).bind(
     input.eventId,
     input.email,

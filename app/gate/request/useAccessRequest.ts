@@ -15,7 +15,7 @@ import {
   resolveRequestEventState,
   type CodeVerificationState,
   type RequestEventState,
-} from '@/lib/gate/requestState';
+} from './requestState';
 import { ACCESS_WINDOW_DAYS } from '@/lib/gate/requestPolicy';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

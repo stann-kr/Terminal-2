@@ -1,24 +1,17 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedHeight from '@/components/ui/AnimatedHeight';
 import TerminalPanel from '@/components/TerminalPanel';
 import TerminalButton from '@/components/TerminalButton';
 import SubmitButton from '@/components/SubmitButton';
-import PageLayout, { itemVariants } from '@/components/PageLayout';
+import PageLayout, { itemVariants } from '@/components/shell/PageLayout';
 import { LabelText, SubtitleText, MetaText, DataText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
 import FieldError from '@/components/ui/FieldError';
 import { FormField, inputClassBase, inputAccentClass } from '@/components/ui/FormField';
-import { useFieldErrors, type FieldErrorMap } from '@/components/ui/useFieldErrors';
-import { getNodeId, setNodeId } from '@/lib/nodeId';
-import { useT } from '@/lib/langContext';
-import { fetchTransmitLogs, postTransmitLog, transmitKeys } from '@/lib/queries/transmit';
-
-type TransmitField = 'handle' | 'message';
+import { useTransmit } from './useTransmit';
 
 function formatLocalTime(isoStr: string): string {
   const d = new Date(isoStr);
@@ -26,78 +19,28 @@ function formatLocalTime(isoStr: string): string {
 }
 
 export default function TransmitPage() {
-  const t = useT();
-  const queryClient = useQueryClient();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [handle, setHandle] = useState(() => getNodeId());
-  const [message, setMessage] = useState('');
-  const [sent, setSent] = useState(false);
-  const { fieldErrors, setFieldErrors, clearFieldError, showFieldErrors } = useFieldErrors<TransmitField>('transmit');
-  const [formError, setFormError] = useState('');
-  const idempotencyKeyRef = useRef<string | null>(null);
-
   const {
-    data: logPage,
-    isLoading: isInitialLoad,
+    t,
+    currentPage,
+    handle,
+    message,
+    sent,
+    fieldErrors,
+    formError,
+    logs,
+    total,
+    totalPages,
+    isInitialLoad,
     isFetching,
-    isError: isLogError,
-    refetch,
-  } = useQuery({
-    queryKey: transmitKeys.list(currentPage),
-    queryFn: () => fetchTransmitLogs(currentPage),
-    placeholderData: keepPreviousData,
-  });
-
-  const { mutate: submitLog, isPending: isSubmitting } = useMutation({
-    mutationFn: postTransmitLog,
-    onSuccess: () => {
-      setMessage('');
-      setFieldErrors({});
-      setFormError('');
-      setSent(true);
-      idempotencyKeyRef.current = null;
-      setCurrentPage(1);
-      queryClient.invalidateQueries({ queryKey: transmitKeys.all });
-      setTimeout(() => setSent(false), 2500);
-    },
-    onError: (mutationError) => {
-      const errorKey = mutationError instanceof Error ? mutationError.message : '';
-      if (errorKey === 'MESSAGE_TOO_LONG') {
-        showFieldErrors({ message: t.transmit.errors.tooLong });
-      } else if (errorKey === 'HANDLE_REQUIRED' || errorKey === 'MESSAGE_REQUIRED') {
-        showFieldErrors({ [errorKey === 'HANDLE_REQUIRED' ? 'handle' : 'message']: t.transmit.errors.required });
-      } else {
-        setFormError(t.transmit.errors.failed);
-      }
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isSubmitting) return;
-
-    const errors: FieldErrorMap<TransmitField> = {};
-    if (!handle.trim()) errors.handle = t.transmit.errors.required;
-    if (!message.trim()) errors.message = t.transmit.errors.required;
-    else if (message.length > 280) errors.message = t.transmit.errors.tooLong;
-
-    if (Object.keys(errors).length > 0) {
-      setFormError('');
-      showFieldErrors(errors);
-      return;
-    }
-
-    setFieldErrors({});
-    setFormError('');
-    idempotencyKeyRef.current ??= crypto.randomUUID().replaceAll('-', '');
-    submitLog({
-      handle: handle.trim(),
-      message: message.trim(),
-      idempotencyKey: idempotencyKeyRef.current,
-    });
-  };
-
-  const { logs = [], total = 0, totalPages = 1 } = logPage ?? {};
+    isLogError,
+    isSubmitting,
+    handleHandleChange,
+    handleMessageChange,
+    handleSubmit,
+    retryLogs,
+    showPreviousPage,
+    showNextPage,
+  } = useTransmit();
 
   return (
     <PageLayout>
@@ -113,12 +56,7 @@ export default function TransmitPage() {
                 name="handle"
                 type="text"
                 value={handle}
-                onChange={e => {
-                  setHandle(e.target.value);
-                  setNodeId(e.target.value);
-                  idempotencyKeyRef.current = null;
-                  clearFieldError('handle');
-                }}
+                onChange={handleHandleChange}
                 placeholder={t.transmit.placeholderAlias}
                 autoComplete="nickname"
                 required
@@ -142,11 +80,7 @@ export default function TransmitPage() {
                 id="transmit-message"
                 name="message"
                 value={message}
-                onChange={e => {
-                  setMessage(e.target.value);
-                  idempotencyKeyRef.current = null;
-                  clearFieldError('message');
-                }}
+                onChange={handleMessageChange}
                 placeholder={t.transmit.placeholderMsg}
                 autoComplete="off"
                 required
@@ -192,7 +126,7 @@ export default function TransmitPage() {
                 ) : isLogError ? (
                   <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="font-mono text-terminal-accent-alert text-center py-4 space-y-3" role="alert">
                     <MetaText text={t.transmit.logLoadFailed} />
-                    <div className="flex justify-center"><TerminalButton variant="ghost" onClick={() => void refetch()}>{t.transmit.retry}</TerminalButton></div>
+                    <div className="flex justify-center"><TerminalButton variant="ghost" onClick={retryLogs}>{t.transmit.retry}</TerminalButton></div>
                   </motion.div>
                 ) : logs.length === 0 ? (
                   <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="font-mono text-terminal-muted text-center py-4" role="status" aria-live="polite">
@@ -215,11 +149,11 @@ export default function TransmitPage() {
             </AnimatedHeight>
 
             <div className="flex items-center justify-between pt-2 border-t border-terminal-accent-secondary/10">
-              <button onClick={() => setCurrentPage(page => page - 1)} disabled={currentPage <= 1 || isFetching || isInitialLoad || isSubmitting} className="text-small font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer">
+              <button onClick={showPreviousPage} disabled={currentPage <= 1 || isFetching || isInitialLoad || isSubmitting} className="text-small font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer">
                 {t.transmit.prevBtn}
               </button>
               <span className="text-small font-mono text-terminal-subdued" aria-live="polite">{currentPage} / {Math.max(1, totalPages)}</span>
-              <button onClick={() => setCurrentPage(page => page + 1)} disabled={currentPage >= totalPages || isFetching || isInitialLoad || isSubmitting} className="text-small font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer">
+              <button onClick={showNextPage} disabled={currentPage >= totalPages || isFetching || isInitialLoad || isSubmitting} className="text-small font-mono tracking-widest text-terminal-subdued hover:text-terminal-accent-primary disabled:opacity-25 disabled:cursor-not-allowed transition-colors cursor-pointer">
                 {t.transmit.nextBtn}
               </button>
             </div>

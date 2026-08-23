@@ -2,11 +2,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
-import { hasVisited, markVisited } from '@/lib/visitState';
-import BootSequence from '@/components/BootSequence';
-import SleepScreen from '@/components/SleepScreen';
+import { hasVisited, markVisited } from './_entry/visitState';
+import BootSequence from './_entry/BootSequence';
+import SleepScreen from './_entry/SleepScreen';
 
-type Phase = 'loading' | 'boot' | 'sleep' | 'done';
+type Phase = 'boot' | 'sleep' | 'done';
 
 export default function EntryController() {
   const [phase, setPhase] = useState<Phase>(() => (hasVisited() ? 'sleep' : 'boot'));

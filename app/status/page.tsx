@@ -4,13 +4,13 @@ import { motion } from 'framer-motion';
 import TerminalPanel from '@/components/TerminalPanel';
 import StatusMetric from './StatusMetric';
 import NodeMap from './NodeMap';
-import PageLayout, { itemVariants } from '@/components/PageLayout';
+import PageLayout, { itemVariants } from '@/components/shell/PageLayout';
 import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
 import TerminalButton from '@/components/TerminalButton';
 import { useT } from '@/lib/langContext';
-import { fetchEvents, eventKeys } from '@/lib/queries/events';
+import { fetchEvents, eventKeys } from '@/lib/events/client';
 
 export default function StatusPage() {
   const t = useT();
