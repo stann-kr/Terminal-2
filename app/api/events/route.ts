@@ -1,9 +1,12 @@
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { NextResponse } from 'next/server';
 import { parseEnumQuery } from '@/lib/api/validation';
+import {
+  listStoredArtistRows,
+  listStoredEventRows,
+} from '@/lib/events/d1EventReadRepository';
 import { parsePublicArtistRow, parsePublicEventRow } from '@/lib/events/publicDtos';
 import { getDb } from '@/lib/db/client';
-import { artists, events } from '@/lib/db/schema';
 import { getEventDateTime, withEffectiveEventStatus } from '@/lib/events/lifecycle';
 import type { EventStatus } from '@/lib/events/types';
 
@@ -20,8 +23,8 @@ export async function GET(request: Request) {
     const { env } = getCloudflareContext();
     const db = getDb(env.DB);
     const [eventRows, artistRows] = await Promise.all([
-      db.select().from(events).all(),
-      db.select().from(artists).all(),
+      listStoredEventRows(db),
+      listStoredArtistRows(db),
     ]);
 
     const publicArtists = artistRows.map((row) => ({
