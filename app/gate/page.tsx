@@ -1,7 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import PageLayout, { itemVariants } from "@/components/PageLayout";
+import PageLayout, { itemVariants } from "@/components/shell/PageLayout";
 import { LabelText, SubtitleText, MetaText, HeadingText } from "@/components/ui/TerminalText";
 import ReturnLink from "@/components/ui/ReturnLink";
 import PageHeader from "@/components/ui/PageHeader";
@@ -10,8 +10,8 @@ import TerminalButton from "@/components/TerminalButton";
 import TerminalActionLink from "@/components/TerminalActionLink";
 import EventDetail from "./EventDetail";
 import { useT } from "@/lib/langContext";
-import { fetchEvents, eventKeys } from "@/lib/queries/events";
-import { getArchivedOrElapsedEvents, getFutureUpcomingEvent } from "@/lib/eventLifecycle";
+import { fetchEvents, eventKeys } from "@/lib/events/client";
+import { getArchivedOrElapsedEvents, getFutureUpcomingEvent } from "@/lib/events/lifecycle";
 import { useUrlQueryState } from "@/lib/useUrlQueryState";
 
 export default function GatePage() {

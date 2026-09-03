@@ -1,6 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
-import PageLayout, { itemVariants } from '@/components/PageLayout';
+import PageLayout, { itemVariants } from '@/components/shell/PageLayout';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
 import DirectoryLink from '@/components/DirectoryLink';

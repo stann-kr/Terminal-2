@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import PageLayout, { itemVariants } from '@/components/PageLayout';
+import PageLayout, { itemVariants } from '@/components/shell/PageLayout';
 import PageHeader from '@/components/ui/PageHeader';
 import ReturnLink from '@/components/ui/ReturnLink';
 import TerminalPanel from '@/components/TerminalPanel';
@@ -10,112 +9,23 @@ import SubmitButton from '@/components/SubmitButton';
 import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import ConsentCheckbox from '@/components/ui/ConsentCheckbox';
 import ConsentBlock from '@/components/ui/ConsentBlock';
+import FieldError from '@/components/ui/FieldError';
 import { FormField, inputClassBase, inputAccentClass } from '@/components/ui/FormField';
-import { useT } from '@/lib/langContext';
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const INSTAGRAM_PATTERN = /^@?[\w.]+$/;
-
-interface FormState {
-  email: string;
-  instagram: string;
-  consent: boolean;
-}
-
-type SignalField = 'email' | 'instagram' | 'consent';
-type FieldErrors = Partial<Record<SignalField, string>>;
+import { useSignalSubscription } from './useSignalSubscription';
 
 export default function SignalPage() {
-  const t = useT();
-  const [form, setForm] = useState<FormState>({ email: '', instagram: '', consent: false });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [formError, setFormError] = useState('');
-  const submittingRef = useRef(false);
-
-  const clearFieldError = (field: SignalField) => {
-    setFieldErrors(current => {
-      if (!current[field]) return current;
-      const { [field]: _cleared, ...remaining } = current;
-      return remaining;
-    });
-  };
-
-  const showFieldErrors = (errors: FieldErrors) => {
-    setFieldErrors(errors);
-    const firstField = Object.keys(errors)[0] as SignalField | undefined;
-    if (firstField) requestAnimationFrame(() => document.getElementById(`signal-${firstField}`)?.focus());
-  };
-
-  const validateForm = (): FieldErrors => {
-    const errors: FieldErrors = {};
-    if (!form.email.trim()) errors.email = t.signal.errors.ALL_FIELDS_REQUIRED;
-    else if (!EMAIL_PATTERN.test(form.email.trim())) errors.email = t.signal.errors.INVALID_EMAIL_FORMAT;
-    if (!form.instagram.trim()) errors.instagram = t.signal.errors.ALL_FIELDS_REQUIRED;
-    else if (!INSTAGRAM_PATTERN.test(form.instagram.trim())) {
-      errors.instagram = t.signal.errors.INVALID_INSTAGRAM_FORMAT;
-    }
-    if (!form.consent) errors.consent = t.signal.errors.CONSENT_REQUIRED;
-    return errors;
-  };
-
-  const applyApiError = (errorKey: string) => {
-    const message = t.signal.errors[errorKey as keyof typeof t.signal.errors]
-      ?? t.signal.errors.TRANSMISSION_FAILED;
-    const fieldByError: Partial<Record<string, SignalField>> = {
-      INVALID_EMAIL_FORMAT: 'email',
-      INVALID_INSTAGRAM_FORMAT: 'instagram',
-      CONSENT_REQUIRED: 'consent',
-    };
-    const field = fieldByError[errorKey];
-    if (field) {
-      showFieldErrors({ [field]: message });
-      return;
-    }
-    setFormError(message);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (submittingRef.current) return;
-
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setFormError('');
-      showFieldErrors(validationErrors);
-      return;
-    }
-
-    setFieldErrors({});
-    setFormError('');
-    submittingRef.current = true;
-    setIsSubmitting(true);
-
-    try {
-      const res = await fetch('/api/signal', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: form.email,
-          instagram: form.instagram,
-          consent: form.consent,
-        }),
-      });
-      const data = await res.json() as { ok?: boolean; error?: string };
-
-      if (!res.ok) {
-        applyApiError(data.error ?? '');
-        return;
-      }
-      setSubmitted(true);
-    } catch {
-      setFormError(t.signal.errors.CONNECTION_ERROR);
-    } finally {
-      submittingRef.current = false;
-      setIsSubmitting(false);
-    }
-  };
+  const {
+    t,
+    form,
+    handleEmailChange,
+    handleInstagramChange,
+    handleConsentChange,
+    handleSubmit,
+    isSubmitting,
+    submitted,
+    fieldErrors,
+    formError,
+  } = useSignalSubscription();
 
   return (
     <PageLayout centerContent={false}>
@@ -124,7 +34,7 @@ export default function SignalPage() {
 
       {submitted ? (
         <motion.div variants={itemVariants} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <TerminalPanel title="REQUEST_COMMITTED" accent="tertiary">
+          <TerminalPanel title="REQUEST_COMMITTED" accent="tertiary" headingLevel={2}>
             <div className="text-center py-6 space-y-2" role="status" aria-live="polite" aria-atomic="true">
               <div className="font-bold tracking-widest font-mono text-terminal-accent-tertiary">
                 <LabelText text={t.signal.committed} />
@@ -138,7 +48,7 @@ export default function SignalPage() {
       ) : (
         <div className="space-y-4">
           <motion.div variants={itemVariants}>
-            <TerminalPanel title="SIGNAL_BRIEF" accent="tertiary">
+            <TerminalPanel title="SIGNAL_BRIEF" accent="tertiary" headingLevel={2}>
               <div className="space-y-1.5">
                 {t.signal.description.map((line, index) => (
                   <div key={index} className="font-mono text-terminal-subdued tracking-wide">
@@ -150,7 +60,7 @@ export default function SignalPage() {
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <TerminalPanel title="SIGNAL_SUBSCRIPTION" accent="tertiary">
+            <TerminalPanel title="SIGNAL_SUBSCRIPTION" accent="tertiary" headingLevel={2}>
               <form onSubmit={handleSubmit} noValidate className="space-y-4">
                 <FormField label={t.signal.labelEmail} htmlFor="signal-email">
                   <input
@@ -158,10 +68,7 @@ export default function SignalPage() {
                     name="email"
                     type="email"
                     value={form.email}
-                    onChange={e => {
-                      setForm(previous => ({ ...previous, email: e.target.value }));
-                      clearFieldError('email');
-                    }}
+                    onChange={handleEmailChange}
                     placeholder={t.signal.placeholderEmail}
                     autoComplete="email"
                     required
@@ -181,11 +88,7 @@ export default function SignalPage() {
                       name="instagram"
                       type="text"
                       value={form.instagram.replace(/^@/, '')}
-                      onChange={(e) => {
-                        const raw = e.target.value.replace(/^@+/, '');
-                        setForm(previous => ({ ...previous, instagram: raw ? `@${raw}` : '' }));
-                        clearFieldError('instagram');
-                      }}
+                      onChange={handleInstagramChange}
                       placeholder="USERNAME"
                       autoComplete="username"
                       required
@@ -203,10 +106,7 @@ export default function SignalPage() {
                     id="signal-consent"
                     name="consent"
                     checked={form.consent}
-                    onChange={checked => {
-                      setForm(previous => ({ ...previous, consent: checked }));
-                      clearFieldError('consent');
-                    }}
+                    onChange={handleConsentChange}
                     label={t.signal.consentLabel}
                     accent="primary"
                     required
@@ -233,13 +133,5 @@ export default function SignalPage() {
         </div>
       )}
     </PageLayout>
-  );
-}
-
-function FieldError({ id, message }: { id: string; message: string }) {
-  return (
-    <div id={id} className="font-mono text-terminal-accent-alert" role="alert">
-      <MetaText text={message} />
-    </div>
   );
 }

@@ -5,7 +5,7 @@ import type {
   ArtistStatus,
   EventStatus,
   TerminalEvent,
-} from '@/lib/eventData';
+} from './types';
 
 const EVENT_STATUSES = new Set<EventStatus>(['UPCOMING', 'LIVE', 'ARCHIVED']);
 const ARTIST_STATUSES = new Set<ArtistStatus>([

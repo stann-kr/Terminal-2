@@ -1,11 +1,11 @@
 'use client';
 import TerminalPanel from '@/components/TerminalPanel';
 import AnimatedHeight from '@/components/ui/AnimatedHeight';
-import CountdownBlock from '@/components/ui/CountdownBlock';
+import CountdownBlock from '@/components/events/CountdownBlock';
 import EventInfoPanel from './EventInfoPanel';
 import { LabelText, SubtitleText, MetaText } from '@/components/ui/TerminalText';
 import { useT } from '@/lib/langContext';
-import type { TerminalEvent } from '@/lib/eventData';
+import type { TerminalEvent } from '@/lib/events/types';
 
 interface Props {
   event: TerminalEvent;

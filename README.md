@@ -40,6 +40,7 @@ Run these before treating the project as healthy:
 
 ```bash
 npm audit --omit=dev
+npm run db:check-history
 npm test
 npm run lint
 npm run typecheck
@@ -90,6 +91,8 @@ Configuration:
 - `drizzle.config.ts`
 - `lib/db/schema.ts`
 - `migrations/*.sql`
+- `migrations/meta/*.json`
+- `scripts/migration-history.lock.json`
 
 D1 binding name:
 
@@ -102,17 +105,39 @@ Remote databases are separated by environment:
 - development: `terminal-db-dev`
 - production: `terminal-db`
 
-Local migration apply example:
+The repository history currently contains 10 continuous migrations, `0000` through `0009`. Migration `0009_normalize_transmit_created_at.sql` rebuilds `transmit_logs.created_at` as ISO timestamp `TEXT NOT NULL` after normalizing supported legacy values.
+
+Migration history is append-only. Before validation or generation, the guard requires continuous unique SQL prefixes, exact journal/SQL tags, one snapshot per SQL file with a valid `id`/`prevId` chain, and exact path + SHA-256 matches against the lock:
 
 ```bash
-npx wrangler d1 migrations apply terminal-db --local
+npm run db:check-history
 ```
 
-Remote migration apply example:
+Generate a schema migration only through the guarded wrapper with an explicit lowercase snake_case name:
 
 ```bash
-npx wrangler d1 migrations apply terminal-db --remote
+npm run db:generate -- --name add_example_column
 ```
+
+The wrapper validates the current structure and lock, stages Drizzle output outside the repository, requires the next prefix, permits only the journal update plus one new SQL and snapshot, preserves every existing migration file, and then atomically advances the lock. Do not run `drizzle-kit generate` or `npx drizzle-kit generate` directly. `npm run db:lock-history` is only for creating the initial lock after a complete, reviewed reconciliation; it refuses to replace an existing lock.
+
+Local migration apply example with an explicit environment:
+
+```bash
+npx wrangler d1 migrations apply DB --env development --local
+```
+
+Development and production remote histories are separate. Inspect and apply each target independently; applying one environment is not evidence that the other is current:
+
+```bash
+npx wrangler d1 migrations list DB --env development --remote
+npx wrangler d1 migrations apply DB --env development --remote
+
+npx wrangler d1 migrations list DB --env production --remote
+npx wrangler d1 migrations apply DB --env production --remote
+```
+
+Every remote apply is a database write and requires separate approval plus environment-specific preflight and post-apply verification. Worker deployment never applies D1 migrations automatically.
 
 ## Public write endpoints
 

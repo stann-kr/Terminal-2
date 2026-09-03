@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import TerminalButton from './TerminalButton';
-import DecodeText from './DecodeText';
+import TerminalButton from '@/components/TerminalButton';
+import DecodeText from '@/components/DecodeText';
 import { useLang, type Lang } from '@/lib/langContext';
 import { useMotionPolicy } from '@/lib/useMotionPolicy';
 

@@ -17,10 +17,9 @@ interface AnimatedHeightProps {
 /**
  * ResizeObserver + CSS transition 기반 height 애니메이터.
  *
- * framer-motion의 `height: 'auto'`는 측정 시점에 DecodeText(pretext)가 아직
- * RAF를 실행하기 전이라 잘못된 높이를 캡처하는 문제가 있음.
- * 이 컴포넌트는 ResizeObserver로 내부 div의 높이 변화를 감지 → CSS transition으로
- * 외부 컨테이너 높이를 부드럽게 추적하여 pretext RAF 타이밍과 자연스럽게 협력함.
+ * framer-motion의 `height: 'auto'` snapshot 대신 실제 내부 높이를 계속 관찰한다.
+ * ResizeObserver로 내부 div의 높이 변화를 감지하고 CSS transition으로
+ * 외부 컨테이너 높이를 부드럽게 추적한다.
  */
 export default function AnimatedHeight({
   children,

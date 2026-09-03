@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import "./crt.css";
-import CRTWrapper from "@/components/CRTWrapper";
-import PageTransition from "@/components/PageTransition";
-import ParticleFieldDynamic from "@/components/ParticleFieldDynamic";
+import CRTWrapper from "@/components/shell/CRTWrapper";
+import PageTransition from "@/components/shell/PageTransition";
 import { LangProvider } from "@/lib/langContext";
 import { QueryProvider } from "@/providers/query-provider";
 import { MotionProvider } from "@/providers/motion-provider";
@@ -44,7 +43,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <MotionProvider>
               <SkipLink />
               <CRTWrapper>
-                <ParticleFieldDynamic />
                 <PageTransition>
                   {children}
                 </PageTransition>

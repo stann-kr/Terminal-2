@@ -1,6 +1,6 @@
 'use client';
 import { useT } from '@/lib/langContext';
-import { SIGNAL_NET, SELF_NODE_ID } from '@/lib/signalNet';
+import { SIGNAL_NET, SELF_NODE_ID } from './signalNetConfig';
 
 /**
  * SIGNAL_NET — 3표면 상호 링크 (STANN OS 불변 글루, 설계 §4-2).

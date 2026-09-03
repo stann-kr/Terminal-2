@@ -51,6 +51,10 @@
 // accent 종류: secondary | tertiary | alert | warn | primary
 ```
 
+- `FieldError`는 필드의 `aria-describedby` 대상과 alert semantics를 제공한다.
+- `useFieldErrors`는 validation error의 첫 필드로 focus를 이동하며 Signal·Gate Request·Transmit가 같은 계약을 사용한다.
+- 제목이 있는 `TerminalPanel`은 기본적으로 labelled `section`과 `h2`를 렌더링하고, 중첩 panel은 `headingLevel={3}`을 사용한다.
+
 ---
 
 ## 3. Page Transition 및 `DecodeText` 렌더링 (Cipher Decode 시스템)
@@ -60,20 +64,21 @@
 ### 3.1 통합 컴포넌트 `<DecodeText>` 및 `<TerminalText>` 분석
 
 - **위치:** `components/DecodeText.tsx`, `components/ui/TerminalText.tsx`
-- **핵심 역할:** 최종 문자열을 서버 HTML과 접근성 트리에 먼저 렌더링하고, 허용된 대표 타이틀에서만 aria-hidden 시각 layer를 cipher로 갱신한다.
+- **핵심 역할:** 최종 문자열을 서버 HTML에 먼저 렌더링하고 안정적인 `aria-label`을 유지한 채 같은 DOM node의 시각 문자열에만 cipher를 적용한다.
 - **시맨틱 추상화 (`TerminalText.tsx`):**
   - `TitleText`와 명시적으로 `cipher`를 켠 heading 외의 본문·라벨·메타·데이터는 plain semantic text로 렌더링한다.
+  - `DecodeText` 직접 사용은 사용자 motion 정책을 따르는 비필수 boot/sleep 화면으로 제한한다.
   - 제공 컴포넌트: `TitleText` (히어로), `HeadingText` (섹션 제목), `SubtitleText` (부제), `BodyText` (본문), `LabelText` (시스템 라벨), `MetaText` (메타데이터), `DataText` (실시간 데이터).
 - **주요 동적 속성 및 토큰화 (`lib/animationTokens.ts`):**
   - 각 시맨틱 컴포넌트는 `animationTokens.ts`에 정의된 프리셋을 참조하여 동작함.
   - `useMotionPolicy`는 reduced-motion, save-data, document visibility를 live 구독한다. 정책이 motion을 허용하지 않으면 최종 문자열을 즉시 유지하고 timer/RAF/Canvas를 실행하지 않는다.
 - **레이아웃 보존 기술 (Layout Shift 방지):**
-  - 텍스트 길이가 변할 때 생기는 줄바꿈과 레이아웃 이동을 줄이기 위해 `@chenglou/pretext`의 DOM-less 텍스트 측정을 사용한다. 자기 크기 관찰로 인한 피드백 루프를 피하도록 `ResizeObserver` 대신 `window.resize`와 `requestAnimationFrame`으로 재측정한다.
-  - 컨테이너에 `overflow: hidden` 및 `height`, `min-height` 트랜지션을 동시 적용하여 텍스트의 동적 줄바꿈이 박스 크기를 급격하게 확장시키는 현상을 마스킹 처리함.
+  - 최종 문자열을 실제 DOM child로 먼저 렌더링해 브라우저 레이아웃과 접근성 트리가 같은 내용을 사용한다.
+  - 펼침 영역은 `AnimatedHeight`가 내부 콘텐츠의 실제 높이를 관찰하며, cipher는 최종 접근성 이름을 바꾸지 않는 시각적 향상으로만 실행한다.
 
 ### 3.2 페이지 구조 (PageLayout & Transition)
 
-- **페이지 공통 래퍼:** `components/PageLayout.tsx` 및 `components/PageTransition.tsx`
+- **페이지 공통 래퍼:** `components/shell/PageLayout.tsx` 및 `components/shell/PageTransition.tsx`
 - **동작 원리:** route wrapper는 opacity 전환 없이 scroll 위치만 복원한다. `PageLayout`의 8px item reveal은 사용자 motion 설정을 따르며 의미 텍스트를 숨기지 않는다.
 - **landmark:** `PageLayout`이 유일한 `main#main-content`를 소유하고 전역 skip link의 목적지가 된다.
 
@@ -127,8 +132,12 @@ Cloudflare D1의 제약 사항과 개발 생산성을 고려하여, 핵심 비�
 
 ### 6.3 `access_requests` 및 `transmit_logs`
 - 이들은 트랜잭션 성격이 강하므로 전통적인 관계형 컬럼 구조를 유지하여 쿼리 성능과 데이터 무결성을 확보함.
+- Gate의 payload·event/access-code·request-window rule은 `lib/gate/createAccessRequest.ts`와 `requestPolicy.ts`, raw SQL과 atomic D1 batch는 `d1AccessRequestRepository.ts`, HTTP transport와 response mapping은 API route가 각각 소유한다.
+- Signal의 공통 입력 규칙·D1 구독 statement·생성 orchestration은 `lib/signal/`, Transmit의 공개 contract·입력/domain·D1 repository·client는 `lib/transmit/`이 소유하며 각 API route는 transport와 abuse/response mapping만 담당한다.
 - 게스트 신청은 기존 `(event_id, email)` 고유 인덱스와 D1 배치 안의 조건부 INSERT를 함께 사용해 중복 이메일·아티스트별 정원·선택적 마케팅 등록을 한 경계에서 판정한다.
+- Gate Request와 Signal의 신규·중복 성공은 모두 `200 { ok: true }`와 `no-store`를 반환해 등록 여부를 노출하지 않는다.
 - 전송 로그의 신규 입력과 공개 DTO는 디바이스 식별자를 수집하거나 노출하지 않는다. 기존 nullable 컬럼은 호환성을 위해 유지한다.
+- repository는 전환 기간의 integer/nullable `transmit_logs.created_at`을 읽을 수 있지만, 10번째 migration인 `0009_normalize_transmit_created_at.sql`은 지원되는 레거시 값을 ISO 문자열로 변환하고 물리 컬럼을 `TEXT NOT NULL`로 재구성한다. development와 production remote 적용은 서로 독립된 승인·검증 단계다.
 - 이벤트·아티스트 JSON은 public runtime decoder를 통과한 필드만 DTO로 반환하며 access code, guest limit과 저장 전용 필드는 노출하지 않는다.
 - 게스트 코드가 설정된 아티스트의 `guestLimit`은 bounded integer 필수값이다. 누락·오염 시 무제한으로 해석하지 않고 availability 오류로 닫는다.
 - Transmit POST는 16–128자의 `Idempotency-Key`를 요구하며 같은 key/payload 재시도는 기존 공개 DTO를 반환한다.
@@ -167,8 +176,8 @@ t.dirDesc.gate               // 디렉토리 설명
 - `retry: 1` — 실패 시 1회 자동 재시도
 
 ### Query Key 팩토리 패턴
-- `lib/queries/events.ts` — `eventKeys.list()` → home·lineup·gate·status가 동일 키를 참조해 캐시 공유
-- `lib/queries/transmit.ts` — `transmitKeys.list(page)` → 페이지 번호별 독립 캐시
+- `lib/events/client.ts` — `eventKeys.list()` → home·lineup·gate·status가 동일 키를 참조해 캐시 공유
+- `lib/transmit/client.ts` — `transmitKeys.list(page)` → 페이지 번호별 독립 캐시
 
 ### 사용 패턴
 ```tsx
@@ -196,5 +205,6 @@ const { mutate } = useMutation({
 - **빌드 환경:** `package.json`의 build 스크립트가 `cross-env NODE_ENV=production next build`로 production 모드를 고정한다. 이 보장은 `_global-error`와 `_not-found` 프리렌더링에 필요하다.
 - **Docker 패키지 설치:** `docker-compose.yml`의 `node_modules`는 anonymous volume이다. Docker 환경의 패키지 변경은 실행 중인 컨테이너에서 수행하고 이미지 재빌드 여부를 함께 판단한다.
 - **공개 API 보호:** `PUBLIC_RATE_LIMITER`와 Turnstile Siteverify validator의 로컬 계약은 구현돼 있다. 실제 Cloudflare binding/secret과 client token flow가 연결되기 전에는 public-release ready로 판정하지 않는다.
-- **검증 계층:** Vitest는 Node와 jsdom project를 분리한다. `scripts/http-smoke.mjs`는 route title/main/SSR text/cache/WebGL initial graph를, `scripts/verify-local-d1.mjs`는 빈 임시 D1에 9개 Wrangler migration과 FK/index를 검증한다.
-- **CI와 배포:** `.github/workflows/validate.yml`은 secret 없이 install/audit/test/lint/typecheck/build/Next·Worker smoke/D1/production-env dry-run을 실행한다. Cloudflare Workers Builds가 `dev`의 `terminal-2-dev`와 `main`의 `terminal-2`를 각각 자동 배포하며, Worker code deploy와 D1 migration·secret·binding·route 변경은 분리한다.
+- **Migration history:** repository history는 `0000`부터 `0009`까지 10개다. `scripts/check-migration-history.mjs`는 연속·고유 SQL prefix, journal tag 1:1, snapshot 1:1과 `id`/`prevId` chain, lock의 exact path + SHA-256을 검증한다. 기존 SQL·snapshot은 append-only이며 새 migration은 명시적 safe `--name`을 받는 `npm run db:generate -- --name <name>`만 사용한다. wrapper는 임시 디렉터리에서 생성 결과를 검사해 journal + 다음 SQL + 다음 snapshot만 반영하고 lock을 원자적으로 갱신한다. raw `drizzle-kit generate`는 허용하지 않는다.
+- **검증 계층:** Vitest는 Node와 jsdom project를 분리한다. `scripts/http-smoke.mjs`는 route title/main/SSR text/cache/WebGL initial graph를, `scripts/verify-local-d1.mjs`는 빈 임시 D1에 10개 Wrangler migration, FK/index 컬럼, Gate·Signal 조건부 insert와 Transmit idempotency/ISO timestamp 정렬을 검증한다.
+- **CI와 배포:** `.github/workflows/validate.yml`은 secret 없이 install/audit/migration-history/test/lint/typecheck/build/Next·Worker smoke/D1/production-env dry-run을 실행한다. Cloudflare Workers Builds가 `dev`의 `terminal-2-dev`와 `main`의 `terminal-2`를 각각 자동 배포하며, Worker code deploy와 D1 migration·secret·binding·route 변경은 분리한다. development와 production remote migration은 각각 `--env development`와 `--env production`으로 list/apply/사후 검증하며 한 환경의 결과를 다른 환경의 증거로 사용하지 않는다.

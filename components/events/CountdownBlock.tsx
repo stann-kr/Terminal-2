@@ -7,7 +7,7 @@ import { useMotionPolicy } from '@/lib/useMotionPolicy';
 interface Props {
   targetDate: Date;
   /** 'primary' = home/gate primary 테마, 'secondary' = gate 카운트다운 테마 */
-  accent?: 'primary' | 'secondary' | 'amber' | 'cyan';
+  accent?: 'primary' | 'secondary';
   /** 숫자 크기 및 패딩 축소 */
   compact?: boolean;
 }
@@ -70,11 +70,9 @@ const secondaryStyle: AccentStyle = {
   modeLabel: 'text-terminal-accent-secondary/60',
 };
 
-const accentStyles: Record<string, AccentStyle> = {
+const accentStyles: Record<NonNullable<Props['accent']>, AccentStyle> = {
   primary: primaryStyle,
   secondary: secondaryStyle,
-  amber: primaryStyle,    // Legacy alias
-  cyan: secondaryStyle,   // Legacy alias
 };
 
 export default function CountdownBlock({ targetDate, accent = 'primary', compact = false }: Props) {
