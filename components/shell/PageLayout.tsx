@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { containerVariants, itemVariants } from '@/lib/animationTokens';
-import SignalNet from '@/components/ui/SignalNet';
+import SignalNet from './SignalNet';
 
 // re-export: 기존 import 경로 유지 (PageLayout에서 import하는 파일 무변경)
 export { containerVariants, itemVariants };

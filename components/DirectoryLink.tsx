@@ -11,7 +11,7 @@ interface DirectoryLinkProps {
   label: string;
   description: string;
   index: number;
-  accent?: AccentColor | 'amber' | 'cyan' | 'gold' | 'hot' | 'purple';
+  accent?: AccentColor;
   external?: boolean;
 }
 
@@ -21,12 +21,6 @@ const accentClassMap: Record<string, { hover: string; text: string; glow: string
   warn:      { hover: 'group-hover:border-terminal-accent-warn group-hover:bg-terminal-accent-warn/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-warn)/0.07)]', text: 'text-terminal-accent-warn', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-warn)/0.6)]' },
   alert:     { hover: 'group-hover:border-terminal-accent-alert group-hover:bg-terminal-accent-alert/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-alert)/0.07)]', text: 'text-terminal-accent-alert', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-alert)/0.6)]' },
   tertiary:  { hover: 'group-hover:border-terminal-accent-tertiary group-hover:bg-terminal-accent-tertiary/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-tertiary)/0.07)]', text: 'text-terminal-accent-tertiary', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-tertiary)/0.6)]' },
-  /* Legacy mapping */
-  amber:     { hover: 'group-hover:border-terminal-accent-primary group-hover:bg-terminal-accent-primary/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-primary)/0.07)]', text: 'text-terminal-accent-primary', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-primary)/0.6)]' },
-  cyan:      { hover: 'group-hover:border-terminal-accent-secondary group-hover:bg-terminal-accent-secondary/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-secondary)/0.07)]', text: 'text-terminal-accent-secondary', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-secondary)/0.6)]' },
-  gold:      { hover: 'group-hover:border-terminal-accent-warn group-hover:bg-terminal-accent-warn/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-warn)/0.07)]', text: 'text-terminal-accent-warn', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-warn)/0.6)]' },
-  hot:       { hover: 'group-hover:border-terminal-accent-alert group-hover:bg-terminal-accent-alert/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-alert)/0.07)]', text: 'text-terminal-accent-alert', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-alert)/0.6)]' },
-  purple:    { hover: 'group-hover:border-terminal-accent-tertiary group-hover:bg-terminal-accent-tertiary/5 group-hover:shadow-[0_0_20px_rgb(var(--color-accent-tertiary)/0.07)]', text: 'text-terminal-accent-tertiary', glow: 'group-hover:drop-shadow-[0_0_8px_rgb(var(--color-accent-tertiary)/0.6)]' },
 };
 
 export default function DirectoryLink({ href, label, description, index, accent = 'primary', external = false }: DirectoryLinkProps) {

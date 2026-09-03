@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import type { Artist } from '@/lib/eventData';
+import type { Artist } from '@/lib/events/types';
 import { SubtitleText, LabelText, MetaText, BodyText } from '@/components/ui/TerminalText';
 import { useLang, useT } from '@/lib/langContext';
 import AnimatedHeight from '@/components/ui/AnimatedHeight';

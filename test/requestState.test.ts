@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   resolveCodeVerificationState,
   resolveRequestEventState,
-} from '../lib/gate/requestState';
-import type { TerminalEvent } from '../lib/eventData';
+} from '../app/gate/request/requestState';
+import type { TerminalEvent } from '../lib/events/types';
 
 const futureEvent: TerminalEvent = {
   id: 'event-1',

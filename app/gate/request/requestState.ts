@@ -1,5 +1,5 @@
-import { getFutureUpcomingEvent, getRequestWindowState, type RequestWindowState } from '@/lib/eventLifecycle';
-import type { TerminalEvent } from '@/lib/eventData';
+import { getFutureUpcomingEvent, getRequestWindowState, type RequestWindowState } from '@/lib/events/lifecycle';
+import type { TerminalEvent } from '@/lib/events/types';
 
 export type RequestEventState =
   | { kind: 'loading' }

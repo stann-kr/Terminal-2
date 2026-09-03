@@ -1,4 +1,4 @@
-import type { EventStatus, TerminalEvent } from './eventData';
+import type { EventStatus, TerminalEvent } from './types';
 
 const KST_SUFFIX = ' KST';
 
@@ -55,10 +55,6 @@ export function getArchivedOrElapsedEvents(
   return events
     .filter((event) => getEffectiveEventStatus(event, now) === 'ARCHIVED')
     .sort((a, b) => getEventDateTime(b).getTime() - getEventDateTime(a).getTime());
-}
-
-export function getLatestEvent(events: TerminalEvent[]): TerminalEvent | null {
-  return [...events].sort((a, b) => getEventDateTime(b).getTime() - getEventDateTime(a).getTime())[0] ?? null;
 }
 
 export interface RequestWindowState {

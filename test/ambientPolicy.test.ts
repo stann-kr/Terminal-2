@@ -1,9 +1,9 @@
+import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
-import { shouldRenderHomeAmbient } from '../lib/ambientPolicy';
+import { shouldRenderHomeAmbient } from '../app/home/ambientPolicy';
 
 describe('home ambient rendering policy', () => {
   const ready = {
-    pathname: '/home',
     allowMotion: true,
     heroVisible: true,
     webglAvailable: true,
@@ -13,10 +13,16 @@ describe('home ambient rendering policy', () => {
     expect(shouldRenderHomeAmbient(ready)).toBe(true);
   });
 
-  it.each(['/gate', '/gate/request', '/signal', '/transmit', '/status'])(
-    'keeps the ambient renderer off %s',
-    (pathname) => expect(shouldRenderHomeAmbient({ ...ready, pathname })).toBe(false),
-  );
+  it('is mounted by the Home capability instead of the root shell', async () => {
+    const [rootLayout, homeLayout] = await Promise.all([
+      readFile('app/layout.tsx', 'utf8'),
+      readFile('app/home/layout.tsx', 'utf8'),
+    ]);
+
+    expect(rootLayout).not.toContain('HomeAmbient');
+    expect(homeLayout).toContain("import HomeAmbient from './HomeAmbient'");
+    expect(homeLayout).toContain('<HomeAmbient />');
+  });
 
   it('stops for reduced motion, save-data or hidden-document policy, viewport exit, and WebGL failure', () => {
     expect(shouldRenderHomeAmbient({ ...ready, allowMotion: false })).toBe(false);

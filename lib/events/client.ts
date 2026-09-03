@@ -1,4 +1,4 @@
-import type { TerminalEvent } from '@/lib/eventData'
+import type { TerminalEvent } from './types'
 
 export const eventKeys = {
   all: ['events'] as const,

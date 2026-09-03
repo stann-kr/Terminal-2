@@ -1,7 +1,7 @@
 name = "terminal-2"
 main = ".open-next/worker.js"
-compatibility_date = "2025-04-01"
-compatibility_flags = ["nodejs_compat_v2"]
+compatibility_date = "2026-08-04"
+compatibility_flags = ["nodejs_compat"]
 
 [observability]
 enabled = true

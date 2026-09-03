@@ -3,9 +3,9 @@ const NODE_KEY = 'terminal_node_id';
 const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // O/0, I/1, L 제외
 
 function generateNodeId(): string {
-  const result = Array.from({ length: 5 }, () =>
+  const result = Array.from({ length: 5 }, () => (
     CHARS[Math.floor(Math.random() * CHARS.length)]
-  ).join('');
+  )).join('');
   return `NODE-${result}`;
 }
 

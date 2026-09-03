@@ -2,7 +2,7 @@ import type { Variants } from "framer-motion";
 
 // ─── Motion Variants ─────────────────────────────────────────────────────────
 // 페이지 레이아웃 waterfall 진입 애니메이션
-// (PageLayout.tsx에서 re-export되어 하위 호환 유지)
+// (`components/shell/PageLayout.tsx`에서 route 사용 편의를 위해 re-export)
 
 export const containerVariants: Variants = {
   hidden: {},

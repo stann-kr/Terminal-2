@@ -1,10 +1,9 @@
 import { getCloudflareContext } from '@opennextjs/cloudflare';
-import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { parseIdentifierQuery } from '@/lib/api/validation';
-import { parsePublicArtistRow } from '@/lib/api/publicEventDtos';
+import { listStoredArtistRowsByEvent } from '@/lib/events/d1EventReadRepository';
+import { parsePublicArtistRow } from '@/lib/events/publicDtos';
 import { getDb } from '@/lib/db/client';
-import { artists } from '@/lib/db/schema';
 
 export async function GET(request: Request) {
   const eventId = parseIdentifierQuery(new URL(request.url).searchParams, 'eventId');
@@ -18,7 +17,7 @@ export async function GET(request: Request) {
   try {
     const { env } = getCloudflareContext();
     const db = getDb(env.DB);
-    const rows = await db.select().from(artists).where(eq(artists.eventId, eventId)).all();
+    const rows = await listStoredArtistRowsByEvent(db, eventId);
     const result = rows.map(parsePublicArtistRow);
 
     if (result.some((artist) => artist === null)) {

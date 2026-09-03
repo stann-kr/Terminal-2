@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "algorithm": "sha256",
+  "files": [
+    {
+      "path": "migrations/0000_special_legion.sql",
+      "sha256": "b8820d3367db9c950e6fe9124759a2b04eff429c12c2b46c469201b840f97317"
+    },
+    {
+      "path": "migrations/0001_flexible_schema.sql",
+      "sha256": "183a126bffdd945044abd7ada8a94d62d9a91a2ec2915a840c4361bcc2ff64b4"
+    },
+    {
+      "path": "migrations/0002_access_requests.sql",
+      "sha256": "67ce85ad5ef3317e328a10d07ce165673f8e59632a253d47c9994335caf756fb"
+    },
+    {
+      "path": "migrations/0003_transmit_device_id.sql",
+      "sha256": "ee5626f4113e90d07abf5a227b5ec7c0d98a5e40f13ee125bc6376df68678f80"
+    },
+    {
+      "path": "migrations/0004_event_invitation_lines.sql",
+      "sha256": "d3fa5464e1378b36c54560d46740a2a0cc528ae5500b230b556e7f5ab2bd6711"
+    },
+    {
+      "path": "migrations/0005_marketing_consent.sql",
+      "sha256": "d708b90a6091f6723c80756179fd90e5e2bb85b17f4a141898bb12aba5b68a48"
+    },
+    {
+      "path": "migrations/0006_dj_guest_codes.sql",
+      "sha256": "f309251a3b27a934bbcf263b9bd5fac7a0b5050c5d7900de6eed27936bf6986e"
+    },
+    {
+      "path": "migrations/0007_invited_by_nullable.sql",
+      "sha256": "8be83475126f7fe9b064ed00786ee056ad92750726879f499384ef3eeaf552dd"
+    },
+    {
+      "path": "migrations/0008_signal.sql",
+      "sha256": "1c5ce3189f9a256f2f4501f94cfb80386fee6484a6af89048f2f7c5b68fbab8f"
+    },
+    {
+      "path": "migrations/0009_normalize_transmit_created_at.sql",
+      "sha256": "fe8a3237ce617013ee38b96727cea7a761ccb5f23cda57e2f0863d5c947d4f39"
+    },
+    {
+      "path": "migrations/meta/0000_snapshot.json",
+      "sha256": "9f692fcfb6eb815b1d41dc50dbd43499966359a0f490159ef1350d40a43ad645"
+    },
+    {
+      "path": "migrations/meta/0001_snapshot.json",
+      "sha256": "b8d98c0405dd0dbc1d885ae3943705f21e1b3e519b35b27b82a5178e94b571bc"
+    },
+    {
+      "path": "migrations/meta/0002_snapshot.json",
+      "sha256": "4195bcf01dfe8e874a46e55004ee59467eae50cae8e61df081500a55ac173526"
+    },
+    {
+      "path": "migrations/meta/0003_snapshot.json",
+      "sha256": "7d0636483780849ccb26b404bbd75a08450b10cb16fdf636f0e12f0fba2afc7e"
+    },
+    {
+      "path": "migrations/meta/0004_snapshot.json",
+      "sha256": "ab8fe425b4aad8a19659cb0961afcb47eb86f3031835c1c0eb648610c28c5899"
+    },
+    {
+      "path": "migrations/meta/0005_snapshot.json",
+      "sha256": "9a34526e7375fd67e847275765c84538fad5eb57bd8337a3dde87bec6f93eae4"
+    },
+    {
+      "path": "migrations/meta/0006_snapshot.json",
+      "sha256": "d25580ecd9b2ca60394ff612b9e286afdd6ac94e43086831ea9af306369040e5"
+    },
+    {
+      "path": "migrations/meta/0007_snapshot.json",
+      "sha256": "6eced7aaa0bff397b850a1962000e35c1043578662aa4dcad0d1ac3a91ff7436"
+    },
+    {
+      "path": "migrations/meta/0008_snapshot.json",
+      "sha256": "bb0cd65dce3e75907fe1cf5e649eeae627ac18caed9d1f8ee3aa7d82416fd9cc"
+    },
+    {
+      "path": "migrations/meta/0009_snapshot.json",
+      "sha256": "98a9af938d1a04e987511635a2f8144956d1c396d3820bd1d30deba109ca36cb"
+    },
+    {
+      "path": "migrations/meta/_journal.json",
+      "sha256": "51d6ebe5018a12a0292791fdc4903b9b3e7f14ed3555c731763065dcd80fab86"
+    }
+  ]
+}

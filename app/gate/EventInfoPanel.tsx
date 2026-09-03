@@ -3,7 +3,7 @@ import Image from 'next/image';
 import TerminalPanel from '@/components/TerminalPanel';
 import { SubtitleText } from '@/components/ui/TerminalText';
 import { useT, useLang } from '@/lib/langContext';
-import type { TerminalEvent } from '@/lib/eventData';
+import type { TerminalEvent } from '@/lib/events/types';
 
 interface Props {
   event: TerminalEvent;

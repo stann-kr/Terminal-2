@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import TerminalPanel from '@/components/TerminalPanel';
-import PageLayout, { itemVariants } from '@/components/PageLayout';
+import PageLayout, { itemVariants } from '@/components/shell/PageLayout';
 import { BodyText, LabelText, SubtitleText } from '@/components/ui/TerminalText';
 import ReturnLink from '@/components/ui/ReturnLink';
 import PageHeader from '@/components/ui/PageHeader';
@@ -26,7 +26,7 @@ export default function AboutPage() {
 
         {/* Manifesto */}
         <motion.div variants={itemVariants} className="mb-6">
-          <TerminalPanel title="MANIFESTO_v1.txt" accent="green">
+          <TerminalPanel title="MANIFESTO_v1.txt" accent="primary">
             <div className="space-y-1">
               {t.manifesto.map((line, i) => (
                 <div key={i}>
